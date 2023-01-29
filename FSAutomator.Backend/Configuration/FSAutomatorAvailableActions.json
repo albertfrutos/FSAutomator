@@ -1,0 +1,121 @@
+﻿{
+  "FSAutomatorAvailableActions": [
+    {
+      "Name": "CalculateBearingToCoordinates",
+      "Parameters": [
+        {
+          "Name": "FinalLatitude"
+        },
+        {
+          "Name": "FinalLongitude"
+        }
+      ]
+    },
+    {
+      "Name": "CalculateDistanceToCoordinates",
+      "Parameters": [
+        {
+          "Name": "FinalLatitude"
+        },
+        {
+          "Name": "FinalLongitude"
+        }
+      ]
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "Parameters": [
+        {
+          "Name": "DLLName"
+        },
+        {
+          "Name": "ClassName"
+        },
+        {
+          "Name": "MethodName"
+        }
+      ]
+    },
+    {
+      "Name": "ExpectVariableValue",
+      "Parameters": [
+        {
+          "Name": "VariableName"
+        },
+        {
+          "Name": "VariableExpectedValue"
+        }
+      ]
+    },
+    {
+      "Name": "GetVariable",
+      "Parameters": [
+        {
+          "Name": "VariableName"
+        }
+      ]
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "Parameters": [
+        {
+          "Name": "RemoveAfterRead"
+        },
+        {
+          "Name": "Id"
+        }
+      ]
+    },
+    {
+      "Name": "MemoryRegisterWrite",
+      "Parameters": [
+        {
+          "Name": "Value"
+        },
+        {
+          "Name": "Id"
+        }
+      ]
+    },
+    {
+      "Name": "OperateLastValue",
+      "Parameters": [
+        // NOTE es pot treure aixo i deixar-ho com a dos namesseguits només separats pr
+        {
+          "Name": "Operation"
+        },
+        {
+          "Name": "Number"
+        }
+      ]
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": [
+        {
+          "Name": "EventName"
+        },
+        {
+          "Name": "EventValue"
+        }
+      ]
+    },
+    {
+      "Name": "WaitUntilVariableReachesNumericValue",
+      "Parameters": [
+        {
+          "Name": "VariableName"
+        },
+        {
+          "Name": "Comparison"
+        },
+        {
+          "Name": "ThresholdValue"
+        },
+        {
+          "Name": "CheckInterval"
+        }
+      ]
+    }
+  ]
+}

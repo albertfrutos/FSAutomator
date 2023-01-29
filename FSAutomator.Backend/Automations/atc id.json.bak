@@ -1,0 +1,112 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "AP_MASTER",
+        "EventValue": "1"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "TOGGLE_FLIGHT_DIRECTOR",
+        "EventValue": "1"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "HEADING_BUG_SET",
+        "EventValue": "245"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "AP_HDG_HOLD_ON",
+        "EventValue": "0"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "AP_VS_VAR_SET_ENGLISH",
+        "EventValue": "1500"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "PARKING_BRAKE_SET",
+        "EventValue": "0"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "THROTTLE_FULL",
+        "EventValue": "0"
+      }
+    },
+    {
+      "Name": "WaitUntilVariableReachesNumericValue",
+      "Parameters": {
+        "VariableName": "GROUND VELOCITY",
+        "Comparison": ">",
+        "ThresholdValue": "150",
+        "CheckInterval": "200"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "AP_PANEL_VS_HOLD",
+        "EventValue": "1"
+      }
+    },
+    {
+      "Name": "GetVariable",
+      "Parameters": {
+        "VariableName": "PLANE ALTITUDE"
+      }
+    },
+    {
+      "Name": "OperateLastValue",
+      "Parameters": {
+        "Operation": "+",
+        "Number": "100"
+      }
+    },
+    {
+      "Name": "WaitUntilVariableReachesNumericValue",
+      "Parameters": {
+        "VariableName": "PLANE ALTITUDE",
+        "Comparison": ">",
+        "ThresholdValue": "%PrevValue%",
+        "CheckInterval": "200"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "GEAR_UP",
+        "EventValue": "0"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "AP_VS_VAR_SET_ENGLISH",
+        "EventValue": "1500"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "HEADING_BUG_SET",
+        "EventValue": "%FullFlapsStallSpeed%"
+      }
+    }
+  ]
+}
