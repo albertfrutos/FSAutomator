@@ -233,13 +233,19 @@ namespace FSAutomator.BackEnd.Validators
         {
             bool actionIsValidated = true;
 
-
-            var variableName = (action.ActionObject as WaitUntilVariableReachesNumericValue).VariableName;
+            var actionObject = action.ActionObject as WaitUntilVariableReachesNumericValue;
+            var variableName = actionObject.VariableName;
             var variableType = new CommonEntities().DefineIDs[new Variable().GetVariableInformation(variableName).Type];
+
+            if (!(actionObject.AllowedComparisonValues.Contains(actionObject.Comparison)))
+            {
+                var issue = String.Format("WaitUntilVariableReachesNumericValue [{0}]: Comparison {1} is not supported ", index, actionObject.Comparison);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
 
             if (variableType != CommonEntities.DEFINITIONS.NumType)
             {
-                var issue = String.Format("MemoryRegisterRead [{0}]: trying monitor a value which is not numeric. Monitored varaible type is {1} ", index, variableType.ToString());
+                var issue = String.Format("WaitUntilVariableReachesNumericValue [{0}]: trying monitor a value which is not numeric. Monitored varaible type is {1} ", index, variableType.ToString());
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 

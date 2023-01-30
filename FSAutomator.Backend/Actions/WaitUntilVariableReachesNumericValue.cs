@@ -13,6 +13,8 @@ namespace FSAutomator.Backend.Actions
         public string ThresholdValue { get; set; }
         public int CheckInterval { get; set; }
 
+        internal string[] AllowedComparisonValues = { "<", ">", "=" };
+
         internal FlightModel fm;
 
         private string variableValue = string.Empty;
