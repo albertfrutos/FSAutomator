@@ -41,6 +41,7 @@ namespace FSAutomator.Backend.Actions
 
                 connection.TransmitClientEvent(0U, (Enum)eventToSend, (uint)Convert.ToDouble(EventValue), (Enum)NOTIFICATION_GROUPS.GROUP0, SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                 connection.ClearNotificationGroup(NOTIFICATION_GROUPS.GROUP0);
+
                 ReturnValueEvent.Invoke(this, "OK");
                 UnlockNextStep.Invoke(this, null);
 

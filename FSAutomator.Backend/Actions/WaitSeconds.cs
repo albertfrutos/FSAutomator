@@ -24,10 +24,8 @@ namespace FSAutomator.Backend.Actions
             waitTimer = new System.Timers.Timer(1000);
 
             waitTimer.Elapsed += delegate { OnTick(sender, ReturnValueEvent, UnlockNextStep); };
-            waitTimer.Start();
-
-
             
+            waitTimer.Start();
         }
 
         private void OnTick(object sender, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
@@ -37,6 +35,7 @@ namespace FSAutomator.Backend.Actions
             
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("l_ActionList").GetValue(sender);
             var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
+
             CurrentAction.Result = remainingTime;
 
             if (totalSeconds == 0)

@@ -45,11 +45,33 @@ namespace FSAutomator.BackEnd.Validators
                 {
                     actionIsValidated = ValidateWaitSeconds(actionList, validationIssues, index, action, JSONFilePath);
                 }
+                else if (action.Name == "GetVariable")
+                {
+                    actionIsValidated = ValidateGetVariable(actionList, validationIssues, index, action, JSONFilePath);
+                }
 
                 action.IsValidated = actionIsValidated;
             }
 
             return validationIssues;
+        }
+
+        private static bool ValidateGetVariable(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
+        {
+            bool actionIsValidated = true;
+
+
+            var variableName = (action.ActionObject as GetVariable).VariableName;
+            var variableInformation = new Variable().GetVariableInformation(variableName);
+
+            if ((variableInformation == null) || (variableInformation.Type == null))
+            {
+                var issue = String.Format("GetVariable [{0}]: Variable {1} does not exist.", index, variableName);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+
+
+            return actionIsValidated;
         }
 
         private static bool ValidateWaitSeconds(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
