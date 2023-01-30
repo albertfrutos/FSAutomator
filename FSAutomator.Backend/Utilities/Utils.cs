@@ -63,17 +63,23 @@ namespace FSAutomator.Backend.Utilities
             var json = File.ReadAllText(automationPath);
 
             var jsonObject = JObject.Parse(json);
+            
             var actions = jsonObject["Actions"].ToArray();
+            CreateActionList(automationPath, actionsList, actions);
 
-            FSAutomatorAction action;
+            return actionsList;
 
+        }
+
+        private static void CreateActionList(string automationPath, ObservableCollection<FSAutomatorAction> actionsList, JToken[] actions)
+        {
             foreach (JToken token in actions)
             {
                 var actionName = token["Name"].ToString();
                 var uniqueID = Guid.NewGuid().ToString();
                 if (token["UniqueID"] != null)
                 {
-                    uniqueID = token["UniqueID"].ToString() != "" ? token["UniqueID"].ToString()  : uniqueID;
+                    uniqueID = token["UniqueID"].ToString() != "" ? token["UniqueID"].ToString() : uniqueID;
                 }
                 var actionParameters = token["Parameters"].ToString();
 
@@ -87,14 +93,11 @@ namespace FSAutomator.Backend.Utilities
                     (actionObject as ExecuteCodeFromDLL).DLLPackageFolder = Directory.GetParent(automationPath).Name;
                 }
 
-                action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject);
+                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject);
 
 
                 actionsList.Add(action);
             }
-
-            return actionsList;
-
         }
 
         public static List<AutomationFile> GetAutomationFilesList()
