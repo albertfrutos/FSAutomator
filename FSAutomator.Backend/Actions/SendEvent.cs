@@ -11,8 +11,6 @@ namespace FSAutomator.Backend.Actions
         public string EventName { get; set; }
         public string EventValue { get; set; }
 
-        internal FlightModel fm;
-
         public SendEvent(string name, string value)
         {
             this.EventName = name;
