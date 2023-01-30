@@ -32,7 +32,7 @@ namespace FSAutomator.Backend.Actions
         {
             var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             var lastValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("l_ActionList").GetValue(sender);
+            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             //note peta dll path al venir desde json de pack
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "Automations", this.DLLPackageFolder, this.DLLName);
             var DLL = Assembly.LoadFrom(path);
