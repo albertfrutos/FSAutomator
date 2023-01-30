@@ -10,9 +10,9 @@ namespace FSAutomator.Backend.Actions
         {
             var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 
-            var selectedRegister = memoryRegisters.Where(x => x.Key == Id).First();
+            var selectedRegister = memoryRegisters.Where(x => x.Key == this.Id).First();
 
-            if (RemoveAfterRead)
+            if (this.RemoveAfterRead)
             {
                 memoryRegisters.Remove(selectedRegister.Key);
             }

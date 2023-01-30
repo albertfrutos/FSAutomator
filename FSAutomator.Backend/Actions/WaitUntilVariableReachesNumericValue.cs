@@ -63,13 +63,6 @@ namespace FSAutomator.Backend.Actions
                 return;
             }
 
-            /*
-            MonitoredVariable = new GetVariable()
-            {
-                VariableName = this.VariableName
-            };
-            */
-
             ReportInternalVariableValueEvent += CheckVariableRecovered;
 
             do
