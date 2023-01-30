@@ -8,7 +8,6 @@ namespace FSAutomator.Backend.Actions
 
         public string Operation { get; set; }
         public double Number { get; set; }
-
         public string ItemToOperateOver { get; set; }
 
         public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
@@ -43,7 +42,6 @@ namespace FSAutomator.Backend.Actions
                     default:
                         newVariableValue = numToOperate;
                         break;
-
                 }
 
                 ReturnValueEvent.Invoke(this, newVariableValue.ToString());

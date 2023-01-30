@@ -11,8 +11,6 @@ namespace FSAutomator.Backend.Actions
         public string EventName { get; set; }
         public string EventValue { get; set; }
 
-        internal FlightModel fm;
-
         public SendEvent(string name, string value)
         {
             this.EventName = name;
@@ -41,6 +39,7 @@ namespace FSAutomator.Backend.Actions
 
                 connection.TransmitClientEvent(0U, (Enum)eventToSend, (uint)Convert.ToDouble(EventValue), (Enum)NOTIFICATION_GROUPS.GROUP0, SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                 connection.ClearNotificationGroup(NOTIFICATION_GROUPS.GROUP0);
+
                 ReturnValueEvent.Invoke(this, "OK");
                 UnlockNextStep.Invoke(this, null);
 

@@ -35,8 +35,6 @@ namespace FSAutomator.Backend.Entities
 
                 IniFile ini = new IniFile(flightModelPath);
                 this.ReferenceSpeeds = new ReferenceSpeeds(ini);
-
-
             }
         }
 

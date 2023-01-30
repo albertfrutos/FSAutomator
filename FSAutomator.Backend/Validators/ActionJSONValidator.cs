@@ -2,6 +2,7 @@
 using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Utilities;
+using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.BackEnd.Validators
 {
@@ -17,7 +18,19 @@ namespace FSAutomator.BackEnd.Validators
             {
                 bool actionIsValidated = true;
 
-                if (action.Name == "MemoryRegisterRead")
+                if (action.Name == "ExecuteCodeFromDLL")
+                {
+                    actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action, JSONFilePath);
+                }
+                else if (action.Name == "ExpectVariableValue")
+                {
+                    actionIsValidated = ValidateExpectVariableValue(actionList, validationIssues, index, action, JSONFilePath);
+                }
+                else if (action.Name == "GetVariable")
+                {
+                    actionIsValidated = ValidateGetVariable(actionList, validationIssues, index, action, JSONFilePath);
+                }
+                else if (action.Name == "MemoryRegisterRead")
                 {
                     actionIsValidated = ValidateMemoryRegisterRead(actionList, validationIssues, index, action, JSONFilePath);
                 }
@@ -29,6 +42,14 @@ namespace FSAutomator.BackEnd.Validators
                 {
                     actionIsValidated = ValidateOperateLastValue(actionList, validationIssues, index, action, JSONFilePath);
                 }
+                else if (action.Name == "SendEvent")
+                {
+                    actionIsValidated = ValidateSendEvent(actionList, validationIssues, index, action, JSONFilePath);
+                }
+                else if (action.Name == "WaitSeconds")
+                {
+                    actionIsValidated = ValidateWaitSeconds(actionList, validationIssues, index, action, JSONFilePath);
+                }
                 else if (action.Name == "WaitUntilVariableReachesNumericValue")
                 {
                     actionIsValidated = ValidateWaitUntilVariableReachesNumericValue(actionList, validationIssues, index, action, JSONFilePath);
@@ -37,19 +58,62 @@ namespace FSAutomator.BackEnd.Validators
                 {
                     actionIsValidated = ValidateDLLAutomation(actionList, validationIssues, index, action, JSONFilePath);
                 }
-                else if (action.Name == "ExecuteCodeFromDLL")
-                {
-                    actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action, JSONFilePath);
-                }
-                else if (action.Name == "WaitSeconds")
-                {
-                    actionIsValidated = ValidateWaitSeconds(actionList, validationIssues, index, action, JSONFilePath);
-                }
+
+
 
                 action.IsValidated = actionIsValidated;
             }
 
             return validationIssues;
+        }
+
+        private static bool ValidateExpectVariableValue(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
+        {
+            bool actionIsValidated = true;
+
+
+            var variableName = (action.ActionObject as ExpectVariableValue).VariableName;
+
+            if (!VariableExists(variableName))
+            {
+                var issue = String.Format("GetVariable [{0}]: Variable {1} does not exist.", index, variableName);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+
+            }
+
+            return actionIsValidated;
+        }
+
+        private static bool ValidateSendEvent(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
+        {
+            bool actionIsValidated = true;
+
+            var eventName = (action.ActionObject as SendEvent).EventName;
+
+            var eventExists = Enum.IsDefined(typeof(EVENTS), eventName);
+
+            if (!eventExists)
+            {
+                var issue = String.Format("SendEvent [{0}]: Event {1} does not exist.", index, eventName);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+
+            return actionIsValidated;
+        }
+
+        private static bool ValidateGetVariable(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
+        {
+            bool actionIsValidated = true;
+
+            var variableName = (action.ActionObject as GetVariable).VariableName;
+            
+            if (!VariableExists(variableName))
+            {
+                var issue = String.Format("GetVariable [{0}]: Variable {1} does not exist.", index, variableName);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+
+            return actionIsValidated;
         }
 
         private static bool ValidateWaitSeconds(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
@@ -111,15 +175,6 @@ namespace FSAutomator.BackEnd.Validators
 
         }
 
-        private static bool SetAsValidationFailed(List<string> validationIssues, string issue, FSAutomatorAction action)
-        {
-            action.ValidationOutcome = issue;
-            validationIssues.Add(issue);
-            return false;
-
-
-        }
-
         private static bool ValidateMemoryRegisterWrite(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
         {
             bool actionIsValidated = true;
@@ -168,14 +223,12 @@ namespace FSAutomator.BackEnd.Validators
                 {
                     var issue = String.Format("OperateLastValue [{0}]: tryig to operate on boolean value using an operator for numeric values.", index);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
-
                 }
-
-
             }
 
             return actionIsValidated;
         }
+
         private static bool ValidateWaitUntilVariableReachesNumericValue(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
         {
             bool actionIsValidated = true;
@@ -189,7 +242,6 @@ namespace FSAutomator.BackEnd.Validators
                 var issue = String.Format("MemoryRegisterRead [{0}]: trying monitor a value which is not numeric. Monitored varaible type is {1} ", index, variableType.ToString());
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
-
 
             return actionIsValidated;
         }
@@ -221,10 +273,30 @@ namespace FSAutomator.BackEnd.Validators
                     var issue = String.Format("MemoryRegisterRead [{0}]: trying to read a register with ID not available. Maybe removed during previous read?", index);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
-
             }
 
             return actionIsValidated;
+        }
+
+        private static bool VariableExists(string variableName)
+        {
+            var exists = true;
+
+            var variableInformation = new Variable().GetVariableInformation(variableName);
+
+            if ((variableInformation == null) || (variableInformation.Type == null))
+            {
+                return false;
+            }
+
+            return exists;
+        }
+
+        private static bool SetAsValidationFailed(List<string> validationIssues, string issue, FSAutomatorAction action)
+        {
+            action.ValidationOutcome = issue;
+            validationIssues.Add(issue);
+            return false;
         }
     }
 }
