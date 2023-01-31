@@ -26,7 +26,7 @@ namespace FSAutomator.Backend.Actions
         public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
         {
 
-            this.EventValue = Utils.GetValueToOperateOnFromTag(sender, this.EventValue);
+            this.EventValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.EventValue);
 
 
             if (CheckIfEventExists(EventName))

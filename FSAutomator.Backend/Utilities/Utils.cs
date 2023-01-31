@@ -4,9 +4,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using FSAutomator.Backend.Actions;
 using System.Text;
+using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Utilities
 {
+
     public static class Utils
     {
         public static bool IsNumericDouble(string previousVariableValue)
@@ -62,11 +64,11 @@ namespace FSAutomator.Backend.Utilities
             var json = File.ReadAllText(automationPath);
 
             var jsonObject = JObject.Parse(json);
-            
+
             var actionsNode = jsonObject["Actions"].ToArray();
-            
+
             var actionsList = CreateActionList(automationPath, actionsNode);
-            
+
             return actionsList;
 
         }
@@ -131,9 +133,9 @@ namespace FSAutomator.Backend.Utilities
                 automationsToLoad.Add(new AutomationFile(jsonPackFileName, jsonPackName, String.Format("{0} [{1}]", jsonPackName, "json, pack")));
                 automationsToLoad.AddRange(dllFilesAsExternalAutomator);
             }
-            
+
             return automationsToLoad;
-            
+
         }
 
         public static void DeleteFilesFromDirectoryWithExtension(string path, string extension)
@@ -197,7 +199,7 @@ namespace FSAutomator.Backend.Utilities
             }
         }
 
-        public static string GetValueToOperateOnFromTag(object sender, string itemIdentificator)
+        public static string GetValueToOperateOnFromTag(object sender, SimConnect connection, string itemIdentificator)
         {
             if (!(itemIdentificator.Contains("%") || itemIdentificator.StartsWith("%")))
             {
@@ -235,17 +237,76 @@ namespace FSAutomator.Backend.Utilities
             }
             else if (itemId == "MemoryRegister")
             {
-                var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
+                var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 
                 valueToOperateOn = memoryRegisters.Where(r => r.Key == itemArg).Select(x => x.Value).First().ToString();
             }
+            else if (itemId == "Variable")
+            {
+                EventHandler<string> getData = delegate { } ;
+                EventHandler unlock = delegate { };
+                AutoResetEvent waiter = new AutoResetEvent(false);
+
+                getData += ReceiveData;
+                unlock += Unlock;
+
+                new GetVariable(itemArg).ExecuteAction(sender, connection, getData, unlock);
+                waiter.WaitOne();
+
+                void Unlock(object? sender, EventArgs e)
+                {
+                    waiter.Set();
+                }
+
+                void ReceiveData(object? sender, string e)
+                {
+                    valueToOperateOn = e;
+                }
+
+            }
+            /*
+             * 
+            public static 
+            public static 
             
+            var variableName = itemArg;
+
+            getData+= ReceiveData;
+                            unlock += Unlock;
+
+
+
+            new GetVariable(variableName).ExecuteAction(sender, connection, getData, unlock);
+            waiter.WaitOne();
+            */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             //note: add possibility to get a variable value
 
             return valueToOperateOn;
         }
-
-
-
+    }
 }
-}
+

@@ -2,6 +2,7 @@
 using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -34,14 +35,14 @@ namespace FSAutomator.Backend.Actions
 
         public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
         {
-            ReportActionResult += GetActionResult;
+            //ReportActionResult += GetActionResult;
             Unlock += UnlockAction;
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             this.CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
-            this.FirstMember = Utils.GetValueToOperateOnFromTag(sender, this.FirstMember);
-            this.SecondMember = Utils.GetValueToOperateOnFromTag(sender, this.SecondMember);
+            this.FirstMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.FirstMember);
+            this.SecondMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.SecondMember);
 
             if ((!Utils.IsNumericDouble(this.FirstMember)) && (!Utils.IsNumericDouble(this.SecondMember)))
             {
@@ -56,13 +57,11 @@ namespace FSAutomator.Backend.Actions
 
             if (CheckCondition())
             {
-                var trueAction = auxiliaryActionList.Where(x => x.UniqueID == ActionIfTrueUniqueID).First();
-                trueAction.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(trueAction.ActionObject, new object[] { sender, connection, ReportActionResult, Unlock });
+                ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
             }
             else if (ActionIfFalseUniqueID != null)
             {
-                var falseAction = auxiliaryActionList.Where(x => x.UniqueID == ActionIfTrueUniqueID).First();
-                falseAction.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(falseAction.ActionObject, new object[] { sender, connection, ReportActionResult, Unlock });
+                ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
             }
 
             ContinueAfterAction.WaitOne();
@@ -74,6 +73,12 @@ namespace FSAutomator.Backend.Actions
 
         }
 
+        private void ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
+        {
+            var action = auxiliaryActionList.Where(x => x.UniqueID == actionUniqueID).First();
+            action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection, ReportActionResult, Unlock });
+        }
+
         private void UnlockAction(object? sender, EventArgs e)
         {
             ContinueAfterAction.Set();
@@ -83,12 +88,13 @@ namespace FSAutomator.Backend.Actions
         private void GetActionResult(object? sender, string e)
         {
             actionResult = e;
+            Trace.WriteLine("conditional    "+ e);
         }
 
         private bool CheckCondition()
         {
             bool result = false;
-
+            
             var firstMember = Convert.ToDouble(this.FirstMember);
             var secondMember = Convert.ToDouble(this.SecondMember);
 
@@ -101,13 +107,14 @@ namespace FSAutomator.Backend.Actions
                     result = firstMember > secondMember;
                     break;
                 case "=":
+                case "==":
                     result = firstMember == secondMember;
                     break;
                 default:
                     result = false;
                     break;
             }
-
+            
             return result;
 
         }

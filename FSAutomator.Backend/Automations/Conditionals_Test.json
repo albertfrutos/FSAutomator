@@ -1,22 +1,13 @@
 ﻿{
   "Actions": [
-    {
-      "Name": "ExecuteCodeFromDLL",
-      "UniqueID": "5h0t3o",
-      "Parameters": {
-        "DLLName": "ExternalAutomationExample.dll",
-        "ClassName": "Lalala",
-        "MethodName": "LalalaTest",
-        "IncludeAsExternalAutomator": "true"
-      }
-    },
+
     {
       "Name": "ConditionalAction",
       "UniqueID": "2vy54",
       "Parameters": {
-        "FirstMember": "100",
-        "Comparison": "<",
-        "SecondMember": "200",
+        "FirstMember": "%Variable%AUTOPILOT HEADING LOCK DIR",
+        "Comparison": ">",
+        "SecondMember": "350",
         "ActionIfTrueUniqueID": "5h0t3o",
         "ActionIfFalseUniqueID": "5h0t3oAA"
       }
@@ -25,9 +16,9 @@
       "Name": "ConditionalAction",
       "UniqueID": "2vy54",
       "Parameters": {
-        "FirstMember": "100",
+        "FirstMember": "%Variable%AUTOPILOT HEADING LOCK DIR",
         "Comparison": "=",
-        "SecondMember": "200",
+        "SecondMember": "5",
         "ActionIfTrueUniqueID": "5h0t3o",
         "ActionIfFalseUniqueID": "5h0t3oAA"
       }
