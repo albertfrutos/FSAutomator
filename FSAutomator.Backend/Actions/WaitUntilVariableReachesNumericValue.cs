@@ -34,7 +34,7 @@ namespace FSAutomator.Backend.Actions
             this.connection = connection;
             this.ReturnValueEvent = ReturnValueEvent;
 
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("l_ActionList").GetValue(sender);
+            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
             if (ThresholdValue == "%PrevValue%")

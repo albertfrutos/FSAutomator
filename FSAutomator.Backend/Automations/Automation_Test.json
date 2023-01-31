@@ -18,13 +18,7 @@
       "Name": "SendEvent",
       "Parameters": {
         "EventName": "HEADING_BUG_SET",
-        "EventValue": "276"
-      }
-    },
-    {
-      "Name": "WaitSeconds",
-      "Parameters": {
-        "WaitTime": "10"
+        "EventValue": "347"
       }
     },
     {
@@ -81,7 +75,8 @@
       "Name": "OperateLastValue",
       "Parameters": {
         "Operation": "+",
-        "Number": "100"
+        "Number": "100",
+        "ItemToOperateOver": "%PrevValue%"
       }
     },
     {
@@ -111,7 +106,7 @@
       "Name": "SendEvent",
       "Parameters": {
         "EventName": "HEADING_BUG_SET",
-        "EventValue": "%FullFlapsStallSpeed%"
+        "EventValue": "%FM%FullFlapsStallSpeed%"
       }
     },
     {
@@ -121,8 +116,8 @@
         "FirstMember": "100",
         "Comparison": "<",
         "SecondMember": "200",
-        "ActionIfTrue": "5h0t3o",
-        "ActionIfFalse": "5h0t3oAA"
+        "ActionIfTrueUniqueID": "5h0t3o",
+        "ActionIfFalseUniqueID": "5h0t3oAA"
       }
     },
     {

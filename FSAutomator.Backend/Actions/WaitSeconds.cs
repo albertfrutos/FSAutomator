@@ -33,7 +33,7 @@ namespace FSAutomator.Backend.Actions
             TimeSpan t = TimeSpan.FromSeconds(totalSeconds);
             var remainingTime = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
             
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("l_ActionList").GetValue(sender);
+            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
             CurrentAction.Result = remainingTime;

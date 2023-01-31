@@ -35,7 +35,7 @@ namespace FSAutomator.Backend.Actions
 
         public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
         {
-            //ReportActionResult += GetActionResult;
+            ReportActionResult += GetActionResult;
             Unlock += UnlockAction;
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
@@ -54,7 +54,7 @@ namespace FSAutomator.Backend.Actions
             ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
 
             //note: if actiontrueuniqueid or actionfalseuniqueid are null, return and send warning via event
-
+            //note: compare strings, pending to implement
             if (CheckCondition())
             {
                 ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
