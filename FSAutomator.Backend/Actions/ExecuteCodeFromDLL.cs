@@ -13,7 +13,7 @@ namespace FSAutomator.Backend.Actions
         public string MethodName { get; set; }
         public bool IncludeAsExternalAutomator { get; set; } = false;
 
-        public string DLLPackageFolder;
+        public string DLLPackageFolder = "";
 
         public ExecuteCodeFromDLL()
         {

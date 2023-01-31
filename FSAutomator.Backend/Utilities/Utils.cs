@@ -58,28 +58,36 @@ namespace FSAutomator.Backend.Utilities
 
         public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(string automationPath)
         {
-            var actionsList = new ObservableCollection<FSAutomatorAction>();
 
             var json = File.ReadAllText(automationPath);
 
             var jsonObject = JObject.Parse(json);
             
-            var actions = jsonObject["Actions"].ToArray();
-            CreateActionList(automationPath, actionsList, actions);
-
+            var actionsNode = jsonObject["Actions"].ToArray();
+            
+            var actionsList = CreateActionList(automationPath, actionsNode);
+            
             return actionsList;
 
         }
 
-        private static void CreateActionList(string automationPath, ObservableCollection<FSAutomatorAction> actionsList, JToken[] actions)
+        private static ObservableCollection<FSAutomatorAction> CreateActionList(string automationPath, JToken[] actions)
         {
+            ObservableCollection<FSAutomatorAction> actionsList = new ObservableCollection<FSAutomatorAction>();
+
             foreach (JToken token in actions)
             {
                 var actionName = token["Name"].ToString();
                 var uniqueID = Guid.NewGuid().ToString();
+                bool isAuxiliary = false;
                 if (token["UniqueID"] != null)
                 {
                     uniqueID = token["UniqueID"].ToString() != "" ? token["UniqueID"].ToString() : uniqueID;
+                }
+
+                if (token["IsAuxiliary"] != null)
+                {
+                    isAuxiliary = token["IsAuxiliary"].ToString().ToLower() == "true" ? true : false;
                 }
                 var actionParameters = token["Parameters"].ToString();
 
@@ -87,17 +95,19 @@ namespace FSAutomator.Backend.Utilities
                 var actionObject = Activator.CreateInstance(actionType);
 
                 actionObject = JsonConvert.DeserializeObject(actionParameters, actionType);
-
+                /*
                 if (actionName == "ExecuteCodeFromDLL")
                 {
                     (actionObject as ExecuteCodeFromDLL).DLLPackageFolder = Directory.GetParent(automationPath).Name;
                 }
-
-                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject);
+                */
+                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary);
 
 
                 actionsList.Add(action);
             }
+
+            return actionsList;
         }
 
         public static List<AutomationFile> GetAutomationFilesList()
@@ -189,10 +199,15 @@ namespace FSAutomator.Backend.Utilities
 
         public static string GetValueToOperateOnFromTag(object sender, string itemIdentificator)
         {
-            var valueToOperateOn = "";
+            if (!(itemIdentificator.Contains("%") || itemIdentificator.StartsWith("%")))
+            {
+                return itemIdentificator;
+            }
 
             var itemId = itemIdentificator.Split('%')[1];
             var itemArg = itemIdentificator.Split('%')[2];
+
+            var valueToOperateOn = itemId;
 
             if (itemId == "PrevValue")
             {
@@ -224,6 +239,8 @@ namespace FSAutomator.Backend.Utilities
 
                 valueToOperateOn = memoryRegisters.Where(r => r.Key == itemArg).Select(x => x.Value).First().ToString();
             }
+            
+            //note: add possibility to get a variable value
 
             return valueToOperateOn;
         }

@@ -20,10 +20,12 @@ namespace FSAutomator.Backend.Automators
         public string lastOperationValue = "";
 
         public ObservableCollection<FSAutomatorAction> ActionList;
+        public ObservableCollection<FSAutomatorAction> AuxiliaryActionList;
 
         public Automator(ObservableCollection<FSAutomatorAction> ActionList)
         {
             this.ActionList = ActionList;
+            this.AuxiliaryActionList = new ObservableCollection<FSAutomatorAction>();
         }
 
         public void Execute()

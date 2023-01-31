@@ -24,7 +24,7 @@
     {
       "Name": "WaitSeconds",
       "Parameters": {
-        "WaitTime": "10",
+        "WaitTime": "10"
       }
     },
     {
@@ -112,6 +112,38 @@
       "Parameters": {
         "EventName": "HEADING_BUG_SET",
         "EventValue": "%FullFlapsStallSpeed%"
+      }
+    },
+    {
+      "Name": "ConditionalAction",
+      "UniqueID": "2vy54",
+      "Parameters": {
+        "FirstMember": "100",
+        "Comparison": "<",
+        "SecondMember": "200",
+        "ActionIfTrue": "5h0t3o",
+        "ActionIfFalse": "5h0t3oAA"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "IsAuxiliary": "true",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "false"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3oAA",
+      "IsAuxiliary": "true",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "ExternalAutomation",
+        "MethodName": "MyLonelyMethod"
       }
     }
   ]

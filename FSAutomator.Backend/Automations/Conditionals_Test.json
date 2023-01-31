@@ -1,0 +1,57 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "true"
+      }
+    },
+    {
+      "Name": "ConditionalAction",
+      "UniqueID": "2vy54",
+      "Parameters": {
+        "FirstMember": "100",
+        "Comparison": "<",
+        "SecondMember": "200",
+        "ActionIfTrueUniqueID": "5h0t3o",
+        "ActionIfFalseUniqueID": "5h0t3oAA"
+      }
+    },
+    {
+      "Name": "ConditionalAction",
+      "UniqueID": "2vy54",
+      "Parameters": {
+        "FirstMember": "100",
+        "Comparison": "=",
+        "SecondMember": "200",
+        "ActionIfTrueUniqueID": "5h0t3o",
+        "ActionIfFalseUniqueID": "5h0t3oAA"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "IsAuxiliary": "true",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "false"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3oAA",
+      "IsAuxiliary": "true",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "ExternalAutomation",
+        "MethodName": "MyLonelyMethod"
+      }
+    }
+  ]
+}
