@@ -12,6 +12,7 @@ namespace FSAutomator.Backend.Actions
         public string EventValue { get; set; }
         public bool IsAuxiliary { get; set; } = false;
 
+
         public SendEvent(string name, string value)
         {
             this.EventName = name;
