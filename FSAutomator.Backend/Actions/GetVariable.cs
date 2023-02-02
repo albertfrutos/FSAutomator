@@ -17,6 +17,9 @@ namespace FSAutomator.Backend.Actions
         [JsonIgnore]
         public EventHandler UnlockNextStep = null;
 
+        [JsonIgnore]
+        public AutoResetEvent evento = new AutoResetEvent(false);
+
         private Variable variable;
 
         private SimConnect connection;
@@ -68,6 +71,11 @@ namespace FSAutomator.Backend.Actions
                 connection.RequestDataOnSimObjectType(DATA_REQUESTS.REQUEST_1, defineID, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
                 connection.ClearDataDefinition(defineID);
 
+                evento.WaitOne();
+
+                ReturnValueEvent.Invoke(this, this.VariableValue.ToString());
+                UnlockNextStep.Invoke(this, null);
+
             }
         }
 
@@ -77,8 +85,8 @@ namespace FSAutomator.Backend.Actions
             {
                 return;
             }
-            try
 
+            try
             {
                 if (variable.Type == "string")
                 {
@@ -96,8 +104,10 @@ namespace FSAutomator.Backend.Actions
                     this.VariableValue = result.boolVar.ToString();
                 }
 
-                ReturnValueEvent.Invoke(this, this.VariableValue.ToString());
-                UnlockNextStep.Invoke(this, null);
+                evento.Set();
+
+                //ReturnValueEvent.Invoke(this, this.VariableValue.ToString());
+                //UnlockNextStep.Invoke(this, null);
             }
             catch (Exception ex)
             {

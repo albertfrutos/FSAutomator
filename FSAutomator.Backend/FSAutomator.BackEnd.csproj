@@ -9,11 +9,15 @@
   <ItemGroup>
     <None Remove="Automations\Automation.json" />
     <None Remove="Automations\Automation_Test.json" />
+    <None Remove="Automations\Conditionals_Test.json" />
     <None Remove="Configuration\FSAutomatorAvailableActions.json" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Automations\Automation.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Automations\Conditionals_Test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Automations\Automation_Test.json">

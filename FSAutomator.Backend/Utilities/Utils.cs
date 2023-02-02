@@ -4,9 +4,11 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using FSAutomator.Backend.Actions;
 using System.Text;
+using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Utilities
 {
+
     public static class Utils
     {
         public static bool IsNumericDouble(string previousVariableValue)
@@ -58,22 +60,36 @@ namespace FSAutomator.Backend.Utilities
 
         public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(string automationPath)
         {
-            var actionsList = new ObservableCollection<FSAutomatorAction>();
 
             var json = File.ReadAllText(automationPath);
 
             var jsonObject = JObject.Parse(json);
-            var actions = jsonObject["Actions"].ToArray();
 
-            FSAutomatorAction action;
+            var actionsNode = jsonObject["Actions"].ToArray();
+
+            var actionsList = CreateActionList(automationPath, actionsNode);
+
+            return actionsList;
+
+        }
+
+        private static ObservableCollection<FSAutomatorAction> CreateActionList(string automationPath, JToken[] actions)
+        {
+            ObservableCollection<FSAutomatorAction> actionsList = new ObservableCollection<FSAutomatorAction>();
 
             foreach (JToken token in actions)
             {
                 var actionName = token["Name"].ToString();
                 var uniqueID = Guid.NewGuid().ToString();
+                bool isAuxiliary = false;
                 if (token["UniqueID"] != null)
                 {
-                    uniqueID = token["UniqueID"].ToString() != "" ? token["UniqueID"].ToString()  : uniqueID;
+                    uniqueID = token["UniqueID"].ToString() != "" ? token["UniqueID"].ToString() : uniqueID;
+                }
+
+                if (token["IsAuxiliary"] != null)
+                {
+                    isAuxiliary = token["IsAuxiliary"].ToString().ToLower() == "true" ? true : false;
                 }
                 var actionParameters = token["Parameters"].ToString();
 
@@ -81,20 +97,19 @@ namespace FSAutomator.Backend.Utilities
                 var actionObject = Activator.CreateInstance(actionType);
 
                 actionObject = JsonConvert.DeserializeObject(actionParameters, actionType);
-
+                /*
                 if (actionName == "ExecuteCodeFromDLL")
                 {
                     (actionObject as ExecuteCodeFromDLL).DLLPackageFolder = Directory.GetParent(automationPath).Name;
                 }
-
-                action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject);
+                */
+                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary);
 
 
                 actionsList.Add(action);
             }
 
             return actionsList;
-
         }
 
         public static List<AutomationFile> GetAutomationFilesList()
@@ -118,9 +133,9 @@ namespace FSAutomator.Backend.Utilities
                 automationsToLoad.Add(new AutomationFile(jsonPackFileName, jsonPackName, String.Format("{0} [{1}]", jsonPackName, "json, pack")));
                 automationsToLoad.AddRange(dllFilesAsExternalAutomator);
             }
-            
+
             return automationsToLoad;
-            
+
         }
 
         public static void DeleteFilesFromDirectoryWithExtension(string path, string extension)
@@ -184,12 +199,17 @@ namespace FSAutomator.Backend.Utilities
             }
         }
 
-        public static string GetValueToOperateOnFromTag(object sender, string itemIdentificator)
+        public static string GetValueToOperateOnFromTag(object sender, SimConnect connection, string itemIdentificator)
         {
-            var valueToOperateOn = "";
+            if (!(itemIdentificator.Contains("%") || itemIdentificator.StartsWith("%")))
+            {
+                return itemIdentificator;
+            }
 
             var itemId = itemIdentificator.Split('%')[1];
             var itemArg = itemIdentificator.Split('%')[2];
+
+            var valueToOperateOn = itemId;
 
             if (itemId == "PrevValue")
             {
@@ -217,15 +237,76 @@ namespace FSAutomator.Backend.Utilities
             }
             else if (itemId == "MemoryRegister")
             {
-                var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
+                var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 
                 valueToOperateOn = memoryRegisters.Where(r => r.Key == itemArg).Select(x => x.Value).First().ToString();
             }
+            else if (itemId == "Variable")
+            {
+                EventHandler<string> getData = delegate { } ;
+                EventHandler unlock = delegate { };
+                AutoResetEvent waiter = new AutoResetEvent(false);
+
+                getData += ReceiveData;
+                unlock += Unlock;
+
+                new GetVariable(itemArg).ExecuteAction(sender, connection, getData, unlock);
+                waiter.WaitOne();
+
+                void Unlock(object? sender, EventArgs e)
+                {
+                    waiter.Set();
+                }
+
+                void ReceiveData(object? sender, string e)
+                {
+                    valueToOperateOn = e;
+                }
+
+            }
+            /*
+             * 
+            public static 
+            public static 
+            
+            var variableName = itemArg;
+
+            getData+= ReceiveData;
+                            unlock += Unlock;
+
+
+
+            new GetVariable(variableName).ExecuteAction(sender, connection, getData, unlock);
+            waiter.WaitOne();
+            */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //note: add possibility to get a variable value
 
             return valueToOperateOn;
         }
-
-
-
+    }
 }
-}
+

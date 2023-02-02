@@ -71,7 +71,7 @@ namespace FSAutomator.Backend
             //fer un getname i terure el nom
             var externalAutomatorObject = new ExternalAutomator(DLLFileName, DLLFilePath); //"Automations\\ExternalAutomationExample.dll"
             var uniqueID = Guid.NewGuid().ToString();
-            automator.ActionList.Add(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject));
+            automator.ActionList.Add(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false));
         }
 
         public void ValidateActions(string JSONFilePath)
@@ -90,7 +90,14 @@ namespace FSAutomator.Backend
 
             foreach (FSAutomatorAction action in actionsList)
             {
-                automator.ActionList.Add(action);
+                if (!action.IsAuxiliary)
+                {
+                    automator.ActionList.Add(action);
+                }
+                else
+                {
+                    automator.AuxiliaryActionList.Add(action);
+                }
             }
 
             return;
@@ -110,7 +117,7 @@ namespace FSAutomator.Backend
 
             actionObject = JsonConvert.DeserializeObject(actionParameters, actionType);
 
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false);
 
             automator.ActionList.Insert(position + 1, action);
         }

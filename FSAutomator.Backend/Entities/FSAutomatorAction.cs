@@ -14,9 +14,10 @@ namespace FSAutomator.Backend.Entities
         private string s_Result;
         private object o_Object;
         private bool b_isValidated;
+        private bool b_isAuxiliary;
         private string s_validationOutcome;
 
-        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject)
+        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary)
         {
             s_Name = name;
             s_UniqueID = uniqueID;
@@ -25,12 +26,18 @@ namespace FSAutomator.Backend.Entities
             s_Result = "";
             o_Object = actionObject;
             b_isValidated = false;
+            b_isAuxiliary = isAuxiliary;
         }
 
         public FSAutomatorAction(string name, string status)
         {
             s_Name = name;
             s_Status= status;
+        }
+        
+        public FSAutomatorAction()
+        {
+            
         }
 
         public string Name
@@ -41,6 +48,17 @@ namespace FSAutomator.Backend.Entities
             {
                 s_Name = value;
                 RaisePropertyChanged("Name");
+            }
+        }
+        
+        public bool IsAuxiliary
+        {
+            get { return b_isAuxiliary; }
+
+            set
+            {
+                b_isAuxiliary = value;
+                RaisePropertyChanged("IsAuxiliary");
             }
         }
 

@@ -13,6 +13,8 @@ namespace FSAutomator.Backend.Actions
         public string ThresholdValue { get; set; }
         public int CheckInterval { get; set; }
 
+        internal string[] AllowedComparisonValues = { "<", ">", "=" };
+
         internal FlightModel fm;
 
         private string variableValue = string.Empty;
@@ -32,7 +34,7 @@ namespace FSAutomator.Backend.Actions
             this.connection = connection;
             this.ReturnValueEvent = ReturnValueEvent;
 
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("l_ActionList").GetValue(sender);
+            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
             if (ThresholdValue == "%PrevValue%")

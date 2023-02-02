@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace FSAutomator.Backend.Automators
 {
@@ -20,10 +21,12 @@ namespace FSAutomator.Backend.Automators
         public string lastOperationValue = "";
 
         public ObservableCollection<FSAutomatorAction> ActionList;
+        public ObservableCollection<FSAutomatorAction> AuxiliaryActionList;
 
         public Automator(ObservableCollection<FSAutomatorAction> ActionList)
         {
             this.ActionList = ActionList;
+            this.AuxiliaryActionList = new ObservableCollection<FSAutomatorAction>();
         }
 
         public void Execute()
@@ -42,6 +45,7 @@ namespace FSAutomator.Backend.Automators
         private void RunAction(FSAutomatorAction action)
         {
             action.Status = "Running";
+            Trace.WriteLine("Executing");
             action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection, NewReturnValue, UnlockNextStep });
             StepLocker.WaitOne();
             action.Result = lastOperationValue;

@@ -1,0 +1,48 @@
+﻿{
+  "Actions": [
+
+    {
+      "Name": "ConditionalAction",
+      "UniqueID": "2vy54",
+      "Parameters": {
+        "FirstMember": "%Variable%AUTOPILOT HEADING LOCK DIR",
+        "Comparison": ">",
+        "SecondMember": "350",
+        "ActionIfTrueUniqueID": "5h0t3o",
+        "ActionIfFalseUniqueID": "5h0t3oAA"
+      }
+    },
+    {
+      "Name": "ConditionalAction",
+      "UniqueID": "2vy54",
+      "Parameters": {
+        "FirstMember": "%Variable%AUTOPILOT HEADING LOCK DIR",
+        "Comparison": "=",
+        "SecondMember": "5",
+        "ActionIfTrueUniqueID": "5h0t3o",
+        "ActionIfFalseUniqueID": "5h0t3oAA"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "IsAuxiliary": "true",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "false"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3oAA",
+      "IsAuxiliary": "true",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "ExternalAutomation",
+        "MethodName": "MyLonelyMethod"
+      }
+    }
+  ]
+}

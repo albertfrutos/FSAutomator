@@ -7,7 +7,7 @@
         "DLLName": "ExternalAutomationExample.dll",
         "ClassName": "Lalala",
         "MethodName": "LalalaTest",
-        "IncludeAsExternalAutomator":  "true"
+        "IncludeAsExternalAutomator": "true"
       }
     },
     {

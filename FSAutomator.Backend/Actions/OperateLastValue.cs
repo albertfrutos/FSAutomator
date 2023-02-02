@@ -12,7 +12,7 @@ namespace FSAutomator.Backend.Actions
 
         public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
         {
-            var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, this.ItemToOperateOver);
+            var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, connection, this.ItemToOperateOver);
 
             var isNumeric = Utils.IsNumericDouble(valueToOperateOn);
 
