@@ -1,4 +1,5 @@
-﻿using Microsoft.FlightSimulator.SimConnect;
+﻿using FSAutomator.BackEnd.Entities;
+using Microsoft.FlightSimulator.SimConnect;
 using System.Reflection;
 
 namespace FSAutomator.Backend.Automators
@@ -7,6 +8,8 @@ namespace FSAutomator.Backend.Automators
     {
         public string DLLName { get; set; }
         public string DLLPath { get; set; }
+
+        internal AutoResetEvent evento = new AutoResetEvent(false);
 
         public ExternalAutomator()
         {
@@ -18,7 +21,7 @@ namespace FSAutomator.Backend.Automators
             this.DLLPath = DLLPath;
         }
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPath);
             var DLL = Assembly.LoadFile(path);
@@ -26,7 +29,9 @@ namespace FSAutomator.Backend.Automators
             var type = DLL.GetType("FSAutomator.ExternalAutomation.ExternalAutomation");
             object instance = Activator.CreateInstance(type);
 
-            var a = instance.GetType().GetMethod("Execute").Invoke(instance, new object[] { this, connection, ReturnValueEvent, UnlockNextStep });
+            string result = instance.GetType().GetMethod("Execute").Invoke(instance, new object[] { this, connection, evento }).ToString();
+
+            return new ActionResult(result.ToString(), result.ToString());
         }
     }
 }

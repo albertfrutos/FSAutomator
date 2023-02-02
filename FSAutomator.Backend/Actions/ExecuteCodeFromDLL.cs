@@ -16,6 +16,8 @@ namespace FSAutomator.Backend.Actions
 
         public string DLLPackageFolder = "";
 
+        AutoResetEvent evento = new AutoResetEvent(false);
+
         public ExecuteCodeFromDLL()
         {
             
@@ -40,7 +42,8 @@ namespace FSAutomator.Backend.Actions
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);
             var type = DLL.GetType(classPath);
             object instance = Activator.CreateInstance(type);
-            var result = instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, memoryRegisters, lastValue, actionsList });
+            var result = instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, evento, memoryRegisters, lastValue, actionsList });
+            evento.WaitOne();
             return new ActionResult(result.ToString(), result.ToString());
         }
     }

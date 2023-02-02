@@ -18,7 +18,8 @@ namespace FSAutomator.Backend.Actions
         public bool IsAuxiliary { get; set; } = false;
 
 
-        internal string[] AllowedComparisonValues = { "<", ">", "=" };
+        internal string[] AllowedNumberComparisonValues = { "<", ">", "=", "==" };
+        internal string[] AllowedStringComparisonValues = { "=", "==" };
 
         internal FlightModel fm;
 
@@ -31,6 +32,9 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
+            bool isConditionTrue = false;
+
+            ActionResult result = null;
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             this.CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
@@ -38,9 +42,27 @@ namespace FSAutomator.Backend.Actions
             this.FirstMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.FirstMember);
             this.SecondMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.SecondMember);
 
-            if ((!Utils.IsNumericDouble(this.FirstMember)) && (!Utils.IsNumericDouble(this.SecondMember)))
+            if ((!Utils.IsNumericDouble(this.FirstMember)) || (!Utils.IsNumericDouble(this.SecondMember)))
             {
-                return new ActionResult($"At least one member of the condition is not a number - {this.FirstMember} - {this.SecondMember}", null);
+                // if one of the two members is not a number --> ir can still be compared as a string
+
+                if (AllowedStringComparisonValues.Contains(this.Comparison))
+                {
+                    // only '=' and '==' comparisons are valid with strings
+
+                    isConditionTrue = CheckCondition(this.FirstMember, this.SecondMember);
+                }
+                else
+                {
+                    return new ActionResult("String comparison only allowed with = or ==.", null);
+                }
+                
+            }
+            else
+            {
+                // both members are a number;
+
+                isConditionTrue = CheckCondition(Convert.ToDouble(this.FirstMember), Convert.ToDouble(this.SecondMember));
             }
 
             ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
@@ -48,34 +70,32 @@ namespace FSAutomator.Backend.Actions
             //note: if actiontrueuniqueid or actionfalseuniqueid are null, return and send warning via event
             //note: compare strings, pending to implement
 
-            var isConditionTrue = CheckCondition();
+            
 
             if (isConditionTrue)
             {
-                ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
+                result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
             }
             else if (ActionIfFalseUniqueID != null)
             {
-                ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
+                result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
             }
 
-            return new ActionResult(isConditionTrue.ToString(),isConditionTrue.ToString());
+            return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult);
 
         }
 
-        private void ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
+        private ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
         {
             var action = auxiliaryActionList.Where(x => x.UniqueID == actionUniqueID).First();
-            action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection});
+            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection});
+            return result;
         }
 
-        private bool CheckCondition()
+        private bool CheckCondition(dynamic firstMember, dynamic secondMember)
         {
             bool result = false;
             
-            var firstMember = Convert.ToDouble(this.FirstMember);
-            var secondMember = Convert.ToDouble(this.SecondMember);
-
             switch (Comparison)
             {
                 case "<":

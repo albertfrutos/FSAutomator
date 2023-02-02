@@ -24,7 +24,7 @@ namespace FSAutomator.Backend.Entities
             s_UniqueID = uniqueID;
             s_Status = status;
             s_Parameters = JsonConvert.SerializeObject(actionObject);
-            s_Result = null;
+            s_Result = new ActionResult("", null);
             o_Object = actionObject;
             b_isValidated = false;
             b_isAuxiliary = isAuxiliary;
@@ -116,7 +116,10 @@ namespace FSAutomator.Backend.Entities
 
         public string Result
         {
-            get { return s_Result.VisibleResult.Replace("\r", "").Replace("\n", ""); }
+            get
+            {
+                return s_Result.VisibleResult.Replace("\r", "").Replace("\n", "");
+            }
 
             set
             {
