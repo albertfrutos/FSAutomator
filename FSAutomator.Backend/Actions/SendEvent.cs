@@ -5,7 +5,7 @@ using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class SendEvent : IAction
+    public class SendEvent
     {
 
         public string EventName { get; set; }
@@ -24,7 +24,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
 
             this.EventValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.EventValue);
@@ -42,14 +42,12 @@ namespace FSAutomator.Backend.Actions
                 connection.TransmitClientEvent(0U, (Enum)eventToSend, (uint)Convert.ToDouble(EventValue), (Enum)NOTIFICATION_GROUPS.GROUP0, SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                 connection.ClearNotificationGroup(NOTIFICATION_GROUPS.GROUP0);
 
-                ReturnValueEvent.Invoke(this, "OK");
-                UnlockNextStep.Invoke(this, null);
+                return "OK";
 
             }
             else
             {
-                ReturnValueEvent.Invoke(this, "ERROR - Not exist");
-                UnlockNextStep.Invoke(this, null);
+                return "not exist";
             }
         }
 

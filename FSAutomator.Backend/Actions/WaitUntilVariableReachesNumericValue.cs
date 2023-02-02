@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class WaitUntilVariableReachesNumericValue : IAction
+    public class WaitUntilVariableReachesNumericValue
     {
 
         public string VariableName { get; set; }
@@ -19,20 +19,15 @@ namespace FSAutomator.Backend.Actions
 
         private string variableValue = string.Empty;
 
-        public event EventHandler<string> ReportInternalVariableValueEvent;
-        EventHandler<string> ReturnValueEvent;
-        AutoResetEvent LockVariableCheck = new AutoResetEvent(false);
-
         internal FSAutomatorAction? CurrentAction = null;
 
         bool isValueReached = false;
 
         SimConnect connection = null;
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
             this.connection = connection;
-            this.ReturnValueEvent = ReturnValueEvent;
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
@@ -52,34 +47,30 @@ namespace FSAutomator.Backend.Actions
                 }
                 else
                 {
-                    ReturnValueEvent.Invoke(this, String.Format("{0} not found in the flight model", ThresholdValue));
-                    UnlockNextStep.Invoke(this, null);
-                    return;
+                    return String.Format("{0} not found in the flight model", ThresholdValue);                    
                 }
             }
 
             if (!Utils.IsNumericDouble(this.ThresholdValue))
             {
-                ReturnValueEvent.Invoke(this, String.Format("ThresholdValue not a number - {0}", this.ThresholdValue));
-                UnlockNextStep.Invoke(this, null);
-                return;
+                return String.Format("ThresholdValue not a number - {0}", this.ThresholdValue);                
             }
 
-            ReportInternalVariableValueEvent += CheckVariableRecovered;
+            //ReportInternalVariableValueEvent += CheckVariableRecovered;
 
             do
             {
-                new GetVariable(this.VariableName).ExecuteAction(sender, connection, ReportInternalVariableValueEvent, UnlockNextStep);
-                LockVariableCheck.WaitOne();
+                var res = new GetVariable(this.VariableName).ExecuteAction(sender, connection);
+                CheckVariableRecovered(res);
                 Thread.Sleep(CheckInterval); // NOTE : do it with a Timer
             } while(!this.isValueReached);
 
-            ReturnValueEvent.Invoke(this, String.Format("Accomplished - {0}", this.variableValue));
-            UnlockNextStep.Invoke(this, null);
+            return String.Format("Accomplished - {0}", this.variableValue);
+
 
         }
 
-        private void CheckVariableRecovered(object? sender, string e)
+        private void CheckVariableRecovered(string e)
         {
             var currentValue = Convert.ToDouble(e);
             var thresHoldValue = Convert.ToDouble(this.ThresholdValue);
@@ -104,7 +95,6 @@ namespace FSAutomator.Backend.Actions
 
             this.isValueReached = result;
 
-            LockVariableCheck.Set();
 
 
         }

@@ -105,10 +105,8 @@ namespace FSAutomator.Backend.Utilities
                 */
                 var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary);
 
-
                 actionsList.Add(action);
             }
-
             return actionsList;
         }
 
@@ -133,9 +131,7 @@ namespace FSAutomator.Backend.Utilities
                 automationsToLoad.Add(new AutomationFile(jsonPackFileName, jsonPackName, String.Format("{0} [{1}]", jsonPackName, "json, pack")));
                 automationsToLoad.AddRange(dllFilesAsExternalAutomator);
             }
-
             return automationsToLoad;
-
         }
 
         public static void DeleteFilesFromDirectoryWithExtension(string path, string extension)
@@ -187,8 +183,6 @@ namespace FSAutomator.Backend.Utilities
 
                     writer.WriteEndObject();
                     writer.WriteEndObject();
-
-
                 }
 
                 writer.WriteEndArray();
@@ -243,67 +237,8 @@ namespace FSAutomator.Backend.Utilities
             }
             else if (itemId == "Variable")
             {
-                EventHandler<string> getData = delegate { } ;
-                EventHandler unlock = delegate { };
-                AutoResetEvent waiter = new AutoResetEvent(false);
-
-                getData += ReceiveData;
-                unlock += Unlock;
-
-                new GetVariable(itemArg).ExecuteAction(sender, connection, getData, unlock);
-                waiter.WaitOne();
-
-                void Unlock(object? sender, EventArgs e)
-                {
-                    waiter.Set();
-                }
-
-                void ReceiveData(object? sender, string e)
-                {
-                    valueToOperateOn = e;
-                }
-
+                valueToOperateOn = new GetVariable(itemArg).ExecuteAction(sender, connection);
             }
-            /*
-             * 
-            public static 
-            public static 
-            
-            var variableName = itemArg;
-
-            getData+= ReceiveData;
-                            unlock += Unlock;
-
-
-
-            new GetVariable(variableName).ExecuteAction(sender, connection, getData, unlock);
-            waiter.WaitOne();
-            */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //note: add possibility to get a variable value
 
             return valueToOperateOn;
         }

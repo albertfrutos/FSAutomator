@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ConditionalAction : IAction
+    public class ConditionalAction
     {
 
         public string FirstMember { get; set; }
@@ -25,18 +25,11 @@ namespace FSAutomator.Backend.Actions
 
         internal FSAutomatorAction? CurrentAction = null;
 
-        AutoResetEvent ContinueAfterAction = new AutoResetEvent(false);
-
-        public event EventHandler Unlock;
-        public event EventHandler<string> ReportActionResult;
-
         internal string actionResult = "";
 
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
-            ReportActionResult += GetActionResult;
-            Unlock += UnlockAction;
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             this.CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
@@ -46,9 +39,7 @@ namespace FSAutomator.Backend.Actions
 
             if ((!Utils.IsNumericDouble(this.FirstMember)) && (!Utils.IsNumericDouble(this.SecondMember)))
             {
-                ReturnValueEvent.Invoke(this, String.Format("At least one member of the condition is not a number - {0} - {1}", this.FirstMember, this.SecondMember));
-                UnlockNextStep.Invoke(this, null);
-                return;
+                return String.Format("At least one member of the condition is not a number - {0} - {1}", this.FirstMember, this.SecondMember);
             }
 
             ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
@@ -64,31 +55,14 @@ namespace FSAutomator.Backend.Actions
                 ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
             }
 
-            ContinueAfterAction.WaitOne();
-
-
-
-            ReturnValueEvent.Invoke(this, String.Format("{0}", this.actionResult));
-            UnlockNextStep.Invoke(this, null);
+            return "finished";
 
         }
 
         private void ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
         {
             var action = auxiliaryActionList.Where(x => x.UniqueID == actionUniqueID).First();
-            action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection, ReportActionResult, Unlock });
-        }
-
-        private void UnlockAction(object? sender, EventArgs e)
-        {
-            ContinueAfterAction.Set();
-
-        }
-
-        private void GetActionResult(object? sender, string e)
-        {
-            actionResult = e;
-            Trace.WriteLine("conditional    "+ e);
+            action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection});
         }
 
         private bool CheckCondition()

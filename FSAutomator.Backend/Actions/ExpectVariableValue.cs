@@ -2,35 +2,24 @@
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ExpectVariableValue : IAction
+    public class ExpectVariableValue
     {
 
         public string VariableName { get; set; }
         public string VariableExpectedValue { get; set; }
 
-        public event EventHandler<string> ReportInternalVariableValueEvent;
-        AutoResetEvent LockVariableCheck = new AutoResetEvent(false);
 
         internal string IsVariableTheExpectedValue;
 
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
+            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection);
 
-            ReportInternalVariableValueEvent += IsValueExpected;
+            this.IsVariableTheExpectedValue = (result == VariableExpectedValue).ToString();
 
-            new GetVariable(this.VariableName).ExecuteAction(sender, connection, ReportInternalVariableValueEvent, UnlockNextStep);
-
-            LockVariableCheck.WaitOne();
-
-            ReturnValueEvent.Invoke(this, IsVariableTheExpectedValue);
-            UnlockNextStep.Invoke(this, null);
+            return this.IsVariableTheExpectedValue;
         }
 
-        private void IsValueExpected(object? sender, string e)
-        {
-            this.IsVariableTheExpectedValue = (e == VariableExpectedValue).ToString();
-            LockVariableCheck.Set();
-        }
     }
 }

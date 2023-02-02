@@ -28,7 +28,7 @@ namespace FSAutomator.Backend.Actions
             this.IncludeAsExternalAutomator = IncludeAsExternalAutomator;
         }
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
             var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             var lastValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
@@ -39,7 +39,8 @@ namespace FSAutomator.Backend.Actions
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);
             var type = DLL.GetType(classPath);
             object instance = Activator.CreateInstance(type);
-            instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, ReturnValueEvent, UnlockNextStep, memoryRegisters, lastValue, actionsList });
+            instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, memoryRegisters, lastValue, actionsList });
+            return "done";
         }
     }
 }

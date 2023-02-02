@@ -8,7 +8,7 @@ namespace FSAutomator.Backend.Actions
         public string Id { get; set; }
 
         
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
 
             if (this.Value == "%PrevValue%")
@@ -24,9 +24,7 @@ namespace FSAutomator.Backend.Actions
             var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             memoryRegisters.Add(this.Id, this.Value);
 
-            ReturnValueEvent.Invoke(this, this.Id);
-            UnlockNextStep.Invoke(this, null);
-            
+            return this.Id;            
         }
     }
 }

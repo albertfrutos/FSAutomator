@@ -10,12 +10,12 @@ namespace FSAutomator.Backend.Actions
         public string WaitTime { get; set; }
 
         private System.Timers.Timer waitTimer;
-
+        AutoResetEvent evento = new AutoResetEvent(false);
         double totalSeconds;
         DateTime startTime;
 
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
             totalSeconds = Convert.ToDouble(this.WaitTime);
 
@@ -23,12 +23,16 @@ namespace FSAutomator.Backend.Actions
 
             waitTimer = new System.Timers.Timer(1000);
 
-            waitTimer.Elapsed += delegate { OnTick(sender, ReturnValueEvent, UnlockNextStep); };
+            waitTimer.Elapsed += delegate { OnTick(sender); };
             
             waitTimer.Start();
+
+            evento.WaitOne();
+
+            return String.Format("Awaited for {0} seconds", WaitTime);
         }
 
-        private void OnTick(object sender, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        private void OnTick(object sender)
         {
             TimeSpan t = TimeSpan.FromSeconds(totalSeconds);
             var remainingTime = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
@@ -41,8 +45,8 @@ namespace FSAutomator.Backend.Actions
             if (totalSeconds == 0)
             {
                 waitTimer.Stop();
-                ReturnValueEvent.Invoke(this, String.Format("Awaited for {0} seconds", WaitTime));
-                UnlockNextStep.Invoke(this, null);
+                evento.Set();
+                return;
             }
             else
             {

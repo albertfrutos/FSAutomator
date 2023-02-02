@@ -3,14 +3,14 @@ using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class OperateLastValue : IAction
+    public class OperateLastValue
     {
 
         public string Operation { get; set; }
         public double Number { get; set; }
         public string ItemToOperateOver { get; set; }
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
             var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, connection, this.ItemToOperateOver);
 
@@ -43,16 +43,16 @@ namespace FSAutomator.Backend.Actions
                         newVariableValue = numToOperate;
                         break;
                 }
+                
+                return newVariableValue.ToString();
 
-                ReturnValueEvent.Invoke(this, newVariableValue.ToString());
             }
             else
             {
+                return "Previous variable value is not a number";
                 // NOTE : fer un control d'errors, ara es posa això com a previous variable.
-                ReturnValueEvent.Invoke(this, "Previous variable value is not a number");
             }
 
-            UnlockNextStep.Invoke(this, null);
         }
 
     }

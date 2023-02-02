@@ -31,10 +31,6 @@ namespace FSAutomator.Backend.Automators
 
         public void Execute()
         {
-            NewReturnValue += GetUpdatedReturnValue;
-            UnlockNextStep += UnlockStep;
-
-
             foreach (FSAutomatorAction action in ActionList)
             {
                 RunAction(action);
@@ -46,20 +42,12 @@ namespace FSAutomator.Backend.Automators
         {
             action.Status = "Running";
             Trace.WriteLine("Executing");
-            action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection, NewReturnValue, UnlockNextStep });
-            StepLocker.WaitOne();
-            action.Result = lastOperationValue;
+            var res = action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
+            //StepLocker.WaitOne();
+            lastOperationValue = res.ToString();
+            Trace.WriteLine("EXITING!!!!!!");
+            action.Result = res.ToString();
             action.Status = "Done";
-        }
-
-        private void UnlockStep(object? sender, EventArgs e)
-        {
-            StepLocker.Set();
-        }
-
-        private void GetUpdatedReturnValue(object? sender, string e)
-        {
-            lastOperationValue = e;
         }
     }
 }

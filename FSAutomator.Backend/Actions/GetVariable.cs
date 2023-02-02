@@ -5,17 +5,11 @@ using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class GetVariable : IAction
+    public class GetVariable
     {
         public string VariableName { get; set; }
 
         public string VariableValue = null;
-
-        [JsonIgnore]
-        public EventHandler<string> ReturnValueEvent = null;
-
-        [JsonIgnore]
-        public EventHandler UnlockNextStep = null;
 
         [JsonIgnore]
         public AutoResetEvent evento = new AutoResetEvent(false);
@@ -34,10 +28,8 @@ namespace FSAutomator.Backend.Actions
             VariableName = name;
             VariableValue = null;
         }
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
-            this.ReturnValueEvent = ReturnValueEvent;
-            this.UnlockNextStep = UnlockNextStep;
             this.connection = connection;
 
             variable = new Variable().GetVariableInformation(this.VariableName);
@@ -72,11 +64,10 @@ namespace FSAutomator.Backend.Actions
                 connection.ClearDataDefinition(defineID);
 
                 evento.WaitOne();
-
-                ReturnValueEvent.Invoke(this, this.VariableValue.ToString());
-                UnlockNextStep.Invoke(this, null);
-
             }
+
+            return this.VariableValue;
+
         }
 
         private void Simconnect_OnRecvSimobjectDataBytype(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE data)
@@ -106,8 +97,6 @@ namespace FSAutomator.Backend.Actions
 
                 evento.Set();
 
-                //ReturnValueEvent.Invoke(this, this.VariableValue.ToString());
-                //UnlockNextStep.Invoke(this, null);
             }
             catch (Exception ex)
             {

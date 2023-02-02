@@ -6,7 +6,7 @@ namespace FSAutomator.Backend.Actions
     {
         public bool RemoveAfterRead { get; set; }
         public string Id { get; set; }
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public string ExecuteAction(object sender, SimConnect connection)
         {
             var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 
@@ -17,8 +17,7 @@ namespace FSAutomator.Backend.Actions
                 memoryRegisters.Remove(selectedRegister.Key);
             }
 
-            ReturnValueEvent.Invoke(this, selectedRegister.Value);
-            UnlockNextStep.Invoke(this, null);
+            return selectedRegister.Value;
         }
     }
 }
