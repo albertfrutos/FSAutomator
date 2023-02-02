@@ -1,4 +1,6 @@
-﻿using Microsoft.FlightSimulator.SimConnect;
+﻿using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
+using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -8,13 +10,9 @@ namespace FSAutomator.Backend.Actions
         public string Id { get; set; }
 
         
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-
-            if (this.Value == "%PrevValue%")
-            {
-                this.Value = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
-            }
+            this.Value = Utils.GetValueToOperateOnFromTag(this, connection, "%PrevValue%");
 
             if (String.IsNullOrEmpty(Id))
             {
@@ -24,7 +22,7 @@ namespace FSAutomator.Backend.Actions
             var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             memoryRegisters.Add(this.Id, this.Value);
 
-            return this.Id;            
+            return new ActionResult($"Written data with id {this.Id}", this.Value);            
         }
     }
 }

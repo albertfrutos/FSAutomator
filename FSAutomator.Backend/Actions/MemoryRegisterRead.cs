@@ -1,12 +1,14 @@
-﻿using Microsoft.FlightSimulator.SimConnect;
+﻿using FSAutomator.BackEnd.Entities;
+using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    internal class MemoryRegisterRead
+    internal class MemoryRegisterRead : IAction
     {
         public bool RemoveAfterRead { get; set; }
         public string Id { get; set; }
-        public string ExecuteAction(object sender, SimConnect connection)
+
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 
@@ -17,7 +19,7 @@ namespace FSAutomator.Backend.Actions
                 memoryRegisters.Remove(selectedRegister.Key);
             }
 
-            return selectedRegister.Value;
+            return new ActionResult($"Read value is {selectedRegister.Value} with ID {this.Id}", selectedRegister.Value);
         }
     }
 }

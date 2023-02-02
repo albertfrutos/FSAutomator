@@ -1,11 +1,12 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class WaitUntilVariableReachesNumericValue
+    public class WaitUntilVariableReachesNumericValue : IAction
     {
 
         public string VariableName { get; set; }
@@ -25,7 +26,7 @@ namespace FSAutomator.Backend.Actions
 
         SimConnect connection = null;
 
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             this.connection = connection;
 
@@ -47,34 +48,34 @@ namespace FSAutomator.Backend.Actions
                 }
                 else
                 {
-                    return String.Format("{0} not found in the flight model", ThresholdValue);                    
+                    return new ActionResult($"{ThresholdValue} not found in the flight model", null);                    
                 }
             }
 
             if (!Utils.IsNumericDouble(this.ThresholdValue))
             {
-                return String.Format("ThresholdValue not a number - {0}", this.ThresholdValue);                
+                return new ActionResult($"ThresholdValue not a number - {this.ThresholdValue}", null);                
             }
 
             //ReportInternalVariableValueEvent += CheckVariableRecovered;
 
             do
             {
-                var res = new GetVariable(this.VariableName).ExecuteAction(sender, connection);
-                CheckVariableRecovered(res);
+                var variableResult = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
+                CheckVariableRecovered(variableResult);
                 Thread.Sleep(CheckInterval); // NOTE : do it with a Timer
             } while(!this.isValueReached);
 
-            return String.Format("Accomplished - {0}", this.variableValue);
+            return new ActionResult($"Accomplished - {this.variableValue}", this.variableValue);
 
 
         }
 
-        private void CheckVariableRecovered(string e)
+        private void CheckVariableRecovered(string variable)
         {
-            var currentValue = Convert.ToDouble(e);
+            var currentValue = Convert.ToDouble(variable);
             var thresHoldValue = Convert.ToDouble(this.ThresholdValue);
-            this.variableValue = e;
+            this.variableValue = variable;
             CurrentAction.Result = String.Format("Current value - {0}", this.variableValue);
             //NOTE : sthetic topic: "acccomplished - curren value -- XXX"
 

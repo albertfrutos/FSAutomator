@@ -1,9 +1,10 @@
-﻿using Geolocation;
+﻿using FSAutomator.BackEnd.Entities;
+using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class CalculateDistanceToCoordinates
+    public class CalculateDistanceToCoordinates : IAction
     {
 
         public double FinalLatitude { get; set; }
@@ -13,7 +14,7 @@ namespace FSAutomator.Backend.Actions
         public string currentLatitude; 
         public string currentLongitude;
 
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             GetCurrentCoordinates(sender, connection);
 
@@ -29,14 +30,14 @@ namespace FSAutomator.Backend.Actions
             };
             double distance = GeoCalculator.GetDistance(origin, destination, 2, DistanceUnit.Kilometers);
 
-            return distance.ToString();
+            return new ActionResult($"{distance.ToString()} Km.", distance.ToString());
         }
 
         private void GetCurrentCoordinates(object sender, SimConnect connection)
         {
-            currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection);
+            currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection).ComputedResult;
 
-            currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection);
+            currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection).ComputedResult;
         }
     }
 }

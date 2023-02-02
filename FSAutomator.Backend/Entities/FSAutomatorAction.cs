@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -11,7 +12,7 @@ namespace FSAutomator.Backend.Entities
         private string s_UniqueID;
         private string s_Status;
         private string s_Parameters;
-        private string s_Result;
+        private ActionResult s_Result;
         private object o_Object;
         private bool b_isValidated;
         private bool b_isAuxiliary;
@@ -23,7 +24,7 @@ namespace FSAutomator.Backend.Entities
             s_UniqueID = uniqueID;
             s_Status = status;
             s_Parameters = JsonConvert.SerializeObject(actionObject);
-            s_Result = "";
+            s_Result = null;
             o_Object = actionObject;
             b_isValidated = false;
             b_isAuxiliary = isAuxiliary;
@@ -115,11 +116,11 @@ namespace FSAutomator.Backend.Entities
 
         public string Result
         {
-            get { return s_Result.Replace("\r", "").Replace("\n", ""); }
+            get { return s_Result.VisibleResult.Replace("\r", "").Replace("\n", ""); }
 
             set
             {
-                s_Result = value;
+                s_Result.VisibleResult = value;
                 RaisePropertyChanged("Result");
             }
         }

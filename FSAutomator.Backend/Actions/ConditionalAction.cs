@@ -1,12 +1,13 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ConditionalAction
+    public class ConditionalAction : IAction
     {
 
         public string FirstMember { get; set; }
@@ -28,7 +29,7 @@ namespace FSAutomator.Backend.Actions
         internal string actionResult = "";
 
 
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
@@ -39,14 +40,17 @@ namespace FSAutomator.Backend.Actions
 
             if ((!Utils.IsNumericDouble(this.FirstMember)) && (!Utils.IsNumericDouble(this.SecondMember)))
             {
-                return String.Format("At least one member of the condition is not a number - {0} - {1}", this.FirstMember, this.SecondMember);
+                return new ActionResult($"At least one member of the condition is not a number - {this.FirstMember} - {this.SecondMember}", null);
             }
 
             ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
 
             //note: if actiontrueuniqueid or actionfalseuniqueid are null, return and send warning via event
             //note: compare strings, pending to implement
-            if (CheckCondition())
+
+            var isConditionTrue = CheckCondition();
+
+            if (isConditionTrue)
             {
                 ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
             }
@@ -55,7 +59,7 @@ namespace FSAutomator.Backend.Actions
                 ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
             }
 
-            return "finished";
+            return new ActionResult(isConditionTrue.ToString(),isConditionTrue.ToString());
 
         }
 

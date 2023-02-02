@@ -1,8 +1,9 @@
-﻿using Microsoft.FlightSimulator.SimConnect;
+﻿using FSAutomator.BackEnd.Entities;
+using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ExpectVariableValue
+    public class ExpectVariableValue : IAction
     {
 
         public string VariableName { get; set; }
@@ -12,13 +13,13 @@ namespace FSAutomator.Backend.Actions
         internal string IsVariableTheExpectedValue;
 
 
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection);
+            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
 
             this.IsVariableTheExpectedValue = (result == VariableExpectedValue).ToString();
 
-            return this.IsVariableTheExpectedValue;
+            return new ActionResult(this.IsVariableTheExpectedValue, this.IsVariableTheExpectedValue);
         }
 
     }

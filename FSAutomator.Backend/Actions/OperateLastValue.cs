@@ -1,16 +1,17 @@
-﻿using FSAutomator.Backend.Utilities;
+﻿using FSAutomator.BackEnd.Entities;
+using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class OperateLastValue
+    public class OperateLastValue : IAction
     {
 
         public string Operation { get; set; }
         public double Number { get; set; }
         public string ItemToOperateOver { get; set; }
 
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, connection, this.ItemToOperateOver);
 
@@ -44,12 +45,12 @@ namespace FSAutomator.Backend.Actions
                         break;
                 }
                 
-                return newVariableValue.ToString();
+                return new ActionResult(newVariableValue.ToString(), newVariableValue.ToString());
 
             }
             else
             {
-                return "Previous variable value is not a number";
+                return new ActionResult("Previous value is not a number", null);
                 // NOTE : fer un control d'errors, ara es posa això com a previous variable.
             }
 

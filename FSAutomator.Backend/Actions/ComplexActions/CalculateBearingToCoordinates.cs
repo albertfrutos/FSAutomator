@@ -1,4 +1,5 @@
-﻿using Geolocation;
+﻿using FSAutomator.BackEnd.Entities;
+using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -14,9 +15,10 @@ namespace FSAutomator.Backend.Actions
 
 
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             GetCurrentCoordinates(sender, connection);
+
             Coordinate a = new Coordinate();
             Coordinate origin = new Coordinate()
             {
@@ -29,15 +31,15 @@ namespace FSAutomator.Backend.Actions
                 Longitude = FinalLongitude
             };
             double heading = GeoCalculator.GetBearing(origin, destination);
-            ReturnValueEvent.Invoke(this, heading.ToString());
-            UnlockNextStep.Invoke(this, null);
+
+            return new ActionResult(heading.ToString(), heading.ToString());
         }
 
         private void GetCurrentCoordinates(object sender, SimConnect connection)
         {
-            currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection);
+            currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection).ComputedResult;
 
-            currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection);
+            currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection).ComputedResult;
         }
     }
 }

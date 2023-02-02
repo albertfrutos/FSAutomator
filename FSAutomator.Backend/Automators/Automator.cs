@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -41,12 +42,9 @@ namespace FSAutomator.Backend.Automators
         private void RunAction(FSAutomatorAction action)
         {
             action.Status = "Running";
-            Trace.WriteLine("Executing");
-            var res = action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
-            //StepLocker.WaitOne();
-            lastOperationValue = res.ToString();
-            Trace.WriteLine("EXITING!!!!!!");
-            action.Result = res.ToString();
+            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
+            lastOperationValue = result.ComputedResult;
+            action.Result = result.VisibleResult;
             action.Status = "Done";
         }
     }

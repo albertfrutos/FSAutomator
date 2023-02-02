@@ -1,11 +1,12 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class GetVariable
+    public class GetVariable : IAction
     {
         public string VariableName { get; set; }
 
@@ -28,7 +29,7 @@ namespace FSAutomator.Backend.Actions
             VariableName = name;
             VariableValue = null;
         }
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             this.connection = connection;
 
@@ -66,7 +67,7 @@ namespace FSAutomator.Backend.Actions
                 evento.WaitOne();
             }
 
-            return this.VariableValue;
+            return new ActionResult($"Variable value is {this.VariableValue }", this.VariableValue);
 
         }
 

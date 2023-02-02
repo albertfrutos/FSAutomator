@@ -1,11 +1,12 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class SendEvent
+    public class SendEvent : IAction
     {
 
         public string EventName { get; set; }
@@ -24,7 +25,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
 
             this.EventValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.EventValue);
@@ -42,12 +43,12 @@ namespace FSAutomator.Backend.Actions
                 connection.TransmitClientEvent(0U, (Enum)eventToSend, (uint)Convert.ToDouble(EventValue), (Enum)NOTIFICATION_GROUPS.GROUP0, SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                 connection.ClearNotificationGroup(NOTIFICATION_GROUPS.GROUP0);
 
-                return "OK";
+                return new ActionResult($"{EventValue} has been sent", this.EventValue);
 
             }
             else
             {
-                return "not exist";
+                return new ActionResult("Event does not exist", null);
             }
         }
 

@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -6,7 +7,7 @@ using System.Reflection;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ExecuteCodeFromDLL
+    public class ExecuteCodeFromDLL : IAction
     {
         public string DLLName { get; set; }
         public string ClassName { get; set; }
@@ -28,7 +29,7 @@ namespace FSAutomator.Backend.Actions
             this.IncludeAsExternalAutomator = IncludeAsExternalAutomator;
         }
 
-        public string ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             var lastValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
@@ -39,8 +40,8 @@ namespace FSAutomator.Backend.Actions
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);
             var type = DLL.GetType(classPath);
             object instance = Activator.CreateInstance(type);
-            instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, memoryRegisters, lastValue, actionsList });
-            return "done";
+            var result = instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, memoryRegisters, lastValue, actionsList });
+            return new ActionResult(result.ToString(), result.ToString());
         }
     }
 }
