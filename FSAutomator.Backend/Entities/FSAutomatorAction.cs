@@ -16,9 +16,10 @@ namespace FSAutomator.Backend.Entities
         private object o_Object;
         private bool b_isValidated;
         private bool b_isAuxiliary;
+        private bool b_stopOnError;
         private string s_validationOutcome;
 
-        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary)
+        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError)
         {
             s_Name = name;
             s_UniqueID = uniqueID;
@@ -28,6 +29,7 @@ namespace FSAutomator.Backend.Entities
             o_Object = actionObject;
             b_isValidated = false;
             b_isAuxiliary = isAuxiliary;
+            b_stopOnError = stopOnError;
         }
 
         public FSAutomatorAction(string name, string status)
@@ -60,6 +62,17 @@ namespace FSAutomator.Backend.Entities
             {
                 b_isAuxiliary = value;
                 RaisePropertyChanged("IsAuxiliary");
+            }
+        }
+        
+        public bool StopOnError
+        {
+            get { return b_stopOnError; }
+
+            set
+            {
+                b_stopOnError = value;
+                RaisePropertyChanged("StopOnError");
             }
         }
 
@@ -95,7 +108,7 @@ namespace FSAutomator.Backend.Entities
                 Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", Name));
                 try
                 {
-                    ActionObject = JsonConvert.DeserializeObject(value, actionType);
+                    ActionObject = JsonConvert.DeserializeObject(value, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 }
                 catch
                 {

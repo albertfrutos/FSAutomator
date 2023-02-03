@@ -9,10 +9,9 @@ namespace FSAutomator.Backend.Actions
         public string Value { get; set; }
         public string Id { get; set; }
 
-        
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            this.Value = Utils.GetValueToOperateOnFromTag(this, connection, "%PrevValue%");
+            this.Value = Utils.GetValueToOperateOnFromTag(this, connection, this.Value);
 
             if (String.IsNullOrEmpty(Id))
             {

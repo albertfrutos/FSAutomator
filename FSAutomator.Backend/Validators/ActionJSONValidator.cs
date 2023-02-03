@@ -18,7 +18,11 @@ namespace FSAutomator.BackEnd.Validators
             {
                 bool actionIsValidated = true;
 
-                if (action.Name == "ExecuteCodeFromDLL")
+                if (action.Name == "ConditionalAction")
+                {
+                    actionIsValidated = ValidateConditionalAction(actionList, validationIssues, index, action, JSONFilePath);
+                }
+                else if (action.Name == "ExecuteCodeFromDLL")
                 {
                     actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action, JSONFilePath);
                 }
@@ -65,6 +69,27 @@ namespace FSAutomator.BackEnd.Validators
             }
 
             return validationIssues;
+        }
+
+        private static bool ValidateConditionalAction(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
+        {
+            bool actionIsValidated = true;
+
+            var actionObject = (ConditionalAction)action.ActionObject;
+            string[] AllowedStringComparisonValues = { "=", "==" };
+
+
+            if ((!Utils.IsNumericDouble(actionObject.FirstMember)) || (!Utils.IsNumericDouble(actionObject.SecondMember)))
+            {
+                if (!AllowedStringComparisonValues.Contains(actionObject.Comparison))
+                {
+                    var issue = String.Format("ConditionalAction [{0}]: Comparing 2 strings ({1}, {2}) only supported by operator '=' or '=='.", index, actionObject.FirstMember, actionObject.SecondMember);
+                    actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+
+                }
+            }
+
+            return actionIsValidated;
         }
 
         private static bool ValidateExpectVariableValue(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)

@@ -57,13 +57,13 @@ namespace FSAutomator.Backend
 
             if (fileToLoad.FileName.EndsWith(".json"))
             {
-                LoadJSONActions(fileToLoadPath, fileToLoad.PackageName); //"Automations\\bb\\bb.json"
+                LoadJSONActions(fileToLoadPath); //"Automations\\bb\\bb.json"
             }
             else if (fileToLoad.FileName.EndsWith(".dll"))
             {
                 LoadDLLActions(fileToLoad.FileName,fileToLoadPath);   //"Automations\\ExternalAutomationExample.dll"
             }
-            var validationStatus = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), fileToLoadPath);
+            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), fileToLoadPath);
         }
 
         private void LoadDLLActions(string DLLFileName, string DLLFilePath)
@@ -71,12 +71,12 @@ namespace FSAutomator.Backend
             //fer un getname i terure el nom
             var externalAutomatorObject = new ExternalAutomator(DLLFileName, DLLFilePath); //"Automations\\ExternalAutomationExample.dll"
             var uniqueID = Guid.NewGuid().ToString();
-            automator.ActionList.Add(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false));
+            automator.ActionList.Add(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false,true));
         }
 
         public void ValidateActions(string JSONFilePath)
         {
-            var validationStatus = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), JSONFilePath);
+            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), JSONFilePath);
         }
 
         public List<string> GetValidationIssuesList()
@@ -84,7 +84,7 @@ namespace FSAutomator.Backend
             return automator.ActionList.Where(x => x.ValidationOutcome != "").Select(x => x.ValidationOutcome).ToList();
         }
 
-        private void LoadJSONActions(string filePath, string packageName)
+        private void LoadJSONActions(string filePath)
         {
             var actionsList = Utils.GetAutomationsObjectList(filePath); //"Automations\\bb\\bb.json"
 
@@ -111,13 +111,14 @@ namespace FSAutomator.Backend
             var actionName = jsonObject["Name"].ToString();
             var actionParameters = jsonObject["Parameters"].ToString();
             var uniqueID = Guid.NewGuid().ToString();
+            var stopOnError = (bool)jsonObject["StopOnError"];
 
             Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
-            var actionObject = Activator.CreateInstance(actionType);
+            Activator.CreateInstance(actionType);
 
-            actionObject = JsonConvert.DeserializeObject(actionParameters, actionType);
+            var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false, stopOnError);
 
             automator.ActionList.Insert(position + 1, action);
         }

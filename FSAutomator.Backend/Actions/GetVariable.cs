@@ -17,8 +17,6 @@ namespace FSAutomator.Backend.Actions
 
         private Variable variable;
 
-        private SimConnect connection;
-
         public GetVariable()
         {
 
@@ -31,11 +29,11 @@ namespace FSAutomator.Backend.Actions
         }
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            this.connection = connection;
+            bool error = false;
 
             variable = new Variable().GetVariableInformation(this.VariableName);
 
-            if (!(variable is null) && !(variable.Type is null))
+            if (variable is not null && variable.Type is not null)
             {
                 CommonEntities entities = new CommonEntities();
 
@@ -66,8 +64,12 @@ namespace FSAutomator.Backend.Actions
 
                 evento.WaitOne();
             }
+            else
+            {
+                error = true;
+            }
 
-            return new ActionResult($"Variable value is {this.VariableValue }", this.VariableValue);
+            return new ActionResult($"Variable value is {this.VariableValue }", this.VariableValue, error);
 
         }
 

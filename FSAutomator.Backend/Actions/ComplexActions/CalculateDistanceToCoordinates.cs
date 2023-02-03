@@ -10,8 +10,8 @@ namespace FSAutomator.Backend.Actions
         public double FinalLatitude { get; set; }
         public double FinalLongitude { get; set; }
 
-
         public string currentLatitude; 
+
         public string currentLongitude;
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
@@ -30,7 +30,7 @@ namespace FSAutomator.Backend.Actions
             };
             double distance = GeoCalculator.GetDistance(origin, destination, 2, DistanceUnit.Kilometers);
 
-            return new ActionResult($"{distance.ToString()} Km.", distance.ToString());
+            return new ActionResult($"{distance} Km.", distance.ToString());
         }
 
         private void GetCurrentCoordinates(object sender, SimConnect connection)

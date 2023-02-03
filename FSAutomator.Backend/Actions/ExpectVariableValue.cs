@@ -9,7 +9,6 @@ namespace FSAutomator.Backend.Actions
         public string VariableName { get; set; }
         public string VariableExpectedValue { get; set; }
 
-
         internal string IsVariableTheExpectedValue;
 
 

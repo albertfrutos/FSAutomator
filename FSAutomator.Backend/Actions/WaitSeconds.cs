@@ -11,16 +11,15 @@ namespace FSAutomator.Backend.Actions
         public string WaitTime { get; set; }
 
         private System.Timers.Timer waitTimer;
+
         AutoResetEvent evento = new AutoResetEvent(false);
+
         double totalSeconds;
-        DateTime startTime;
 
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             totalSeconds = Convert.ToDouble(this.WaitTime);
-
-            startTime = DateTime.Now;
 
             waitTimer = new System.Timers.Timer(1000);
 
@@ -36,7 +35,7 @@ namespace FSAutomator.Backend.Actions
         private void OnTick(object sender)
         {
             TimeSpan t = TimeSpan.FromSeconds(totalSeconds);
-            var remainingTime = string.Format("{0:D2}:{1:D2}:{2:D2}", t.Hours, t.Minutes, t.Seconds, t.Milliseconds);
+            var remainingTime = $"{t.Hours:D2}:{t.Minutes:D2}:{t.Seconds:D2}";
             
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();

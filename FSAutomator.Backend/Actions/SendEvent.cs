@@ -11,8 +11,6 @@ namespace FSAutomator.Backend.Actions
 
         public string EventName { get; set; }
         public string EventValue { get; set; }
-        public bool IsAuxiliary { get; set; } = false;
-
 
         public SendEvent(string name, string value)
         {
@@ -52,7 +50,7 @@ namespace FSAutomator.Backend.Actions
             }
         }
 
-        internal bool CheckIfEventExists(string eventName)
+        internal static bool CheckIfEventExists(string eventName)
         {
             return Enum.IsDefined(typeof(EVENTS), eventName);
         }

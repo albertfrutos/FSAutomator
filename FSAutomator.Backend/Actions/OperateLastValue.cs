@@ -13,6 +13,8 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
+            // note la classe es diu operatelastvalue, i aquí deixem triar.
+
             var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, connection, this.ItemToOperateOver);
 
             var isNumeric = Utils.IsNumericDouble(valueToOperateOn);
@@ -21,7 +23,7 @@ namespace FSAutomator.Backend.Actions
             {
                 var numToOperate = double.Parse(valueToOperateOn);
 
-                double newVariableValue = numToOperate;
+                double newVariableValue;
 
                 switch (Operation)
                 {

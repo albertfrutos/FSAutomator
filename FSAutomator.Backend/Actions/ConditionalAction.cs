@@ -15,19 +15,14 @@ namespace FSAutomator.Backend.Actions
         public string SecondMember { get; set; }
         public string ActionIfTrueUniqueID { get; set; } = null;
         public string ActionIfFalseUniqueID { get; set; } = null;
-        public bool IsAuxiliary { get; set; } = false;
-
 
         internal string[] AllowedNumberComparisonValues = { "<", ">", "=", "==" };
         internal string[] AllowedStringComparisonValues = { "=", "==" };
 
         internal FlightModel fm;
 
-        private string variableValue = string.Empty;
-
         internal FSAutomatorAction? CurrentAction = null;
 
-        internal string actionResult = "";
 
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
@@ -54,7 +49,7 @@ namespace FSAutomator.Backend.Actions
                 }
                 else
                 {
-                    return new ActionResult("String comparison only allowed with = or ==.", null);
+                    return new ActionResult("String comparison only allowed with = or ==.", null, true);
                 }
                 
             }
@@ -68,7 +63,6 @@ namespace FSAutomator.Backend.Actions
             ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
 
             //note: if actiontrueuniqueid or actionfalseuniqueid are null, return and send warning via event
-            //note: compare strings, pending to implement
 
             
 
@@ -85,7 +79,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        private ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
+        private static ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
         {
             var action = auxiliaryActionList.Where(x => x.UniqueID == actionUniqueID).First();
             ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection});
@@ -94,7 +88,8 @@ namespace FSAutomator.Backend.Actions
 
         private bool CheckCondition(dynamic firstMember, dynamic secondMember)
         {
-            bool result = false;
+            // note !=, <>
+            bool result;
             
             switch (Comparison)
             {

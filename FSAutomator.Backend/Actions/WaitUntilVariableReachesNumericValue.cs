@@ -24,12 +24,8 @@ namespace FSAutomator.Backend.Actions
 
         bool isValueReached = false;
 
-        SimConnect connection = null;
-
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            this.connection = connection;
-
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 

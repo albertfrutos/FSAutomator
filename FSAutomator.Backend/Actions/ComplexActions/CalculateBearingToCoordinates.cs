@@ -11,6 +11,7 @@ namespace FSAutomator.Backend.Actions
         public double FinalLongitude { get; set; }
 
         public string currentLatitude; 
+
         public string currentLongitude;
 
 
@@ -19,7 +20,6 @@ namespace FSAutomator.Backend.Actions
         {
             GetCurrentCoordinates(sender, connection);
 
-            Coordinate a = new Coordinate();
             Coordinate origin = new Coordinate()
             {
                 Latitude = Convert.ToDouble(currentLatitude),

@@ -82,6 +82,8 @@ namespace FSAutomator.Backend.Utilities
                 var actionName = token["Name"].ToString();
                 var uniqueID = Guid.NewGuid().ToString();
                 bool isAuxiliary = false;
+                bool stopOnError = false;
+
                 if (token["UniqueID"] != null)
                 {
                     uniqueID = token["UniqueID"].ToString() != "" ? token["UniqueID"].ToString() : uniqueID;
@@ -91,19 +93,24 @@ namespace FSAutomator.Backend.Utilities
                 {
                     isAuxiliary = token["IsAuxiliary"].ToString().ToLower() == "true" ? true : false;
                 }
+                
+                if (token["StopOnError"] != null)
+                {
+                    stopOnError = token["StopOnError"].ToString().ToLower() == "true" ? true : false;
+                }
                 var actionParameters = token["Parameters"].ToString();
 
                 Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
                 var actionObject = Activator.CreateInstance(actionType);
 
-                actionObject = JsonConvert.DeserializeObject(actionParameters, actionType);
+                actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 /*
                 if (actionName == "ExecuteCodeFromDLL")
                 {
                     (actionObject as ExecuteCodeFromDLL).DLLPackageFolder = Directory.GetParent(automationPath).Name;
                 }
                 */
-                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary);
+                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError);
 
                 actionsList.Add(action);
             }

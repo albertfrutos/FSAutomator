@@ -16,7 +16,6 @@ using Microsoft.Win32;
 using System.Reflection;
 using FSAutomator.UI;
 using FSAutomator.Backend.Utilities;
-using FSAutomator.UI.Entities;
 using FSAutomator.Backend.Actions;
 using System.Diagnostics;
 using System.IO.Compression;

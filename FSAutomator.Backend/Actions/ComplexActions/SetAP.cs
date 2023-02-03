@@ -15,7 +15,7 @@ namespace FSAutomator.Backend.Actions
 
             if (apCurrentStatus != APStatus)
             {
-                new SendEvent("AP_MASTER", "1");
+                new SendEvent("AP_MASTER", "1").ExecuteAction(this,connection);
             }
 
             var newAPStatus = GetCurrentAPStatus(sender, connection);
@@ -24,7 +24,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        private string GetCurrentAPStatus(object sender, SimConnect connection)
+        private static string GetCurrentAPStatus(object sender, SimConnect connection)
         {
 
             var receivedData = new GetVariable("AUTOPILOT MASTER").ExecuteAction(sender, connection).ComputedResult;

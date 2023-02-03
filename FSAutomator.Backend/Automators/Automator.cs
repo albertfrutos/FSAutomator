@@ -13,8 +13,6 @@ namespace FSAutomator.Backend.Automators
         public event EventHandler<string> NewReturnValue;
         public event EventHandler UnlockNextStep;
 
-        AutoResetEvent StepLocker = new AutoResetEvent(false);
-
         public Dictionary<string, string> MemoryRegisters = new Dictionary<string, string>();
         public FlightModel flightModel;
         
@@ -34,18 +32,31 @@ namespace FSAutomator.Backend.Automators
         {
             foreach (FSAutomatorAction action in ActionList)
             {
-                RunAction(action);
+                var stopExecution = RunAction(action);
+
+                if (stopExecution)
+                {
+                    Trace.WriteLine("STOPPING EXECUTION!");
+                    break;
+                    
+                }
             }
 
         }
 
-        private void RunAction(FSAutomatorAction action)
+        private bool RunAction(FSAutomatorAction action)
         {
+            //note propietat a result per marcar error (un bool) i no usar el computed com a error si es null, sinó com el que toca
+
             action.Status = "Running";
             ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
             lastOperationValue = result.ComputedResult;
             action.Result = result.VisibleResult;
             action.Status = "Done";
+
+            var stopExecution = result.Error && action.StopOnError;
+
+            return stopExecution;
         }
     }
 }
