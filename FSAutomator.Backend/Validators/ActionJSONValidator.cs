@@ -75,18 +75,26 @@ namespace FSAutomator.BackEnd.Validators
         {
             bool actionIsValidated = true;
 
+            List<string> AllowedNumberComparisonValues = new List<string>() { "<", ">", "=", "<>" };
+            List<string> AllowedStringComparisonValues = new List<string>() { "=", "<>" };
+
             var actionObject = (ConditionalAction)action.ActionObject;
-            string[] AllowedStringComparisonValues = { "=", "==" };
 
 
             if ((!Utils.IsNumericDouble(actionObject.FirstMember)) || (!Utils.IsNumericDouble(actionObject.SecondMember)))
             {
                 if (!AllowedStringComparisonValues.Contains(actionObject.Comparison))
                 {
-                    var issue = String.Format("ConditionalAction [{0}]: Comparing 2 strings ({1}, {2}) only supported by operator '=' or '=='.", index, actionObject.FirstMember, actionObject.SecondMember);
+                    var issue = String.Format("ConditionalAction [{0}]: Comparing 2 strings ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
 
                 }
+            }
+            else if (!AllowedNumberComparisonValues.Contains(actionObject.Comparison))
+            {
+                var issue = String.Format("ConditionalAction [{0}]: Comparing 2 numbers ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+
             }
 
             return actionIsValidated;

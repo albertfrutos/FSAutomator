@@ -16,8 +16,8 @@ namespace FSAutomator.Backend.Actions
         public string ActionIfTrueUniqueID { get; set; } = null;
         public string ActionIfFalseUniqueID { get; set; } = null;
 
-        internal string[] AllowedNumberComparisonValues = { "<", ">", "=", "==" };
-        internal string[] AllowedStringComparisonValues = { "=", "==" };
+        internal List<string> AllowedNumberComparisonValues = new List<string>(){ "<", ">", "=", "<>" };
+        internal List<string> AllowedStringComparisonValues = new List<string>() { "=", "<>" };
 
         internal FlightModel fm;
 
@@ -43,13 +43,13 @@ namespace FSAutomator.Backend.Actions
 
                 if (AllowedStringComparisonValues.Contains(this.Comparison))
                 {
-                    // only '=' and '==' comparisons are valid with strings
+                    // only '=' comparisons are valid with strings
 
                     isConditionTrue = CheckCondition(this.FirstMember, this.SecondMember);
                 }
                 else
                 {
-                    return new ActionResult("String comparison only allowed with = or ==.", null, true);
+                    return new ActionResult("String comparison only allowed with = or <>", null, true);
                 }
                 
             }
@@ -88,7 +88,6 @@ namespace FSAutomator.Backend.Actions
 
         private bool CheckCondition(dynamic firstMember, dynamic secondMember)
         {
-            // note !=, <>
             bool result;
             
             switch (Comparison)
@@ -102,6 +101,9 @@ namespace FSAutomator.Backend.Actions
                 case "=":
                 case "==":
                     result = firstMember == secondMember;
+                    break;
+                case "<>":
+                    result = firstMember != secondMember;
                     break;
                 default:
                     result = false;

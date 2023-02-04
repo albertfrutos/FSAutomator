@@ -24,17 +24,12 @@ namespace FSAutomator.ViewModel
 {
     public class MainWindowViewModel : INotifyPropertyChanged, IBaseSimConnectWrapper
     {
-        BackgroundWorker _worker = new BackgroundWorker();
-
         public ObservableCollection<FSAutomatorAction> l_ActionListUI;
         private FSAutomatorAction l_SActionListUI;
         private int l_SIActionListUI;
         private string l_SAutomationName = "";
 
         BackendMain backEnd = null;
-
-
-        private SimConnect m_SimConnect = null;
 
         public const int WM_USER_SIMCONNECT = 0x0402;
         private IntPtr m_hWnd = new IntPtr(0);
@@ -199,7 +194,6 @@ namespace FSAutomator.ViewModel
             RefreshAutomationFilesList();
             InitializeNewAutomation();
 
-            _worker.DoWork += Execute;
 
             ButtonLoadActions = new RelayCommand(new Action<object>(LoadActions));
             ButtonRemove = new RelayCommand(new Action<object>(RemoveAction));
@@ -208,7 +202,6 @@ namespace FSAutomator.ViewModel
             ButtonDown = new RelayCommand(new Action<object>(MoveActionDown));
             ButtonImportAutomation = new RelayCommand(ImportAutomation);
             ButtonValidate = new RelayCommand(new Action<object>(ValidateActions));
-            //ButtonExecute = new RelayCommand(action => _worker.RunWorkerAsync());
             ButtonExecute = new RelayCommand(new Action<object>(ExecuteTask));
             ButtonConnect = new RelayCommand(new Action<object>(Connect));
             ButtonSaveAs = new RelayCommand(new Action<object>(SaveCurrentAutomation));
@@ -251,18 +244,6 @@ namespace FSAutomator.ViewModel
             RefreshAutomationFilesList();
         }
 
-
-
-
-
-        private void ExportPack(string filename, string packageName)
-        {
-
-        }
-
-
-
-
         private void RefreshAutomationFilesList()
         {
             var selectedAutomation = l_SAutomationFilesList;
@@ -293,7 +274,7 @@ namespace FSAutomator.ViewModel
 
             l_ActionListUI.Remove(l_SActionListUI);
 
-            if (l_ActionListUI.Count() > 0)
+            if (l_ActionListUI.Count > 0)
             {
                 l_SIActionListUI = currentSelectedIndex - 1;
             }
