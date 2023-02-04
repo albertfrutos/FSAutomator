@@ -40,7 +40,7 @@ namespace FSAutomator.Backend.Actions
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
-            CurrentAction.Result = remainingTime;
+            CurrentAction.Result.VisibleResult = remainingTime;
 
             if (totalSeconds == 0)
             {

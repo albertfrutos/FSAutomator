@@ -94,7 +94,7 @@
       }
     },
     {
-      "Name": "OperateLastValue",
+      "Name": "OperateValue",
       "Parameters": {
         "Operation": "*",
         "Number": "2"

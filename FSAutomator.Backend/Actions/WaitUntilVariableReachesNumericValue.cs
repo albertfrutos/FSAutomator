@@ -29,31 +29,12 @@ namespace FSAutomator.Backend.Actions
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
-            if (ThresholdValue == "%PrevValue%")
-            {
-                ThresholdValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
-            }
-            else if (ThresholdValue.StartsWith('%'))
-            {
-                FlightModel fm = (FlightModel)sender.GetType().GetField("flightModel").GetValue(sender);
-                var property =   fm.ReferenceSpeeds.GetType().GetProperty(ThresholdValue.Replace("%", ""));
+            var valueToOperate = Utils.GetValueToOperateOnFromTag(sender, connection, this.ThresholdValue);
 
-                if (property != null)
-                {
-                    ThresholdValue = (string)property.GetValue(fm.ReferenceSpeeds);
-                }
-                else
-                {
-                    return new ActionResult($"{ThresholdValue} not found in the flight model", null);                    
-                }
-            }
-
-            if (!Utils.IsNumericDouble(this.ThresholdValue))
+            if (!Utils.IsNumericDouble(valueToOperate))
             {
-                return new ActionResult($"ThresholdValue not a number - {this.ThresholdValue}", null);                
+                return new ActionResult($"ThresholdValue not a number - {valueToOperate}", null, true);
             }
-
-            //ReportInternalVariableValueEvent += CheckVariableRecovered;
 
             do
             {
@@ -72,8 +53,7 @@ namespace FSAutomator.Backend.Actions
             var currentValue = Convert.ToDouble(variable);
             var thresHoldValue = Convert.ToDouble(this.ThresholdValue);
             this.variableValue = variable;
-            CurrentAction.Result = String.Format("Current value - {0}", this.variableValue);
-            //NOTE : sthetic topic: "acccomplished - curren value -- XXX"
+            CurrentAction.Result.VisibleResult = String.Format("Current value - {0}", this.variableValue);
 
             bool result = false;
 
@@ -88,6 +68,10 @@ namespace FSAutomator.Backend.Actions
                 case "=":
                     result = currentValue == thresHoldValue;
                     break;
+                default:
+                    result = true;
+                    break;
+
             }
 
             this.isValueReached = result;

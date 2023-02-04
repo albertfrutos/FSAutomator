@@ -36,7 +36,7 @@ namespace FSAutomator.Backend.Automators
 
                 if (stopExecution)
                 {
-                    Trace.WriteLine("STOPPING EXECUTION!");
+                    Trace.WriteLine("An error caused the automation to stop (as configured)");
                     break;
                     
                 }
@@ -46,12 +46,10 @@ namespace FSAutomator.Backend.Automators
 
         private bool RunAction(FSAutomatorAction action)
         {
-            //note propietat a result per marcar error (un bool) i no usar el computed com a error si es null, sinó com el que toca
-
             action.Status = "Running";
             ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
             lastOperationValue = result.ComputedResult;
-            action.Result = result.VisibleResult;
+            action.Result = result;
             action.Status = "Done";
 
             var stopExecution = result.Error && action.StopOnError;

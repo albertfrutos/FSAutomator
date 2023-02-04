@@ -241,7 +241,7 @@ namespace FSAutomator.Backend.Utilities
             {
                 var actionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
 
-                valueToOperateOn = actionList.Where(action => action.UniqueID == itemArg).Select(x => x.Result).First().ToString();
+                valueToOperateOn = actionList.Where(action => action.UniqueID == itemArg).Select(x => x.Result.ComputedResult).First().ToString();
             }
             else if (itemId == "MemoryRegister")
             {

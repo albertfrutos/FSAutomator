@@ -4,7 +4,7 @@ using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class OperateLastValue : IAction
+    public class OperateValue : IAction
     {
 
         public string Operation { get; set; }
@@ -13,8 +13,6 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            // note la classe es diu operatelastvalue, i aquí deixem triar.
-
             var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, connection, this.ItemToOperateOver);
 
             var isNumeric = Utils.IsNumericDouble(valueToOperateOn);
@@ -53,7 +51,6 @@ namespace FSAutomator.Backend.Actions
             else
             {
                 return new ActionResult("Previous value is not a number", null);
-                // NOTE : fer un control d'errors, ara es posa això com a previous variable.
             }
 
         }

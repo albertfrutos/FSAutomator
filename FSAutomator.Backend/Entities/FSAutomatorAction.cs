@@ -127,16 +127,16 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        public string Result
+        public ActionResult Result
         {
             get
             {
-                return s_Result.VisibleResult.Replace("\r", "").Replace("\n", "");
+                return s_Result; // s_Result.VisibleResult.Replace("\r", "").Replace("\n", "");
             }
 
             set
             {
-                s_Result.VisibleResult = value;
+                s_Result = value;
                 RaisePropertyChanged("Result");
             }
         }

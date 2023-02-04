@@ -214,7 +214,7 @@ namespace FSAutomator.Backend
             Console.WriteLine("An exception occurred Simconnect_OnRecvException: {0}", data.dwException.ToString());
             SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
 
-            //note llançar excepció amb event
+            //note llançar excepció amb event quan es faci el sistema d'estat principal
         }
 
         private static void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)

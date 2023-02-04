@@ -1,6 +1,5 @@
 ﻿{
   "Actions": [
-
     {
       "Name": "ConditionalAction",
       "UniqueID": "2vy54",
@@ -18,7 +17,7 @@
       "UniqueID": "2vy54",
       "Parameters": {
         "FirstMember": "abcd",
-        "Comparison": "==",
+        "Comparison": "=",
         "SecondMember": "abcd",
         "ActionIfTrueUniqueID": "5h0t3o",
         "ActionIfFalseUniqueID": "5h0t3oAA"
