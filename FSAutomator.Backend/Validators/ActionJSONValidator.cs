@@ -90,11 +90,17 @@ namespace FSAutomator.BackEnd.Validators
 
                 }
             }
-            else if (!AllowedNumberComparisonValues.Contains(actionObject.Comparison))
+            if (!AllowedNumberComparisonValues.Contains(actionObject.Comparison))
             {
                 var issue = String.Format("ConditionalAction [{0}]: Comparing 2 numbers ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+            if (string.IsNullOrEmpty(actionObject.ActionIfTrueUniqueID) && string.IsNullOrEmpty(actionObject.ActionIfFalseUniqueID))
+            {
+                var issue = "Both true and false UniqueID for execution are missing";
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
 
+                
             }
 
             return actionIsValidated;

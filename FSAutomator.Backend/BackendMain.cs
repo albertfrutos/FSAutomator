@@ -20,6 +20,11 @@ namespace FSAutomator.Backend
 
         public Automator automator = null;
 
+        GeneralStatus status = new GeneralStatus
+        {
+            isConnectedToSim = false
+        };
+
 
         public BackendMain(ObservableCollection<FSAutomatorAction> ActionList)
         {
@@ -171,6 +176,7 @@ namespace FSAutomator.Backend
                 /// Dispose serves the same purpose as SimConnect_Close()
                 m_SimConnect.Dispose();
                 m_SimConnect = null;
+                status.isConnectedToSim = false;
             }
         }
 
@@ -207,18 +213,21 @@ namespace FSAutomator.Backend
         {
             this.automator.connection = this.m_SimConnect;
             this.automator.flightModel = new FlightModel(this.m_SimConnect);
+            status.isConnectedToSim = true;
         }
 
-        private static void Simconnect_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
+        private void Simconnect_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
         {
             Console.WriteLine("An exception occurred Simconnect_OnRecvException: {0}", data.dwException.ToString());
             SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
+            status.isConnectedToSim = false;
 
             //note llançar excepció amb event quan es faci el sistema d'estat principal
         }
 
-        private static void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
+        private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
         {
+            status.isConnectedToSim = false;
             Console.WriteLine("Simulator has exited. Closing connection and exiting Simulator module");
         }
 
