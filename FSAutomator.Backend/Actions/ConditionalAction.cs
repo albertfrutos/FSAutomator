@@ -60,19 +60,19 @@ namespace FSAutomator.Backend.Actions
                 isConditionTrue = CheckCondition(Convert.ToDouble(this.FirstMember), Convert.ToDouble(this.SecondMember));
             }
 
-            ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
+            ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);          
 
-            //note: if actiontrueuniqueid or actionfalseuniqueid are null, return and send warning via event
-
-            
-
-            if (isConditionTrue)
+            if (isConditionTrue && !string.IsNullOrEmpty(ActionIfTrueUniqueID))
             {
                 result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
             }
-            else if (ActionIfFalseUniqueID != null)
+            else if (!string.IsNullOrEmpty(ActionIfFalseUniqueID))
             {
                 result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
+            }
+            else
+            {
+                return new ActionResult("Both true and false UniqueID for execution are missing", null, true);
             }
 
             return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult);
