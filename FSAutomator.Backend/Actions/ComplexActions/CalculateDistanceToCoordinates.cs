@@ -1,4 +1,5 @@
-﻿using Geolocation;
+﻿using FSAutomator.BackEnd.Entities;
+using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -9,18 +10,11 @@ namespace FSAutomator.Backend.Actions
         public double FinalLatitude { get; set; }
         public double FinalLongitude { get; set; }
 
-        public EventHandler<string> getData;
-        public EventHandler unlock;
-
-        AutoResetEvent waiter = new AutoResetEvent(false);
-
         public string currentLatitude; 
+
         public string currentLongitude;
 
-        public string receivedData = null;
-
-
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             GetCurrentCoordinates(sender, connection);
 
@@ -35,36 +29,15 @@ namespace FSAutomator.Backend.Actions
                 Longitude = FinalLongitude
             };
             double distance = GeoCalculator.GetDistance(origin, destination, 2, DistanceUnit.Kilometers);
-            ReturnValueEvent.Invoke(this, distance.ToString());
-            UnlockNextStep.Invoke(this, null);
+
+            return new ActionResult($"{distance} Km.", distance.ToString());
         }
 
         private void GetCurrentCoordinates(object sender, SimConnect connection)
         {
-            getData += ReceiveData;
-            unlock += Unlock;
+            currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection).ComputedResult;
 
-            new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection, getData, unlock);
-            waiter.WaitOne();
-            currentLatitude = receivedData;
-
-
-            new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection, getData, unlock);
-            waiter.WaitOne();
-            currentLongitude = receivedData;
+            currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection).ComputedResult;
         }
-
-        private void Unlock(object? sender, EventArgs e)
-        {
-            waiter.Set();
-        }
-
-        private void ReceiveData(object? sender, string e)
-        {
-            receivedData = e;
-        }
-
-
-
     }
 }

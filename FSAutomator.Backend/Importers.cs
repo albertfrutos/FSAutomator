@@ -55,7 +55,7 @@ namespace FSAutomator.BackEnd
 
                 List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
-                bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction);
+                bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction, tempDirPath);
 
                 if (allDLLsExist)
                 {

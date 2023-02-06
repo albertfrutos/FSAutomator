@@ -38,7 +38,7 @@
             <Image Source="icons\down.ico" />
         </Button>
 
-        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SIActionListUI}" SelectedValue ="{Binding SActionListUI, Mode=TwoWay}" Margin="49,10,12,10" AutoGenerateColumns="False" CanUserResizeRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}">
+        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SIActionListUI}" SelectedValue ="{Binding SActionListUI, Mode=TwoWay}" Margin="49,10,12,10" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
@@ -66,7 +66,7 @@
                 <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
                 <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
                 <DataGridTextColumn Header="Parameters" Width="*" Binding="{Binding Parameters,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
-                <DataGridTextColumn Header="Result" Width="*" Binding="{Binding Result,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false" />
+                <DataGridTextColumn Header="Result" Width="*" Binding="{Binding Result.VisibleResult,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="true" />
             </DataGrid.Columns>
         </DataGrid>
 

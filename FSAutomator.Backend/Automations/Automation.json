@@ -1,6 +1,20 @@
 ﻿{
   "Actions": [
     {
+      "Name": "MemoryRegisterWrite",
+      "Parameters": {
+        "Value": "01a-",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "Parameters": {
+        "RemoveAfterRead": "True",
+        "Id": "Id_01"
+      }
+    },
+    {
       "Name": "ExecuteCodeFromDLL",
       "UniqueID": "5h0t3o",
       "Parameters": {
@@ -80,7 +94,7 @@
       }
     },
     {
-      "Name": "OperateLastValue",
+      "Name": "OperateValue",
       "Parameters": {
         "Operation": "*",
         "Number": "2"

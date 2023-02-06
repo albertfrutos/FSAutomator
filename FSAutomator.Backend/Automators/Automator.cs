@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -11,8 +12,6 @@ namespace FSAutomator.Backend.Automators
 
         public event EventHandler<string> NewReturnValue;
         public event EventHandler UnlockNextStep;
-
-        AutoResetEvent StepLocker = new AutoResetEvent(false);
 
         public Dictionary<string, string> MemoryRegisters = new Dictionary<string, string>();
         public FlightModel flightModel;
@@ -31,35 +30,31 @@ namespace FSAutomator.Backend.Automators
 
         public void Execute()
         {
-            NewReturnValue += GetUpdatedReturnValue;
-            UnlockNextStep += UnlockStep;
-
-
             foreach (FSAutomatorAction action in ActionList)
             {
-                RunAction(action);
+                var stopExecution = RunAction(action);
+
+                if (stopExecution)
+                {
+                    Trace.WriteLine("An error caused the automation to stop (as configured)");
+                    break;
+                    
+                }
             }
 
         }
 
-        private void RunAction(FSAutomatorAction action)
+        private bool RunAction(FSAutomatorAction action)
         {
             action.Status = "Running";
-            Trace.WriteLine("Executing");
-            action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection, NewReturnValue, UnlockNextStep });
-            StepLocker.WaitOne();
-            action.Result = lastOperationValue;
+            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
+            lastOperationValue = result.ComputedResult;
+            action.Result = result;
             action.Status = "Done";
-        }
 
-        private void UnlockStep(object? sender, EventArgs e)
-        {
-            StepLocker.Set();
-        }
+            var stopExecution = result.Error && action.StopOnError;
 
-        private void GetUpdatedReturnValue(object? sender, string e)
-        {
-            lastOperationValue = e;
+            return stopExecution;
         }
     }
 }

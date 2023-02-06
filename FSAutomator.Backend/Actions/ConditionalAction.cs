@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -14,29 +15,21 @@ namespace FSAutomator.Backend.Actions
         public string SecondMember { get; set; }
         public string ActionIfTrueUniqueID { get; set; } = null;
         public string ActionIfFalseUniqueID { get; set; } = null;
-        public bool IsAuxiliary { get; set; } = false;
 
-
-        internal string[] AllowedComparisonValues = { "<", ">", "=" };
+        internal List<string> AllowedNumberComparisonValues = new List<string>(){ "<", ">", "=", "<>" };
+        internal List<string> AllowedStringComparisonValues = new List<string>() { "=", "<>" };
 
         internal FlightModel fm;
 
-        private string variableValue = string.Empty;
-
         internal FSAutomatorAction? CurrentAction = null;
 
-        AutoResetEvent ContinueAfterAction = new AutoResetEvent(false);
-
-        public event EventHandler Unlock;
-        public event EventHandler<string> ReportActionResult;
-
-        internal string actionResult = "";
 
 
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            ReportActionResult += GetActionResult;
-            Unlock += UnlockAction;
+            bool isConditionTrue = false;
+
+            ActionResult result = null;
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             this.CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
@@ -44,60 +37,59 @@ namespace FSAutomator.Backend.Actions
             this.FirstMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.FirstMember);
             this.SecondMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.SecondMember);
 
-            if ((!Utils.IsNumericDouble(this.FirstMember)) && (!Utils.IsNumericDouble(this.SecondMember)))
+            if ((!Utils.IsNumericDouble(this.FirstMember)) || (!Utils.IsNumericDouble(this.SecondMember)))
             {
-                ReturnValueEvent.Invoke(this, String.Format("At least one member of the condition is not a number - {0} - {1}", this.FirstMember, this.SecondMember));
-                UnlockNextStep.Invoke(this, null);
-                return;
+                // if one of the two members is not a number --> ir can still be compared as a string
+
+                if (AllowedStringComparisonValues.Contains(this.Comparison))
+                {
+                    // only '=' comparisons are valid with strings
+
+                    isConditionTrue = CheckCondition(this.FirstMember, this.SecondMember);
+                }
+                else
+                {
+                    return new ActionResult("String comparison only allowed with = or <>", null, true);
+                }
+                
+            }
+            else
+            {
+                // both members are a number;
+
+                isConditionTrue = CheckCondition(Convert.ToDouble(this.FirstMember), Convert.ToDouble(this.SecondMember));
             }
 
-            ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
+            ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);          
 
-            //note: if actiontrueuniqueid or actionfalseuniqueid are null, return and send warning via event
-            //note: compare strings, pending to implement
-            if (CheckCondition())
+            if (isConditionTrue && !string.IsNullOrEmpty(ActionIfTrueUniqueID))
             {
-                ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
+                result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
             }
-            else if (ActionIfFalseUniqueID != null)
+            else if (!string.IsNullOrEmpty(ActionIfFalseUniqueID))
             {
-                ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
+                result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
+            }
+            else
+            {
+                return new ActionResult("Both true and false UniqueID for execution are missing", null, true);
             }
 
-            ContinueAfterAction.WaitOne();
-
-
-
-            ReturnValueEvent.Invoke(this, String.Format("{0}", this.actionResult));
-            UnlockNextStep.Invoke(this, null);
+            return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult);
 
         }
 
-        private void ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
+        private static ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
         {
             var action = auxiliaryActionList.Where(x => x.UniqueID == actionUniqueID).First();
-            action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection, ReportActionResult, Unlock });
+            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection});
+            return result;
         }
 
-        private void UnlockAction(object? sender, EventArgs e)
+        private bool CheckCondition(dynamic firstMember, dynamic secondMember)
         {
-            ContinueAfterAction.Set();
-
-        }
-
-        private void GetActionResult(object? sender, string e)
-        {
-            actionResult = e;
-            Trace.WriteLine("conditional    "+ e);
-        }
-
-        private bool CheckCondition()
-        {
-            bool result = false;
+            bool result;
             
-            var firstMember = Convert.ToDouble(this.FirstMember);
-            var secondMember = Convert.ToDouble(this.SecondMember);
-
             switch (Comparison)
             {
                 case "<":
@@ -109,6 +101,9 @@ namespace FSAutomator.Backend.Actions
                 case "=":
                 case "==":
                     result = firstMember == secondMember;
+                    break;
+                case "<>":
+                    result = firstMember != secondMember;
                     break;
                 default:
                     result = false;

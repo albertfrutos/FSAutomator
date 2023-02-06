@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using static FSAutomator.Backend.Entities.CommonEntities;
@@ -12,17 +13,9 @@ namespace FSAutomator.Backend.Actions
         public string VariableValue = null;
 
         [JsonIgnore]
-        public EventHandler<string> ReturnValueEvent = null;
-
-        [JsonIgnore]
-        public EventHandler UnlockNextStep = null;
-
-        [JsonIgnore]
         public AutoResetEvent evento = new AutoResetEvent(false);
 
         private Variable variable;
-
-        private SimConnect connection;
 
         public GetVariable()
         {
@@ -34,15 +27,13 @@ namespace FSAutomator.Backend.Actions
             VariableName = name;
             VariableValue = null;
         }
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            this.ReturnValueEvent = ReturnValueEvent;
-            this.UnlockNextStep = UnlockNextStep;
-            this.connection = connection;
+            bool error = false;
 
             variable = new Variable().GetVariableInformation(this.VariableName);
 
-            if (!(variable is null) && !(variable.Type is null))
+            if (variable is not null && variable.Type is not null)
             {
                 CommonEntities entities = new CommonEntities();
 
@@ -72,11 +63,14 @@ namespace FSAutomator.Backend.Actions
                 connection.ClearDataDefinition(defineID);
 
                 evento.WaitOne();
-
-                ReturnValueEvent.Invoke(this, this.VariableValue.ToString());
-                UnlockNextStep.Invoke(this, null);
-
             }
+            else
+            {
+                error = true;
+            }
+
+            return new ActionResult($"Variable value is {this.VariableValue }", this.VariableValue, error);
+
         }
 
         private void Simconnect_OnRecvSimobjectDataBytype(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE data)
@@ -106,8 +100,6 @@ namespace FSAutomator.Backend.Actions
 
                 evento.Set();
 
-                //ReturnValueEvent.Invoke(this, this.VariableValue.ToString());
-                //UnlockNextStep.Invoke(this, null);
             }
             catch (Exception ex)
             {

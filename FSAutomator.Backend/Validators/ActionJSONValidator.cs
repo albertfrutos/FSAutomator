@@ -18,7 +18,11 @@ namespace FSAutomator.BackEnd.Validators
             {
                 bool actionIsValidated = true;
 
-                if (action.Name == "ExecuteCodeFromDLL")
+                if (action.Name == "ConditionalAction")
+                {
+                    actionIsValidated = ValidateConditionalAction(actionList, validationIssues, index, action, JSONFilePath);
+                }
+                else if (action.Name == "ExecuteCodeFromDLL")
                 {
                     actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action, JSONFilePath);
                 }
@@ -38,9 +42,9 @@ namespace FSAutomator.BackEnd.Validators
                 {
                     actionIsValidated = ValidateMemoryRegisterWrite(actionList, validationIssues, index, action, JSONFilePath);
                 }
-                else if (action.Name == "OperateLastValue")
+                else if (action.Name == "OperateValue")
                 {
-                    actionIsValidated = ValidateOperateLastValue(actionList, validationIssues, index, action, JSONFilePath);
+                    actionIsValidated = ValidateOperateValue(actionList, validationIssues, index, action, JSONFilePath);
                 }
                 else if (action.Name == "SendEvent")
                 {
@@ -65,6 +69,41 @@ namespace FSAutomator.BackEnd.Validators
             }
 
             return validationIssues;
+        }
+
+        private static bool ValidateConditionalAction(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
+        {
+            bool actionIsValidated = true;
+
+            List<string> AllowedNumberComparisonValues = new List<string>() { "<", ">", "=", "<>" };
+            List<string> AllowedStringComparisonValues = new List<string>() { "=", "<>" };
+
+            var actionObject = (ConditionalAction)action.ActionObject;
+
+
+            if ((!Utils.IsNumericDouble(actionObject.FirstMember)) || (!Utils.IsNumericDouble(actionObject.SecondMember)))
+            {
+                if (!AllowedStringComparisonValues.Contains(actionObject.Comparison))
+                {
+                    var issue = String.Format("ConditionalAction [{0}]: Comparing 2 strings ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
+                    actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+
+                }
+            }
+            if (!AllowedNumberComparisonValues.Contains(actionObject.Comparison))
+            {
+                var issue = String.Format("ConditionalAction [{0}]: Comparing 2 numbers ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+            if (string.IsNullOrEmpty(actionObject.ActionIfTrueUniqueID) && string.IsNullOrEmpty(actionObject.ActionIfFalseUniqueID))
+            {
+                var issue = "Both true and false UniqueID for execution are missing";
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+
+                
+            }
+
+            return actionIsValidated;
         }
 
         private static bool ValidateExpectVariableValue(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
@@ -193,35 +232,35 @@ namespace FSAutomator.BackEnd.Validators
 
         }
 
-        private static bool ValidateOperateLastValue(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
+        private static bool ValidateOperateValue(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action, string jSONFilePath)
         {
             bool actionIsValidated = true;
 
             if (index == 0)
             {
-                var issue = String.Format("OperateLastValue [{0}]: trying to operate on previous value but this is the first action in the automation.", index);
+                var issue = String.Format("OperateValue [{0}]: trying to operate on previous value but this is the first action in the automation.", index);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
             else if (actionList[index - 1].Name == "GetVariable")
             {
                 var variableName = (actionList[index - 1].ActionObject as GetVariable).VariableName;
                 var variableType = new CommonEntities().DefineIDs[new Variable().GetVariableInformation(variableName).Type];
-                var operation = (actionList[index].ActionObject as OperateLastValue).Operation;
+                var operation = (actionList[index].ActionObject as OperateValue).Operation;
 
                 if ((variableType != CommonEntities.DEFINITIONS.NumType) && (variableType != CommonEntities.DEFINITIONS.BoolType))
                 {
-                    var issue = String.Format("OperateLastValue [{0}]: trying to operate on previous value but previous GetValue does neither return a numeric value nor a boolean value.", index); action.ValidationOutcome = issue;
+                    var issue = String.Format("OperateValue [{0}]: trying to operate on previous value but previous GetValue does neither return a numeric value nor a boolean value.", index); action.ValidationOutcome = issue;
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
                 else if ((variableType == CommonEntities.DEFINITIONS.NumType) && operation == "NOT")
                 {
-                    var issue = String.Format("OperateLastValue [{0}]: trying to operate on numeric value using an operator for boolean values.", index);
+                    var issue = String.Format("OperateValue [{0}]: trying to operate on numeric value using an operator for boolean values.", index);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
 
                 }
                 else if ((variableType == CommonEntities.DEFINITIONS.BoolType) && operation != "NOT")
                 {
-                    var issue = String.Format("OperateLastValue [{0}]: tryig to operate on boolean value using an operator for numeric values.", index);
+                    var issue = String.Format("OperateValue [{0}]: tryig to operate on boolean value using an operator for numeric values.", index);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
             }

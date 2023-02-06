@@ -1,4 +1,6 @@
-﻿using Microsoft.FlightSimulator.SimConnect;
+﻿using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
+using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -7,14 +9,9 @@ namespace FSAutomator.Backend.Actions
         public string Value { get; set; }
         public string Id { get; set; }
 
-        
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-
-            if (this.Value == "%PrevValue%")
-            {
-                this.Value = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
-            }
+            this.Value = Utils.GetValueToOperateOnFromTag(this, connection, this.Value);
 
             if (String.IsNullOrEmpty(Id))
             {
@@ -24,9 +21,7 @@ namespace FSAutomator.Backend.Actions
             var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             memoryRegisters.Add(this.Id, this.Value);
 
-            ReturnValueEvent.Invoke(this, this.Id);
-            UnlockNextStep.Invoke(this, null);
-            
+            return new ActionResult($"Written data with id {this.Id}", this.Value);            
         }
     }
 }

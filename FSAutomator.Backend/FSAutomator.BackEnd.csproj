@@ -10,6 +10,7 @@
     <None Remove="Automations\Automation.json" />
     <None Remove="Automations\Automation_Test.json" />
     <None Remove="Automations\Conditionals_Test.json" />
+    <None Remove="Configuration\AvailableFixedBoolItems\FSAutomatorFixedBoolItems.json" />
     <None Remove="Configuration\FSAutomatorAvailableActions.json" />
   </ItemGroup>
 
@@ -23,8 +24,11 @@
     <Content Include="Automations\Automation_Test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Configuration\FSAutomatorAvailableActions.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <Content Include="Configuration\AvailableActions\FSAutomatorAvailableActions.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\AvailableFixedBoolItems\FSAutomatorFixedBoolItems.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
@@ -40,6 +44,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Automations\TestPack\TestPack.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Automations\TestPack\TestPack.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Files\Variables.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

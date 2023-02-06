@@ -30,9 +30,16 @@ namespace FSAutomator.Backend.Utilities
             }
 
 
-            foreach (string newPath in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
+            foreach (string fileTempPath in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
             {
-                File.Copy(newPath, newPath.Replace(source, target), true);
+                var newPath = fileTempPath.Replace(source, target);
+
+                if (!Directory.Exists(target))
+                {
+                    Directory.CreateDirectory(target);
+                }
+
+                File.Copy(fileTempPath, newPath, true);
 
             }
         }
@@ -42,14 +49,14 @@ namespace FSAutomator.Backend.Utilities
             return actionList.Where(x => x.ActionObject.GetType().GetProperty("DLLName")?.GetValue(x.ActionObject) != null).Select(y => y.ActionObject.GetType().GetProperty("DLLName").GetValue(y.ActionObject)).Distinct().ToList();
         }
 
-        public static bool CheckIfAllDLLsInActionFileExist(List<object> dllFilesInAction)
+        public static bool CheckIfAllDLLsInActionFileExist(List<object> dllFilesInAction, string packDirName="")
         {
             var allDLLsExist = true;
 
             foreach (string fullDLLPath in dllFilesInAction)
             {
 
-                if (!File.Exists(fullDLLPath))
+                if (!File.Exists(Path.Combine(packDirName,fullDLLPath)))
                 {
                     allDLLsExist = false;
                 }
@@ -58,7 +65,7 @@ namespace FSAutomator.Backend.Utilities
             return allDLLsExist;
         }
 
-        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(string automationPath)
+        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(string automationPath, string jsonPackName = "")
         {
 
             var json = File.ReadAllText(automationPath);
@@ -73,7 +80,7 @@ namespace FSAutomator.Backend.Utilities
 
         }
 
-        private static ObservableCollection<FSAutomatorAction> CreateActionList(string automationPath, JToken[] actions)
+        private static ObservableCollection<FSAutomatorAction> CreateActionList(string automationPath, JToken[] actions, string jsonPackName = "")
         {
             ObservableCollection<FSAutomatorAction> actionsList = new ObservableCollection<FSAutomatorAction>();
 
@@ -82,6 +89,8 @@ namespace FSAutomator.Backend.Utilities
                 var actionName = token["Name"].ToString();
                 var uniqueID = Guid.NewGuid().ToString();
                 bool isAuxiliary = false;
+                bool stopOnError = false;
+
                 if (token["UniqueID"] != null)
                 {
                     uniqueID = token["UniqueID"].ToString() != "" ? token["UniqueID"].ToString() : uniqueID;
@@ -91,24 +100,27 @@ namespace FSAutomator.Backend.Utilities
                 {
                     isAuxiliary = token["IsAuxiliary"].ToString().ToLower() == "true" ? true : false;
                 }
+                
+                if (token["StopOnError"] != null)
+                {
+                    stopOnError = token["StopOnError"].ToString().ToLower() == "true" ? true : false;
+                }
                 var actionParameters = token["Parameters"].ToString();
 
                 Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
                 var actionObject = Activator.CreateInstance(actionType);
 
-                actionObject = JsonConvert.DeserializeObject(actionParameters, actionType);
-                /*
+                actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+                
                 if (actionName == "ExecuteCodeFromDLL")
                 {
                     (actionObject as ExecuteCodeFromDLL).DLLPackageFolder = Directory.GetParent(automationPath).Name;
                 }
-                */
-                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary);
-
+                
+                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError);
 
                 actionsList.Add(action);
             }
-
             return actionsList;
         }
 
@@ -126,16 +138,14 @@ namespace FSAutomator.Backend.Utilities
                 var jsonPackFileName = String.Format("{0}.json", new DirectoryInfo(packPath).Name);
                 var jsonPackName = Path.GetFileNameWithoutExtension(jsonPackFileName);
 
-                var actionList = Utils.GetAutomationsObjectList(Path.Combine("Automations", jsonPackName, jsonPackFileName));
+                var actionList = Utils.GetAutomationsObjectList(Path.Combine("Automations", jsonPackName, jsonPackFileName), jsonPackName);
 
                 var dllFilesAsExternalAutomator = actionList.Where(x => x.Name == "ExecuteCodeFromDLL").Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true).Select(z => new AutomationFile((z.ActionObject as ExecuteCodeFromDLL).DLLName, jsonPackName, String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", jsonPackName))).ToList();
 
                 automationsToLoad.Add(new AutomationFile(jsonPackFileName, jsonPackName, String.Format("{0} [{1}]", jsonPackName, "json, pack")));
                 automationsToLoad.AddRange(dllFilesAsExternalAutomator);
             }
-
             return automationsToLoad;
-
         }
 
         public static void DeleteFilesFromDirectoryWithExtension(string path, string extension)
@@ -187,8 +197,6 @@ namespace FSAutomator.Backend.Utilities
 
                     writer.WriteEndObject();
                     writer.WriteEndObject();
-
-
                 }
 
                 writer.WriteEndArray();
@@ -233,7 +241,7 @@ namespace FSAutomator.Backend.Utilities
             {
                 var actionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
 
-                valueToOperateOn = actionList.Where(action => action.UniqueID == itemArg).Select(x => x.Result).First().ToString();
+                valueToOperateOn = actionList.Where(action => action.UniqueID == itemArg).Select(x => x.Result.ComputedResult).First().ToString();
             }
             else if (itemId == "MemoryRegister")
             {
@@ -243,67 +251,8 @@ namespace FSAutomator.Backend.Utilities
             }
             else if (itemId == "Variable")
             {
-                EventHandler<string> getData = delegate { } ;
-                EventHandler unlock = delegate { };
-                AutoResetEvent waiter = new AutoResetEvent(false);
-
-                getData += ReceiveData;
-                unlock += Unlock;
-
-                new GetVariable(itemArg).ExecuteAction(sender, connection, getData, unlock);
-                waiter.WaitOne();
-
-                void Unlock(object? sender, EventArgs e)
-                {
-                    waiter.Set();
-                }
-
-                void ReceiveData(object? sender, string e)
-                {
-                    valueToOperateOn = e;
-                }
-
+                valueToOperateOn = new GetVariable(itemArg).ExecuteAction(sender, connection).ComputedResult;
             }
-            /*
-             * 
-            public static 
-            public static 
-            
-            var variableName = itemArg;
-
-            getData+= ReceiveData;
-                            unlock += Unlock;
-
-
-
-            new GetVariable(variableName).ExecuteAction(sender, connection, getData, unlock);
-            waiter.WaitOne();
-            */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            //note: add possibility to get a variable value
 
             return valueToOperateOn;
         }

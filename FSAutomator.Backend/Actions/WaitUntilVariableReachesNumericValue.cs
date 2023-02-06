@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
@@ -19,73 +20,40 @@ namespace FSAutomator.Backend.Actions
 
         private string variableValue = string.Empty;
 
-        public event EventHandler<string> ReportInternalVariableValueEvent;
-        EventHandler<string> ReturnValueEvent;
-        AutoResetEvent LockVariableCheck = new AutoResetEvent(false);
-
         internal FSAutomatorAction? CurrentAction = null;
 
         bool isValueReached = false;
 
-        SimConnect connection = null;
-
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            this.connection = connection;
-            this.ReturnValueEvent = ReturnValueEvent;
-
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
-            if (ThresholdValue == "%PrevValue%")
-            {
-                ThresholdValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
-            }
-            else if (ThresholdValue.StartsWith('%'))
-            {
-                FlightModel fm = (FlightModel)sender.GetType().GetField("flightModel").GetValue(sender);
-                var property =   fm.ReferenceSpeeds.GetType().GetProperty(ThresholdValue.Replace("%", ""));
+            var valueToOperate = Utils.GetValueToOperateOnFromTag(sender, connection, this.ThresholdValue);
 
-                if (property != null)
-                {
-                    ThresholdValue = (string)property.GetValue(fm.ReferenceSpeeds);
-                }
-                else
-                {
-                    ReturnValueEvent.Invoke(this, String.Format("{0} not found in the flight model", ThresholdValue));
-                    UnlockNextStep.Invoke(this, null);
-                    return;
-                }
-            }
-
-            if (!Utils.IsNumericDouble(this.ThresholdValue))
+            if (!Utils.IsNumericDouble(valueToOperate))
             {
-                ReturnValueEvent.Invoke(this, String.Format("ThresholdValue not a number - {0}", this.ThresholdValue));
-                UnlockNextStep.Invoke(this, null);
-                return;
+                return new ActionResult($"ThresholdValue not a number - {valueToOperate}", null, true);
             }
-
-            ReportInternalVariableValueEvent += CheckVariableRecovered;
 
             do
             {
-                new GetVariable(this.VariableName).ExecuteAction(sender, connection, ReportInternalVariableValueEvent, UnlockNextStep);
-                LockVariableCheck.WaitOne();
+                var variableResult = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
+                CheckVariableRecovered(variableResult);
                 Thread.Sleep(CheckInterval); // NOTE : do it with a Timer
             } while(!this.isValueReached);
 
-            ReturnValueEvent.Invoke(this, String.Format("Accomplished - {0}", this.variableValue));
-            UnlockNextStep.Invoke(this, null);
+            return new ActionResult($"Accomplished - {this.variableValue}", this.variableValue);
+
 
         }
 
-        private void CheckVariableRecovered(object? sender, string e)
+        private void CheckVariableRecovered(string variable)
         {
-            var currentValue = Convert.ToDouble(e);
+            var currentValue = Convert.ToDouble(variable);
             var thresHoldValue = Convert.ToDouble(this.ThresholdValue);
-            this.variableValue = e;
-            CurrentAction.Result = String.Format("Current value - {0}", this.variableValue);
-            //NOTE : sthetic topic: "acccomplished - curren value -- XXX"
+            this.variableValue = variable;
+            CurrentAction.Result.VisibleResult = String.Format("Current value - {0}", this.variableValue);
 
             bool result = false;
 
@@ -100,11 +68,14 @@ namespace FSAutomator.Backend.Actions
                 case "=":
                     result = currentValue == thresHoldValue;
                     break;
+                default:
+                    result = true;
+                    break;
+
             }
 
             this.isValueReached = result;
 
-            LockVariableCheck.Set();
 
 
         }

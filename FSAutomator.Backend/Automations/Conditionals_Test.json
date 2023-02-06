@@ -1,12 +1,12 @@
 ﻿{
   "Actions": [
-
     {
       "Name": "ConditionalAction",
       "UniqueID": "2vy54",
+      "StopOnError":  "true",
       "Parameters": {
-        "FirstMember": "%Variable%AUTOPILOT HEADING LOCK DIR",
-        "Comparison": ">",
+        "FirstMember": "abcd",
+        "Comparison": "=",
         "SecondMember": "350",
         "ActionIfTrueUniqueID": "5h0t3o",
         "ActionIfFalseUniqueID": "5h0t3oAA"
@@ -16,9 +16,9 @@
       "Name": "ConditionalAction",
       "UniqueID": "2vy54",
       "Parameters": {
-        "FirstMember": "%Variable%AUTOPILOT HEADING LOCK DIR",
+        "FirstMember": "abcd",
         "Comparison": "=",
-        "SecondMember": "5",
+        "SecondMember": "abcd",
         "ActionIfTrueUniqueID": "5h0t3o",
         "ActionIfFalseUniqueID": "5h0t3oAA"
       }

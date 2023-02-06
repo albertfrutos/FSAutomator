@@ -15,6 +15,8 @@ namespace FSAutomator.ViewModel
     {
 
         private AvailableActions l_AvailableActions;
+        private List<AvailableFixedBoolItem> l_FixedBoolItems;
+        private string s_FixedBoolItemName;
         private string s_AvailableActionsName;
         private string s_SerializedJSON;
 
@@ -39,6 +41,8 @@ namespace FSAutomator.ViewModel
         public AddActionViewModel()
         {
             AvailableActions = new AvailableActions().GetAvailableActions();
+            FixedBoolItems = new AvailableFixedBoolItems().GetAvailableItems();
+
             ButtonOK = new RelayCommand(new Action<object>(BuildNewAction));
 
         }
@@ -55,6 +59,15 @@ namespace FSAutomator.ViewModel
                 writer.WriteStartObject();
                 writer.WritePropertyName("Name");
                 writer.WriteValue(SAvailableActionName);
+
+                writer.WritePropertyName("IsAuxiliary");
+                var isAuxiliary = l_FixedBoolItems.Where(x => x.Name == "IsAuxiliary").Select(y => y.Value.ToString()).First();
+                writer.WriteValue(isAuxiliary);
+
+                writer.WritePropertyName("StopOnError");
+                var stopOnError = l_FixedBoolItems.Where(x => x.Name == "StopOnError").Select(y => y.Value.ToString()).First();
+                writer.WriteValue(stopOnError);
+
                 writer.WritePropertyName("Parameters");
                 writer.WriteStartObject();
                 foreach (Parameter param in ActionParameters)
@@ -80,6 +93,21 @@ namespace FSAutomator.ViewModel
             {
                 l_AvailableActions = value;
                 RaisePropertyChanged("AvailableActions");
+            }
+
+        }
+        
+        public List<AvailableFixedBoolItem> FixedBoolItems
+        {
+            get
+            {
+                return l_FixedBoolItems;
+
+            }
+            set
+            {
+                l_FixedBoolItems = value;
+                RaisePropertyChanged("FixedBoolItems");
             }
 
         }
@@ -157,6 +185,22 @@ namespace FSAutomator.ViewModel
 
         }
         
+        public string SFixedBoolItemName
+        {
+            get
+            {
+                return s_FixedBoolItemName;
+
+            }
+            set
+            {
+                s_FixedBoolItemName = value;
+                BuildNewAction(null);
+                RaisePropertyChanged("SFixedBoolItemName");
+            }
+
+        }
+        
       
         
 
@@ -175,5 +219,6 @@ namespace FSAutomator.ViewModel
 
 
     }
+
 
 }

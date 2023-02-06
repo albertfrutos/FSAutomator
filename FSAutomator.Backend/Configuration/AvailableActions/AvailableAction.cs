@@ -21,11 +21,9 @@ namespace FSAutomator.BackEnd.Configuration
 
         public AvailableActions GetAvailableActions()
         {
-            var json = File.ReadAllText(@"Configuration\FSAutomatorAvailableActions.json");
+            var json = File.ReadAllText(@"Configuration\AvailableActions\FSAutomatorAvailableActions.json");
             var actions = JsonConvert.DeserializeObject<AvailableActions>(json);
             return actions;
-
-
         }
 
         public List<string> GetAvailableActionsName()

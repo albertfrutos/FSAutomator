@@ -78,7 +78,7 @@
       ]
     },
     {
-      "Name": "OperateLastValue",
+      "Name": "OperateValue",
       "Parameters": [
         // NOTE es pot treure aixo i deixar-ho com a dos namesseguits només separats pr
         {

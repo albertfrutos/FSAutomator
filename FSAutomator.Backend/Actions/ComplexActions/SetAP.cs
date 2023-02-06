@@ -1,4 +1,5 @@
-﻿using Geolocation;
+﻿using FSAutomator.BackEnd.Entities;
+using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -8,51 +9,30 @@ namespace FSAutomator.Backend.Actions
 
         public string APStatus { get; set; }
 
-        public EventHandler<string> getData;
-        public EventHandler unlock;
-
-        AutoResetEvent waiter = new AutoResetEvent(false);
-
-        public string currentLatitude; 
-        public string currentLongitude;
-
-        public string receivedData = null;
-
-
-        public void ExecuteAction(object sender, SimConnect connection, EventHandler<string> ReturnValueEvent, EventHandler UnlockNextStep)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var apCurrentStatus = GetCurrentAPStatus(sender, connection);
 
             if (apCurrentStatus != APStatus)
             {
-                new SendEvent("AP_MASTER", "1");
+                new SendEvent("AP_MASTER", "1").ExecuteAction(this,connection);
             }
 
             var newAPStatus = GetCurrentAPStatus(sender, connection);
 
-            ReturnValueEvent.Invoke(this, newAPStatus);
-            UnlockNextStep.Invoke(this, null);
+            return new ActionResult($"Final AP status: {newAPStatus}", newAPStatus);
+
         }
 
-        private string GetCurrentAPStatus(object sender, SimConnect connection)
+        private static string GetCurrentAPStatus(object sender, SimConnect connection)
         {
-            getData += ReceiveData;
-            unlock += Unlock;
 
-            new GetVariable("AUTOPILOT MASTER").ExecuteAction(sender, connection, getData, unlock);
-            waiter.WaitOne();
+            var receivedData = new GetVariable("AUTOPILOT MASTER").ExecuteAction(sender, connection).ComputedResult;
+            
             return receivedData;
         }
 
-        private void Unlock(object? sender, EventArgs e)
-        {
-            waiter.Set();
-        }
 
-        private void ReceiveData(object? sender, string e)
-        {
-            receivedData = e;
-        }
 
 
 
