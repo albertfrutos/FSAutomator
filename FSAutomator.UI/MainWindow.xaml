@@ -38,23 +38,29 @@
             <Image Source="icons\down.ico" />
         </Button>
 
-        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SIActionListUI}" SelectedValue ="{Binding SActionListUI, Mode=TwoWay}" Margin="49,10,12,10" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}">
+        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SIActionListUI}" SelectedValue ="{Binding SActionListUI, Mode=TwoWay}" Margin="49,10,12,10" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}" GridLinesVisibility="None">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Foreground" Value="Black" />
+                            <!-- <Setter Property="Foreground" Value="Black" /> -->
+                            <Setter Property="Foreground" Value="White" />
                             <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="Background" >
-                                <Setter.Value>
-                                    <SolidColorBrush Color="#FFCEC9C9"/>
-                                </Setter.Value>
-                            </Setter>
+                            <!-- <Setter Property="Background" Value="#FFCEC9C9"/> -->
+                            <Setter Property="BorderThickness" Value="0"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </DataGrid.CellStyle>
-
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsValidated}" Value="False">
+                            <Setter Property="Background" Value="#FFFF9595"></Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="">
                     <DataGridTemplateColumn.CellTemplate>
@@ -63,11 +69,29 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
-                <DataGridTextColumn Header="Status" Width="*" Binding="{Binding Status,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
-                <DataGridTextColumn Header="Parameters" Width="*" Binding="{Binding Parameters,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+                <DataGridTextColumn Header="Name" Width="Auto" Binding="{Binding Name,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+                <DataGridTextColumn Header="Status" Width="Auto" Binding="{Binding Status,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+                <!-- <DataGridTextColumn Header="Parameters" Width="*" Binding="{Binding Parameters,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/> -->
                 <DataGridTextColumn Header="Result" Width="*" Binding="{Binding Result.VisibleResult,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="true" />
             </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <!--
+                    <Grid Margin="0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Hi&#x0d;&#x0a;Hi" Margin="10" />
+                    </Grid>
+                    -->
+                    
+                    <StackPanel Margin="30,10">
+                        <TextBlock Text="Parameters:"/>
+                        <TextBlock Margin="10,10" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ParametersBeautified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
         </DataGrid>
 
 
@@ -161,9 +185,9 @@
             <Label Content="Action name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="139"/>
             <TextBox HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay}" Text="{Binding Name, Mode=TwoWay}" VerticalAlignment="Center" Width="232" Background="White" IsReadOnly="{Binding IsChecked, Converter={StaticResource oppositeConverter}, ElementName=chkEditMode}"/>
             <Label Content="Parameters" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="139"/>
-            <TextBox HorizontalAlignment="Center" Height="124" TextWrapping="Wrap" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ParametersBeautified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="232" Background="White" IsReadOnly="{Binding IsChecked, Converter={StaticResource oppositeConverter}, ElementName=chkEditMode}"/>
+            <TextBox HorizontalAlignment="Center" Height="124" TextWrapping="Wrap" AcceptsReturn="True" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ParametersBeautified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="232" Background="White" IsReadOnly="{Binding IsChecked, Converter={StaticResource oppositeConverter}, ElementName=chkEditMode}"/>
             <Label Content="Result" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="139"/>
-            <TextBox HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay}" Text="{Binding Result, Mode=OneWay}" VerticalAlignment="Center" Width="232" Background="White" IsReadOnly="True" />
+            <TextBox HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay}" Text="{Binding Result.VisibleResult, Mode=OneWay}" VerticalAlignment="Center" Width="232" Background="White" IsReadOnly="True" />
         </WrapPanel>
         <WrapPanel  Orientation="Vertical" Margin="5,10,5,170" Grid.Column="1" Grid.Row="1">
             <Label Content="Automation name" HorizontalAlignment="Left" VerticalAlignment="Top" Height="28" Width="116" />

@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace FSAutomator.BackEnd.Entities
 {
-    public class ActionResult
+    public class ActionResult : INotifyPropertyChanged
     {
-        public string VisibleResult { get; set; }
-        public string ComputedResult { get; set; }
-        internal bool Error { get; set; }
+        private string s_VisibleResult = "";
+        private string s_ComputedResult = "";
+        private bool b_Error = false;
 
         public ActionResult()
         {
@@ -22,5 +18,50 @@ namespace FSAutomator.BackEnd.Entities
             this.ComputedResult = computedResult;
             this.Error = error;
         }
+
+
+        public string VisibleResult
+        {
+            get { return s_VisibleResult; }
+
+            set
+            {
+                s_VisibleResult = value;
+                RaisePropertyChanged("VisibleResult");
+            }
+        }
+
+        public string ComputedResult
+        {
+            get { return s_ComputedResult; }
+
+            set
+            {
+                s_ComputedResult = value;
+                RaisePropertyChanged("ComputedResult");
+            }
+        }
+
+        public bool Error
+        {
+            get { return b_Error; }
+
+            set
+            {
+                b_Error = value;
+                RaisePropertyChanged("Error");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void RaisePropertyChanged(string propName)
+        {
+            if (PropertyChanged != null)
+            {
+                Task.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName)));
+            }
+        }
+
     }
 }

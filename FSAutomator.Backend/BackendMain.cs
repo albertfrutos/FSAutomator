@@ -47,9 +47,9 @@ namespace FSAutomator.Backend
             }
         }
 
-        public void SaveAutomation(AutomationFile automation)
+        public void SaveAutomation(AutomationFile automation, string newFileName)
         {
-            var automationFilePath = Path.Combine("Automations", automation.PackageName, automation.FileName);
+            var automationFilePath = Path.Combine("Automations", automation.PackageName, newFileName + ".json");
             var json = Utils.GetJSONTextFromAutomationList(automator.ActionList);
             File.WriteAllText(automationFilePath, json);
         }
@@ -180,7 +180,7 @@ namespace FSAutomator.Backend
             }
         }
 
-        public bool Connect(IntPtr m_hWnd, int WM_USER_SIMCONNECT)
+        public void Connect(IntPtr m_hWnd, int WM_USER_SIMCONNECT)
         {
             Trace.WriteLine("Connect BackEnd");
 
@@ -197,13 +197,13 @@ namespace FSAutomator.Backend
                 /// Listen to exceptions
                 m_SimConnect.OnRecvException += new SimConnect.RecvExceptionEventHandler(Simconnect_OnRecvException);
 
-                return true;
+                status.isConnectedToSim = true;
 
             }
             catch (COMException ex)
             {
                 Trace.WriteLine("Connection to KH failed: " + ex.Message);
-                return false;
+                status.isConnectedToSim = false;
                 //MessageBox.Show(String.Format("Could not connect to MSFS: {0}", ex.Message), "Connection Error");
             }
 

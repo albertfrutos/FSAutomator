@@ -38,7 +38,6 @@ namespace FSAutomator.ViewModel
         private AutomationFile l_SAutomationFilesList;
         private List<string> l_ValidationOutcomeCleaned;
         private bool b_EditMode = false;
-        private bool m_isConnected = false;
 
 
         private ICommand? b_ButtonLoadActions;
@@ -213,7 +212,7 @@ namespace FSAutomator.ViewModel
 
         private void SaveCurrentAutomation(object obj)
         {
-            backEnd.SaveAutomation(l_SAutomationFilesList);
+            backEnd.SaveAutomation(l_SAutomationFilesList, SAutomationName);
         }
 
 
@@ -429,19 +428,6 @@ namespace FSAutomator.ViewModel
 
         }
 
-        public bool IsConnected
-        {
-            get
-            {
-                return m_isConnected;
-            }
-            set
-            {
-                m_isConnected = value;
-                RaisePropertyChanged("IsConnected");
-            }
-        }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void RaisePropertyChanged(string propName)
@@ -477,7 +463,7 @@ namespace FSAutomator.ViewModel
         private void Connect(object commandParameter)
         {
             Trace.WriteLine("Connect ViewModel");
-            IsConnected = backEnd.Connect(m_hWnd, WM_USER_SIMCONNECT);
+            backEnd.Connect(m_hWnd, WM_USER_SIMCONNECT);
 
 
         }

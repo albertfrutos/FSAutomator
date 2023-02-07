@@ -16,6 +16,8 @@ namespace FSAutomator.BackEnd.Validators
 
             foreach (var (action, index) in actionList.Select((value, i) => (value, i)))
             {
+
+                // note if coordinates are null, they are properly validated in grren --> ERROR! also all complexactions must be reviewe in regards of validation criteria (they are not inspected here).
                 bool actionIsValidated = true;
 
                 if (action.Name == "ConditionalAction")
@@ -97,7 +99,7 @@ namespace FSAutomator.BackEnd.Validators
             }
             if (string.IsNullOrEmpty(actionObject.ActionIfTrueUniqueID) && string.IsNullOrEmpty(actionObject.ActionIfFalseUniqueID))
             {
-                var issue = "Both true and false UniqueID for execution are missing";
+                var issue = String.Format("ConditionalAction[{0}]: Both true and false UniqueID for execution are missing", index);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
 
                 

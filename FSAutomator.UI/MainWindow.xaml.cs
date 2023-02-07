@@ -7,6 +7,9 @@ using System.Windows.Media.Imaging;
 
 namespace FSAutomator
 {
+    // https://learn.microsoft.com/en-us/windows/communitytoolkit/controls/datagrid_guidance/rowdetails
+    // https://stackoverflow.com/questions/3829137/i-need-the-expand-collapse-for-rowdetailstemplate
+    // https://www.google.com/search?q=RowDetailsTemplate+collapse&oq=RowDetailsTemplate+collapse&aqs=chrome..69i57j0i22i30l3j69i60l2.1643j0j7&sourceid=chrome&ie=UTF-8
 
     interface IBaseSimConnectWrapper
     {

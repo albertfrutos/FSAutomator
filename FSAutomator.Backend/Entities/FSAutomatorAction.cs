@@ -24,7 +24,7 @@ namespace FSAutomator.Backend.Entities
             s_Name = name;
             s_UniqueID = uniqueID;
             s_Status = status;
-            s_Parameters = JsonConvert.SerializeObject(actionObject);
+            s_Parameters = JsonConvert.SerializeObject(actionObject, Formatting.Indented);
             s_Result = new ActionResult("", null);
             o_Object = actionObject;
             b_isValidated = false;
