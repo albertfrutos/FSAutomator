@@ -68,7 +68,7 @@ namespace FSAutomator.Backend
             {
                 LoadDLLActions(fileToLoad.FileName,fileToLoadPath);   //"Automations\\ExternalAutomationExample.dll"
             }
-            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), fileToLoadPath);
+            ValidateActions(fileToLoadPath);
         }
 
         private void LoadDLLActions(string DLLFileName, string DLLFilePath)
@@ -79,9 +79,9 @@ namespace FSAutomator.Backend
             automator.ActionList.Add(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false,true));
         }
 
-        public void ValidateActions(string JSONFilePath)
+        public void ValidateActions(string filePath)
         {
-            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), JSONFilePath);
+            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), filePath);
         }
 
         public List<string> GetValidationIssuesList()

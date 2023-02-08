@@ -38,7 +38,7 @@
             <Image Source="icons\down.ico" />
         </Button>
 
-        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SIActionListUI}" SelectedValue ="{Binding SActionListUI, Mode=TwoWay}" Margin="49,10,12,10" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}" GridLinesVisibility="None">
+        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SIActionListUI}" SelectedValue ="{Binding SActionListUI, Mode=TwoWay}" Margin="49,10,12,10" AutoGenerateColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}" GridLinesVisibility="None" AlternatingRowBackground="#FFCCEFFB" AlternationCount="2">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
