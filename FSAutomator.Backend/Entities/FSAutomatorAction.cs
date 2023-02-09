@@ -8,6 +8,7 @@ namespace FSAutomator.Backend.Entities
 {
     public class FSAutomatorAction : INotifyPropertyChanged
     {
+        private int i_Id;
         private string s_Name;
         private string s_UniqueID;
         private string s_Status;
@@ -51,6 +52,17 @@ namespace FSAutomator.Backend.Entities
             {
                 s_Name = value;
                 RaisePropertyChanged("Name");
+            }
+        }
+        
+        public int Id
+        {
+            get { return i_Id; }
+
+            set
+            {
+                i_Id = value;
+                RaisePropertyChanged("Id");
             }
         }
         

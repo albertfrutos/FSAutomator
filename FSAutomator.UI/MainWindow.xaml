@@ -66,7 +66,7 @@
                 </Style>
             </DataGrid.RowStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Width="Auto" Binding="{Binding Id,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+                <DataGridTextColumn Header="ID" Width="Auto" Binding="{Binding Id,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                 <DataGridTemplateColumn Header="">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -93,7 +93,7 @@
                     -->
                     <Border BorderThickness="0" Padding="10">
 
-                        <StackPanel Margin="30,10" >
+                        <StackPanel Margin="55,10" >
                             <TextBox Text="Parameters:" Background="{DynamicResource parentRowColor}" BorderThickness="0" Foreground="Black"  IsReadOnly="True"/>
                             <TextBox Margin="10,10" Background="{DynamicResource parentRowColor}" BorderThickness="0" Foreground="Black" AcceptsReturn="True" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Text="{Binding ParametersBeautified, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}"/>
                     </StackPanel>

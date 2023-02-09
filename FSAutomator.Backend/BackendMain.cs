@@ -18,7 +18,7 @@ namespace FSAutomator.Backend
     {
         private SimConnect m_SimConnect = null;
 
-        public Automator automator = null;
+        public Automator automator = new Automator();
 
         GeneralStatus status = new GeneralStatus
         {
@@ -26,9 +26,9 @@ namespace FSAutomator.Backend
         };
 
 
-        public BackendMain(ObservableCollection<FSAutomatorAction> ActionList)
+        public BackendMain()
         {
-            this.automator = new Automator(ActionList);
+            
         }
 
         public void Execute()
@@ -76,7 +76,7 @@ namespace FSAutomator.Backend
             //fer un getname i terure el nom
             var externalAutomatorObject = new ExternalAutomator(DLLFileName, DLLFilePath); //"Automations\\ExternalAutomationExample.dll"
             var uniqueID = Guid.NewGuid().ToString();
-            automator.ActionList.Add(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false,true));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false,true));
         }
 
         public void ValidateActions(string filePath)
@@ -95,22 +95,27 @@ namespace FSAutomator.Backend
 
             foreach (FSAutomatorAction action in actionsList)
             {
-                if (!action.IsAuxiliary)
-                {
-                    automator.ActionList.Add(action);
-                }
-                else
-                {
-                    automator.AuxiliaryActionList.Add(action);
-                }
+                AddAction(action);
             }
 
             return;
         }
 
+        public void AddAction(FSAutomatorAction action)
+        {
+            if (!action.IsAuxiliary)
+            {
+                automator.ActionList.Add(action);
+            }
+            else
+            {
+                automator.AuxiliaryActionList.Add(action);
+            }
 
+            automator.RebuildActionListIndices();
+        }
 
-        public void AddActionAfterPosition(int position, string actionJSON)
+        public void AddJSONActionAfterPosition(int position, string actionJSON)
         {
             var jsonObject = JObject.Parse(actionJSON);
             var actionName = jsonObject["Name"].ToString();
@@ -126,6 +131,8 @@ namespace FSAutomator.Backend
             FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false, stopOnError);
 
             automator.ActionList.Insert(position + 1, action);
+
+            automator.RebuildActionListIndices();
         }
 
         public int MoveActionDown(int selectedIndex)
@@ -138,6 +145,9 @@ namespace FSAutomator.Backend
             FSAutomatorAction temp = automator.ActionList[selectedIndex];
             automator.ActionList[selectedIndex] = automator.ActionList[selectedIndex + 1];
             automator.ActionList[selectedIndex + 1] = temp;
+
+            automator.RebuildActionListIndices();
+
             return selectedIndex + 1;
         }
         
@@ -151,7 +161,22 @@ namespace FSAutomator.Backend
             FSAutomatorAction temp = automator.ActionList[selectedIndex];
             automator.ActionList[selectedIndex] = automator.ActionList[selectedIndex - 1];
             automator.ActionList[selectedIndex - 1] = temp;
+
+            automator.RebuildActionListIndices();
+
             return selectedIndex - 1;
+        }
+
+        public void RemoveAction(int index)
+        {
+            if (automator.ActionList.Count > 0 && index >= 0)
+            {
+                automator.ActionList.Remove(automator.ActionList[index]);
+                automator.RebuildActionListIndices();
+            }
+
+            
+
         }
 
 
@@ -234,6 +259,11 @@ namespace FSAutomator.Backend
         public void ImportAutomationFromFilePath(string filepath)
         {
             new Importers().ImportAutomationFromFilePath(filepath);
+        }
+
+        public ObservableCollection<FSAutomatorAction> GetActionList()
+        {
+            return automator.ActionList;
         }
     }
 }

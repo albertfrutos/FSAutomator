@@ -19,13 +19,12 @@ namespace FSAutomator.Backend.Automators
 
         public string lastOperationValue = "";
 
-        public ObservableCollection<FSAutomatorAction> ActionList;
-        public ObservableCollection<FSAutomatorAction> AuxiliaryActionList;
+        public ObservableCollection<FSAutomatorAction> ActionList = new ObservableCollection<FSAutomatorAction>();
+        public ObservableCollection<FSAutomatorAction> AuxiliaryActionList = new ObservableCollection<FSAutomatorAction>();
 
-        public Automator(ObservableCollection<FSAutomatorAction> ActionList)
+        public Automator()
         {
-            this.ActionList = ActionList;
-            this.AuxiliaryActionList = new ObservableCollection<FSAutomatorAction>();
+
         }
 
         public void Execute()
@@ -55,6 +54,14 @@ namespace FSAutomator.Backend.Automators
             var stopExecution = result.Error && action.StopOnError;
 
             return stopExecution;
+        }
+
+        internal void RebuildActionListIndices()
+        {
+            foreach (FSAutomatorAction action in ActionList)
+            {
+                action.Id = ActionList.IndexOf(action);
+            }
         }
     }
 }

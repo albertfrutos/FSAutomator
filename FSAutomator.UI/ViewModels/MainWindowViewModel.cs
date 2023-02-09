@@ -188,7 +188,7 @@ namespace FSAutomator.ViewModel
 
             l_ActionListUI = new ObservableCollection<FSAutomatorAction>();
 
-            backEnd = new BackendMain(ActionListUI);
+            backEnd = new BackendMain();
 
             RefreshAutomationFilesList();
             InitializeNewAutomation();
@@ -257,12 +257,16 @@ namespace FSAutomator.ViewModel
 
 
             SIActionListUI = backEnd.MoveActionUp(selectedIndex);
+            SIActionListUI = -1;
+
         }
 
         private void MoveActionDown(object obj)
         {
             var selectedIndex = l_ActionListUI.IndexOf(l_SActionListUI);
             SIActionListUI = backEnd.MoveActionDown(selectedIndex);
+            SIActionListUI = -1;
+
         }
 
 
@@ -271,12 +275,9 @@ namespace FSAutomator.ViewModel
         {
             var currentSelectedIndex = l_SIActionListUI;
 
-            l_ActionListUI.Remove(l_SActionListUI);
+            backEnd.RemoveAction(currentSelectedIndex);
 
-            if (l_ActionListUI.Count > 0)
-            {
-                l_SIActionListUI = currentSelectedIndex - 1;
-            }
+            SIActionListUI = -1;
         }
 
         private void AddAction(object obj)
@@ -295,7 +296,7 @@ namespace FSAutomator.ViewModel
 
                 var selectedIndex = l_ActionListUI.IndexOf(l_SActionListUI);
 
-                backEnd.AddActionAfterPosition(selectedIndex, newActionJSON);
+                backEnd.AddJSONActionAfterPosition(selectedIndex, newActionJSON);
                 ValidateActions(null);
             }
             catch (Exception ex)
@@ -337,7 +338,9 @@ namespace FSAutomator.ViewModel
         public ObservableCollection<FSAutomatorAction> ActionListUI
         {
             get {
-                    return l_ActionListUI; }
+                l_ActionListUI = backEnd.GetActionList();
+                return l_ActionListUI;
+            }
 
             set
             {
@@ -480,7 +483,6 @@ namespace FSAutomator.ViewModel
             SAutomationName = Path.GetFileNameWithoutExtension(SAutomationFilesList.FileName);
 
             backEnd.LoadActions(l_SAutomationFilesList);
-            SIActionListUI = -1;
             this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
         }
 
