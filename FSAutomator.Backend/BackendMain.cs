@@ -20,10 +20,7 @@ namespace FSAutomator.Backend
 
         public Automator automator = new Automator();
 
-        GeneralStatus status = new GeneralStatus
-        {
-            isConnectedToSim = false
-        };
+        GeneralStatus status = new GeneralStatus();
 
 
         public BackendMain()
@@ -56,7 +53,7 @@ namespace FSAutomator.Backend
 
         public void LoadActions(AutomationFile fileToLoad)
         {
-            automator.ActionList.Clear();
+            ClearAutomationList();
 
             var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
 
@@ -68,7 +65,8 @@ namespace FSAutomator.Backend
             {
                 LoadDLLActions(fileToLoad.FileName,fileToLoadPath);   //"Automations\\ExternalAutomationExample.dll"
             }
-            ValidateActions(fileToLoadPath);
+
+            ValidateActions();
         }
 
         private void LoadDLLActions(string DLLFileName, string DLLFilePath)
@@ -76,12 +74,14 @@ namespace FSAutomator.Backend
             //fer un getname i terure el nom
             var externalAutomatorObject = new ExternalAutomator(DLLFileName, DLLFilePath); //"Automations\\ExternalAutomationExample.dll"
             var uniqueID = Guid.NewGuid().ToString();
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false,true));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject, false, true));
         }
 
-        public void ValidateActions(string filePath)
+        public List<string> ValidateActions()
         {
-            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), filePath);
+            status.validationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
+            status.isAutomationFullyValidated = status.validationIssues.Count == 0;
+            return status.validationIssues;
         }
 
         public List<string> GetValidationIssuesList()
@@ -119,6 +119,7 @@ namespace FSAutomator.Backend
         {
             var jsonObject = JObject.Parse(actionJSON);
             var actionName = jsonObject["Name"].ToString();
+
             var actionParameters = jsonObject["Parameters"].ToString();
             var uniqueID = Guid.NewGuid().ToString();
             var stopOnError = (bool)jsonObject["StopOnError"];
@@ -133,6 +134,8 @@ namespace FSAutomator.Backend
             automator.ActionList.Insert(position + 1, action);
 
             automator.RebuildActionListIndices();
+
+            //status.validationIssues = ValidateActions()
         }
 
         public int MoveActionDown(int selectedIndex)
@@ -190,6 +193,12 @@ namespace FSAutomator.Backend
         {
             Trace.WriteLine("Receive in BackEnd!!");
             m_SimConnect?.ReceiveMessage();
+        }
+
+        public void ClearAutomationList()
+        {
+            automator.ActionList.Clear();
+            automator.AuxiliaryActionList.Clear();
         }
 
         public void Disconnect()

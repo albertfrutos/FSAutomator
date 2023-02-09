@@ -19,6 +19,7 @@ namespace FSAutomator.Backend.Entities
         private bool b_isAuxiliary;
         private bool b_stopOnError;
         private string s_validationOutcome;
+        private string s_mainFilePath;
 
         public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError)
         {
@@ -161,6 +162,17 @@ namespace FSAutomator.Backend.Entities
             {
                 o_Object = value;
                 RaisePropertyChanged("ActionObject");
+            }
+        }
+        
+        public string MainFilePath
+        {
+            get { return s_mainFilePath; }
+
+            set
+            {
+                s_mainFilePath = value;
+                RaisePropertyChanged("MainFilePath");
             }
         }
         

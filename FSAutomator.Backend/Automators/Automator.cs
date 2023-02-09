@@ -58,10 +58,7 @@ namespace FSAutomator.Backend.Automators
 
         internal void RebuildActionListIndices()
         {
-            foreach (FSAutomatorAction action in ActionList)
-            {
-                action.Id = ActionList.IndexOf(action);
-            }
+            ActionList.ToList().ForEach(x => { x.Id = ActionList.IndexOf(x); });
         }
     }
 }

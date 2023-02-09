@@ -10,5 +10,13 @@ namespace FSAutomator.BackEnd
     {
         internal bool isConnectedToSim { get; set; }
         internal bool isAutomationFullyValidated { get; set; } //note fer i refactor
+        internal List<string> validationIssues { get; set; }
+
+        internal GeneralStatus()
+        {
+            isConnectedToSim = false;
+            isAutomationFullyValidated = false;
+            validationIssues = new List<string>();
+        }
     }
 }
