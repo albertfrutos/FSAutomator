@@ -9,6 +9,6 @@ namespace FSAutomator.BackEnd
     internal class GeneralStatus
     {
         internal bool isConnectedToSim { get; set; }
-        internal bool areAllActionValidated {get; set; }
+        internal bool isAutomationFullyValidated { get; set; } //note fer i refactor
     }
 }

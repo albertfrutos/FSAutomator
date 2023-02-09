@@ -238,7 +238,7 @@ namespace FSAutomator.ViewModel
             }
 
             ActionListUI.Clear();
-            this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
+            //this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
 
             RefreshAutomationFilesList();
         }
@@ -336,7 +336,8 @@ namespace FSAutomator.ViewModel
 
         public ObservableCollection<FSAutomatorAction> ActionListUI
         {
-            get { return l_ActionListUI; }
+            get {
+                    return l_ActionListUI; }
 
             set
             {
@@ -479,6 +480,7 @@ namespace FSAutomator.ViewModel
             SAutomationName = Path.GetFileNameWithoutExtension(SAutomationFilesList.FileName);
 
             backEnd.LoadActions(l_SAutomationFilesList);
+            SIActionListUI = -1;
             this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
         }
 
