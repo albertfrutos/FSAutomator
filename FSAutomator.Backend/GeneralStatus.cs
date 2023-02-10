@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace FSAutomator.BackEnd
 {
-    internal class GeneralStatus
+    public class GeneralStatus
     {
-        internal bool isConnectedToSim { get; set; }
-        internal bool isAutomationFullyValidated { get; set; } //note fer i refactor
-        internal List<string> validationIssues { get; set; }
+        public bool isConnectedToSim { get; set; }
+        public bool isAutomationFullyValidated { get; set; } //note fer i refactor
+        public List<string> validationIssues { get; set; }
 
-        internal GeneralStatus()
+        public GeneralStatus()
         {
             isConnectedToSim = false;
             isAutomationFullyValidated = false;

@@ -20,7 +20,7 @@ namespace FSAutomator.Backend
 
         public Automator automator = new Automator();
 
-        GeneralStatus status = new GeneralStatus();
+        public GeneralStatus status = new GeneralStatus();
 
 
         public BackendMain()
@@ -59,7 +59,7 @@ namespace FSAutomator.Backend
 
             if (fileToLoad.FileName.EndsWith(".json"))
             {
-                LoadJSONActions(fileToLoadPath); //"Automations\\bb\\bb.json"
+                LoadJSONActions(fileToLoad); //"Automations\\bb\\bb.json"
             }
             else if (fileToLoad.FileName.EndsWith(".dll"))
             {
@@ -86,12 +86,14 @@ namespace FSAutomator.Backend
 
         public List<string> GetValidationIssuesList()
         {
-            return automator.ActionList.Where(x => x.ValidationOutcome != "").Select(x => x.ValidationOutcome).ToList();
+            return status.validationIssues;
         }
 
-        private void LoadJSONActions(string filePath)
+        private void LoadJSONActions(AutomationFile fileToLoad)
         {
-            var actionsList = Utils.GetAutomationsObjectList(filePath); //"Automations\\bb\\bb.json"
+            //var filePath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+
+            var actionsList = Utils.GetAutomationsObjectList(fileToLoad); //"Automations\\bb\\bb.json"
 
             foreach (FSAutomatorAction action in actionsList)
             {

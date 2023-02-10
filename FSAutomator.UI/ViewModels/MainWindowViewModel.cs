@@ -420,12 +420,12 @@ namespace FSAutomator.ViewModel
         {
             get
             {
-                return l_ValidationOutcomeCleaned;
+                return backEnd.status.validationIssues; //l_ValidationOutcomeCleaned;
 
             }
             set
             {
-                l_ValidationOutcomeCleaned = value;
+                backEnd.status.validationIssues = value;
                 RaisePropertyChanged("ValidationOutcomeCleaned");
             }
 
@@ -479,9 +479,10 @@ namespace FSAutomator.ViewModel
                 return;
             }
 
-            SAutomationName = Path.GetFileNameWithoutExtension(SAutomationFilesList.FileName);
+            //SAutomationName = Path.GetFileNameWithoutExtension(SAutomationFilesList.FileName);
 
             backEnd.LoadActions(SAutomationFilesList);
+            this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
         }
 
 

@@ -55,7 +55,8 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("Name");
             }
         }
-        
+
+        [JsonIgnore]
         public int Id
         {
             get { return i_Id; }
@@ -100,6 +101,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public string Status
         {
             get { return s_Status; }
@@ -131,6 +133,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public string ParametersBeautified
         {
             get { return s_Parameters; }
@@ -140,6 +143,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public ActionResult Result
         {
             get
@@ -164,18 +168,20 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("ActionObject");
             }
         }
-        
+
+        [JsonIgnore]
         public string MainFilePath
         {
             get { return s_mainFilePath; }
-
+            //note revisar si cal
             set
             {
                 s_mainFilePath = value;
                 RaisePropertyChanged("MainFilePath");
             }
         }
-        
+
+        [JsonIgnore]
         public bool IsValidated
         {
             get { return b_isValidated; }
@@ -187,6 +193,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public string ValidationOutcome
         {
             get { return s_validationOutcome; }

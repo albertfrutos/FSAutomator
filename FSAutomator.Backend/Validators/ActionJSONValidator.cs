@@ -175,9 +175,11 @@ namespace FSAutomator.BackEnd.Validators
 
         private static bool ValidateExecuteCodeFromDLL(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
         {
+
+            //revisar
             bool actionIsValidated = true;
 
-            var dllFilePath = Path.Combine((action.ActionObject as ExecuteCodeFromDLL).DLLPackageFolder, (action.ActionObject as ExecuteCodeFromDLL).DLLName);
+            var dllFilePath = (action.ActionObject as ExecuteCodeFromDLL).DLLPath;
 
             string JSONDirFullFilePath = Directory.GetParent(dllFilePath).FullName;
             //"C:\\Users\\Albert\\source\\repos\\FSAutomator\\FSAutomator.UI\\bin\\Debug\\net6.0-windows\\Automations\\bb"

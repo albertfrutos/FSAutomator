@@ -16,20 +16,20 @@ namespace FSAutomator.BackEnd
 {
     internal class Exporters
     {
-        internal bool ExportAutomation(string fileName, string destinationPath, ObservableCollection<FSAutomatorAction> l_ActionList, AutomationFile l_SAutomationFilesList)
+        internal bool ExportAutomation(string fileName, string destinationPath, ObservableCollection<FSAutomatorAction> actionList, AutomationFile automationFile)
         {
             var exportPath = @"Exports";
-            if (l_ActionList is not null && l_ActionList.Count() > 0)
+            if (actionList is not null && actionList.Count() > 0)
             {
                 if (!Directory.Exists(exportPath))
                 {
                     Directory.CreateDirectory(exportPath);
                 }
 
-                if (l_ActionList[0].Name == "DLLAutomation")
+                if (actionList[0].Name == "DLLAutomation")
                 {
-                    var DLLFileName = (l_ActionList[0].ActionObject as FSAutomator.Backend.Automators.ExternalAutomator).DLLName;
-                    var DLLPath = (l_ActionList[0].ActionObject as FSAutomator.Backend.Automators.ExternalAutomator).DLLPath;
+                    var DLLFileName = (actionList[0].ActionObject as FSAutomator.Backend.Automators.ExternalAutomator).DLLName;
+                    var DLLPath = (actionList[0].ActionObject as FSAutomator.Backend.Automators.ExternalAutomator).DLLPath;
                     var SavedDLLFileName = Path.Combine(destinationPath, DLLFileName);
                     ExportDLL(DLLPath, SavedDLLFileName);
                 }
@@ -37,26 +37,26 @@ namespace FSAutomator.BackEnd
                 {
 
 
-                    List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(l_ActionList);
+                    List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
                     if (dllFilesInAction.Any()) //is a pack
                     {
-                        var packageName = l_SAutomationFilesList.PackageName;
-                        var automationFileName = l_SAutomationFilesList.FileName;
+                        var packageName = automationFile.PackageName;
+                        var automationFileName = automationFile.FileName;
 
                         bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction,Path.Combine(@"Automations",packageName));
 
                         if (allDLLsExist)
                         {
-                            var json = Utils.GetJSONTextFromAutomationList(l_ActionList, packageName);
-                            ExportPack(fileName, packageName, automationFileName, l_SAutomationFilesList, json);
+                            var json = Utils.GetJSONTextFromAutomationList(actionList, packageName);
+                            ExportPack(fileName, packageName, automationFileName, automationFile, json);
 
                         }
                     }
                     else //standalone json
                     {
                         var jsonFileName = Path.Combine(destinationPath, Path.GetFileNameWithoutExtension(fileName) + ".json");
-                        var json = Utils.GetJSONTextFromAutomationList(l_ActionList);
+                        var json = Utils.GetJSONTextFromAutomationList(actionList);
                         ExportJson(jsonFileName, json);
                     }
 

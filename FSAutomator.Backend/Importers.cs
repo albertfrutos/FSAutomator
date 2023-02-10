@@ -51,7 +51,9 @@ namespace FSAutomator.BackEnd
             {
                 var JSONPath = jsonFileName[0];
 
-                var actionList = Utils.GetAutomationsObjectList(JSONPath);
+                var automationFile = new AutomationFile(JSONPath);
+
+                var actionList = Utils.GetAutomationsObjectList(automationFile);
 
                 List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
@@ -100,7 +102,9 @@ namespace FSAutomator.BackEnd
         {
             var JSONFileName = Path.GetFileName(JSONPath);
 
-            var actionList = Utils.GetAutomationsObjectList(JSONPath);
+            var automationFile = new AutomationFile(JSONFileName);
+
+            var actionList = Utils.GetAutomationsObjectList(automationFile);
 
             List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 

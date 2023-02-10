@@ -65,22 +65,23 @@ namespace FSAutomator.Backend.Utilities
             return allDLLsExist;
         }
 
-        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(string automationPath, string jsonPackName = "")
+        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(AutomationFile fileToLoad)
         {
+            var filePath = fileToLoad.FilePath;
 
-            var json = File.ReadAllText(automationPath);
+            var json = File.ReadAllText(filePath);
 
             var jsonObject = JObject.Parse(json);
 
             var actionsNode = jsonObject["Actions"].ToArray();
 
-            var actionsList = CreateActionList(automationPath, actionsNode);
+            var actionsList = CreateActionList(fileToLoad, actionsNode);
 
             return actionsList;
 
         }
 
-        private static ObservableCollection<FSAutomatorAction> CreateActionList(string automationPath, JToken[] actions, string jsonPackName = "")
+        private static ObservableCollection<FSAutomatorAction> CreateActionList(AutomationFile fileToLoad, JToken[] actions)
         {
             ObservableCollection<FSAutomatorAction> actionsList = new ObservableCollection<FSAutomatorAction>();
 
@@ -114,9 +115,9 @@ namespace FSAutomator.Backend.Utilities
                 
                 if (actionName == "ExecuteCodeFromDLL")
                 {
-                    (actionObject as ExecuteCodeFromDLL).DLLPackageFolder = Directory.GetParent(automationPath).Name;
+                    (actionObject as ExecuteCodeFromDLL).DLLPath = Path.Combine(Directory.GetParent(fileToLoad.FilePath).FullName, (actionObject as ExecuteCodeFromDLL).DLLName);
                 }
-                
+
                 var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError);
 
                 actionsList.Add(action);
@@ -129,21 +130,32 @@ namespace FSAutomator.Backend.Utilities
             var automationFiles = Directory.GetFiles(@"Automations", "*.json", SearchOption.TopDirectoryOnly).ToList();
             automationFiles.AddRange(Directory.GetFiles(@"Automations", "*.dll", SearchOption.TopDirectoryOnly).ToList());
 
-            var automationsToLoad = automationFiles.Select(x => new AutomationFile(Path.GetFileName(x), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(x), Path.GetExtension(x)))).ToList();
+            var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath)).ToList();
 
             var automationPackPaths = Directory.GetDirectories(@"Automations");
 
             foreach (string packPath in automationPackPaths)
             {
-                var jsonPackFileName = String.Format("{0}.json", new DirectoryInfo(packPath).Name);
-                var jsonPackName = Path.GetFileNameWithoutExtension(jsonPackFileName);
+                var filePath = Directory.GetFiles(packPath,"*.json",SearchOption.TopDirectoryOnly).FirstOrDefault(); // note controlar si hi ha més d'un no es carrega
+                var fileName = Path.GetFileName(filePath);
+                var packageName = Path.GetFileNameWithoutExtension(fileName);
+                var visibleName = String.Format("{0} [{1}]", packageName, "json, pack");
 
-                var actionList = Utils.GetAutomationsObjectList(Path.Combine("Automations", jsonPackName, jsonPackFileName), jsonPackName);
+                var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath);
 
-                var dllFilesAsExternalAutomator = actionList.Where(x => x.Name == "ExecuteCodeFromDLL").Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true).Select(z => new AutomationFile((z.ActionObject as ExecuteCodeFromDLL).DLLName, jsonPackName, String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", jsonPackName))).ToList();
+                var actionList = Utils.GetAutomationsObjectList(jsonAutomationFile);
 
-                automationsToLoad.Add(new AutomationFile(jsonPackFileName, jsonPackName, String.Format("{0} [{1}]", jsonPackName, "json, pack")));
-                automationsToLoad.AddRange(dllFilesAsExternalAutomator);
+                var dllFilesAsExternalAutomatorAutomationFileList = actionList.Where(x => x.Name == "ExecuteCodeFromDLL")
+                    .Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true)
+                    .Select(z => new AutomationFile(
+                        (z.ActionObject as ExecuteCodeFromDLL).DLLName,
+                        packageName,
+                        String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", packageName),
+                        Path.Combine("Automations",Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)
+                        )).ToList();
+
+                automationsToLoad.Add(jsonAutomationFile);
+                automationsToLoad.AddRange(dllFilesAsExternalAutomatorAutomationFileList);
             }
             return automationsToLoad;
         }
@@ -171,6 +183,8 @@ namespace FSAutomator.Backend.Utilities
                 writer.WritePropertyName("Actions");
                 writer.WriteStartArray();
 
+                
+
                 foreach (FSAutomatorAction action in automationList)
                 {
 
@@ -189,10 +203,11 @@ namespace FSAutomator.Backend.Utilities
                     foreach (var name in propertyNames)
                     {
                         var value = action.ActionObject.GetType().GetProperty(name).GetValue(action.ActionObject);
-
-                        writer.WritePropertyName(name);
-
-                        writer.WriteValue(value);
+                        if ((action.Name != "ExecuteCodeFromDLL") || ((action.Name == "ExecuteCodeFromDLL") && (name != "DLLPath")))
+                        {
+                            writer.WritePropertyName(name);
+                            writer.WriteValue(value);
+                        }
                     }
 
                     writer.WriteEndObject();
