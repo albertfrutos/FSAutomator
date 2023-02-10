@@ -25,7 +25,7 @@ namespace FSAutomator.Backend.Actions
 
 
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
             bool isConditionTrue = false;
 

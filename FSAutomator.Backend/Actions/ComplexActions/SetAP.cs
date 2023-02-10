@@ -1,4 +1,5 @@
-﻿using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
@@ -9,7 +10,9 @@ namespace FSAutomator.Backend.Actions
 
         public string APStatus { get; set; }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        private AutomationFile automationFile;
+
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
             var apCurrentStatus = GetCurrentAPStatus(sender, connection);
 
@@ -24,10 +27,10 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        private static string GetCurrentAPStatus(object sender, SimConnect connection)
+        private string GetCurrentAPStatus(object sender, SimConnect connection)
         {
 
-            var receivedData = new GetVariable("AUTOPILOT MASTER").ExecuteAction(sender, connection).ComputedResult;
+            var receivedData = new GetVariable("AUTOPILOT MASTER").ExecuteAction(sender, connection, automationFile).ComputedResult;
             
             return receivedData;
         }

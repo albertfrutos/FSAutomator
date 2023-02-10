@@ -20,8 +20,9 @@ namespace FSAutomator.Backend.Entities
         private bool b_stopOnError;
         private string s_validationOutcome;
         private string s_mainFilePath;
+        private AutomationFile o_AutomationFile;
 
-        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError)
+        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
         {
             s_Name = name;
             s_UniqueID = uniqueID;
@@ -32,6 +33,7 @@ namespace FSAutomator.Backend.Entities
             b_isValidated = false;
             b_isAuxiliary = isAuxiliary;
             b_stopOnError = stopOnError;
+            o_AutomationFile = automationFile;
         }
 
         public FSAutomatorAction(string name, string status)
@@ -87,6 +89,17 @@ namespace FSAutomator.Backend.Entities
             {
                 b_stopOnError = value;
                 RaisePropertyChanged("StopOnError");
+            }
+        }
+        
+        public AutomationFile AutomationFile
+        {
+            get { return o_AutomationFile; }
+
+            set
+            {
+                o_AutomationFile = value;
+                RaisePropertyChanged("AutomationFile");
             }
         }
 

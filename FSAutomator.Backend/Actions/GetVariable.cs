@@ -27,7 +27,7 @@ namespace FSAutomator.Backend.Actions
             VariableName = name;
             VariableValue = null;
         }
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
             bool error = false;
             this.VariableValue = null;

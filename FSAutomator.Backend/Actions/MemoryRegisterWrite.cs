@@ -1,4 +1,5 @@
-﻿using FSAutomator.Backend.Utilities;
+﻿using FSAutomator.Backend.Entities;
+using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 
@@ -9,7 +10,7 @@ namespace FSAutomator.Backend.Actions
         public string Value { get; set; }
         public string Id { get; set; }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
             this.Value = Utils.GetValueToOperateOnFromTag(this, connection, this.Value);
 

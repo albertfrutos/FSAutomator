@@ -179,19 +179,20 @@ namespace FSAutomator.BackEnd.Validators
             //revisar
             bool actionIsValidated = true;
 
-            var dllFilePath = (action.ActionObject as ExecuteCodeFromDLL).DLLPath;
+            //var dllFilePath = (action.ActionObject as ExecuteCodeFromDLL).DLLPath;
 
-            string JSONDirFullFilePath = Directory.GetParent(dllFilePath).FullName;
+            //string JSONDirFullFilePath = Directory.GetParent(dllFilePath).FullName;
             //"C:\\Users\\Albert\\source\\repos\\FSAutomator\\FSAutomator.UI\\bin\\Debug\\net6.0-windows\\Automations\\bb"
 
-            var DLLPath = (action.ActionObject as ExecuteCodeFromDLL).DLLName;
+            var DLLName = (action.ActionObject as ExecuteCodeFromDLL).DLLName;
             //"bbdll\\ExternalAutomationExample.dll"
 
-            var realDLLPath = dllFilePath;
+            // note fer coses perque els packs no fan bé el path ara mateix, falta la "pack folder"
+            var realDLLPath = Path.Combine("Automations", DLLName);
 
-            if (DLLPath == String.Empty || !File.Exists(realDLLPath))
+            if (DLLName == String.Empty || !File.Exists(realDLLPath))
                 {
-                var issue = String.Format("DLLAutomation [{0}]: Referenced DLL ({1}) does not exist", index, dllFilePath);
+                var issue = String.Format("DLLAutomation [{0}]: Referenced DLL ({1}) does not exist", index, realDLLPath);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 

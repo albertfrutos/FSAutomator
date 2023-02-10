@@ -1,4 +1,5 @@
-﻿using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -8,7 +9,7 @@ namespace FSAutomator.Backend.Actions
         public bool RemoveAfterRead { get; set; }
         public string Id { get; set; }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
             var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 

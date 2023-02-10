@@ -63,18 +63,20 @@ namespace FSAutomator.Backend
             }
             else if (fileToLoad.FileName.EndsWith(".dll"))
             {
-                LoadDLLActions(fileToLoad.FileName,fileToLoadPath);   //"Automations\\ExternalAutomationExample.dll"
+                LoadDLLActions(fileToLoad);   //"Automations\\ExternalAutomationExample.dll"
             }
 
             ValidateActions();
         }
 
-        private void LoadDLLActions(string DLLFileName, string DLLFilePath)
+        private void LoadDLLActions(AutomationFile fileToLoad)
         {
-            //fer un getname i terure el nom
-            var externalAutomatorObject = new ExternalAutomator(DLLFileName, DLLFilePath); //"Automations\\ExternalAutomationExample.dll"
+                        var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+
+        //fer un getname i terure el nom
+        var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath); //"Automations\\ExternalAutomationExample.dll"
             var uniqueID = Guid.NewGuid().ToString();
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject, false, true));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", fileToLoadPath, externalAutomatorObject, false, true,fileToLoad));
         }
 
         public List<string> ValidateActions()
@@ -117,7 +119,7 @@ namespace FSAutomator.Backend
             automator.RebuildActionListIndices();
         }
 
-        public void AddJSONActionAfterPosition(int position, string actionJSON)
+        public void AddJSONActionAfterPosition(int position, string actionJSON, AutomationFile automationFile)
         {
             var jsonObject = JObject.Parse(actionJSON);
             var actionName = jsonObject["Name"].ToString();
@@ -131,7 +133,7 @@ namespace FSAutomator.Backend
 
             var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false, stopOnError);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false, stopOnError, automationFile);
 
             automator.ActionList.Insert(position + 1, action);
 

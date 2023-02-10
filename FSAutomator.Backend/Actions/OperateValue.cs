@@ -1,6 +1,7 @@
 ﻿using FSAutomator.BackEnd.Entities;
 using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
+using FSAutomator.Backend.Entities;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -11,7 +12,7 @@ namespace FSAutomator.Backend.Actions
         public double Number { get; set; }
         public string ItemToOperateOver { get; set; }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
             var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, connection, this.ItemToOperateOver);
 

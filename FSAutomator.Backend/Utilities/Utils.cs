@@ -113,12 +113,14 @@ namespace FSAutomator.Backend.Utilities
 
                 actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 
+                /*
                 if (actionName == "ExecuteCodeFromDLL")
                 {
                     (actionObject as ExecuteCodeFromDLL).DLLPath = Path.Combine(Directory.GetParent(fileToLoad.FilePath).FullName, (actionObject as ExecuteCodeFromDLL).DLLName);
                 }
+                */
 
-                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError);
+                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
 
                 actionsList.Add(action);
             }
@@ -130,7 +132,7 @@ namespace FSAutomator.Backend.Utilities
             var automationFiles = Directory.GetFiles(@"Automations", "*.json", SearchOption.TopDirectoryOnly).ToList();
             automationFiles.AddRange(Directory.GetFiles(@"Automations", "*.dll", SearchOption.TopDirectoryOnly).ToList());
 
-            var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath)).ToList();
+            var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath, Directory.GetParent(automationFilePath).FullName)).ToList();
 
             var automationPackPaths = Directory.GetDirectories(@"Automations");
 
@@ -140,8 +142,9 @@ namespace FSAutomator.Backend.Utilities
                 var fileName = Path.GetFileName(filePath);
                 var packageName = Path.GetFileNameWithoutExtension(fileName);
                 var visibleName = String.Format("{0} [{1}]", packageName, "json, pack");
+                var basePath = Directory.GetParent(filePath).FullName;
 
-                var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath);
+                var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath, basePath);
 
                 var actionList = Utils.GetAutomationsObjectList(jsonAutomationFile);
 
@@ -151,7 +154,8 @@ namespace FSAutomator.Backend.Utilities
                         (z.ActionObject as ExecuteCodeFromDLL).DLLName,
                         packageName,
                         String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", packageName),
-                        Path.Combine("Automations",Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)
+                        Path.Combine("Automations",Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
+                        Directory.GetParent(Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
                         )).ToList();
 
                 automationsToLoad.Add(jsonAutomationFile);
@@ -266,7 +270,8 @@ namespace FSAutomator.Backend.Utilities
             }
             else if (itemId == "Variable")
             {
-                valueToOperateOn = new GetVariable(itemArg).ExecuteAction(sender, connection).ComputedResult;
+                valueToOperateOn = new GetVariable(itemArg).ExecuteAction(sender, connection, null).ComputedResult;
+                //note pensar de posar a default a null el automationFile d'aquelles variables que no el necessitin.
             }
 
             return valueToOperateOn;

@@ -23,7 +23,12 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        internal void ExecuteAction(SetAP setAP, SimConnect connection)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
 
             this.EventValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.EventValue);

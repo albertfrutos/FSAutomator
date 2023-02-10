@@ -35,11 +35,14 @@ namespace FSAutomator.Backend.Actions
             this.IncludeAsExternalAutomator = IncludeAsExternalAutomator;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
         {
             var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             var lastValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+
+
+
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPackageFolder, this.DLLName);
             var DLL = Assembly.LoadFrom(path);
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);

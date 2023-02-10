@@ -296,7 +296,7 @@ namespace FSAutomator.ViewModel
 
                 var selectedIndex = ActionListUI.IndexOf(SActionListUI);
 
-                backEnd.AddJSONActionAfterPosition(selectedIndex, newActionJSON);
+                backEnd.AddJSONActionAfterPosition(selectedIndex, newActionJSON, l_SAutomationFilesList);
             }
             catch (Exception ex)
             {
