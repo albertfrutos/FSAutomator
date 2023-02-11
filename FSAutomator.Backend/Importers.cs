@@ -51,11 +51,11 @@ namespace FSAutomator.BackEnd
             {
                 var JSONPath = jsonFileName[0];
 
-                var automationFile = new AutomationFile(JSONPath);
+                var automationFile = new AutomationFile(Path.GetFileName(JSONPath), Path.GetFileNameWithoutExtension(JSONPath), "", JSONPath, "");
 
                 var actionList = Utils.GetAutomationsObjectList(automationFile);
 
-                List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
+                List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
                 bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction, tempDirPath);
 
@@ -102,11 +102,11 @@ namespace FSAutomator.BackEnd
         {
             var JSONFileName = Path.GetFileName(JSONPath);
 
-            var automationFile = new AutomationFile(JSONFileName);
+            var automationFile = new AutomationFile(JSONFileName, "", "", JSONPath, "");
 
             var actionList = Utils.GetAutomationsObjectList(automationFile);
 
-            List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
+            List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
             //JSON has references to DLL files, so it's considered like a pack
             if (dllFilesInAction.Any())
@@ -116,20 +116,13 @@ namespace FSAutomator.BackEnd
 
                 if (allDLLsExist)
                 {
-                    var installedExtensionPath = Path.Combine(@"Automations", Path.GetFileNameWithoutExtension(JSONPath));
-
-                    if (!Directory.Exists(installedExtensionPath))
-                    {
-                        Directory.CreateDirectory(installedExtensionPath);
-                    }
-
-                    File.Copy(JSONPath, Path.Combine(installedExtensionPath, JSONFileName));
+                    File.Copy(JSONPath, Path.Combine(@"Automations", JSONFileName));
 
                     foreach (string dllFilePath in dllFilesInAction)
                     {
                         var dllFileName = Path.GetFileName(dllFilePath);
 
-                        var destinationDLLPath = Path.Combine(installedExtensionPath, dllFileName);
+                        var destinationDLLPath = Path.Combine(@"Automations", dllFileName);
 
                         if (!File.Exists(destinationDLLPath))
                         {

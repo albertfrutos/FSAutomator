@@ -37,7 +37,7 @@ namespace FSAutomator.BackEnd
                 {
 
 
-                    List<object> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
+                    List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
                     if (dllFilesInAction.Any()) //is a pack
                     {

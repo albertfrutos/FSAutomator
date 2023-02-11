@@ -24,11 +24,12 @@ namespace FSAutomator.Backend.Utilities
 
         public static void CopyFullDirectory(string source, string target)
         {
+            /*
             foreach (string dirPath in Directory.GetDirectories(source, "*", SearchOption.AllDirectories))
             {
                 Directory.CreateDirectory(dirPath.Replace(source, target));
             }
-
+            */
 
             foreach (string fileTempPath in Directory.GetFiles(source, "*.*", SearchOption.AllDirectories))
             {
@@ -44,19 +45,20 @@ namespace FSAutomator.Backend.Utilities
             }
         }
 
-        public static List<object> GetDLLFilesInJSONActionList(ObservableCollection<FSAutomatorAction> actionList)
+        public static List<string> GetDLLFilesInJSONActionList(ObservableCollection<FSAutomatorAction> actionList)
         {
-            return actionList.Where(x => x.ActionObject.GetType().GetProperty("DLLName")?.GetValue(x.ActionObject) != null).Select(y => y.ActionObject.GetType().GetProperty("DLLName").GetValue(y.ActionObject)).Distinct().ToList();
+            var a =  actionList.Where(x => x.ActionObject.GetType().GetProperty("DLLName")?.GetValue(x.ActionObject) != null).Select(y => Path.Combine(Directory.GetParent(y.AutomationFile.FilePath).FullName, y.ActionObject.GetType().GetProperty("DLLName").GetValue(y.ActionObject).ToString())).Distinct().ToList();
+            return a;
         }
 
-        public static bool CheckIfAllDLLsInActionFileExist(List<object> dllFilesInAction, string packDirName="")
+        public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction, string packDirName="")
         {
             var allDLLsExist = true;
 
             foreach (string fullDLLPath in dllFilesInAction)
             {
 
-                if (!File.Exists(Path.Combine(packDirName,fullDLLPath)))
+                if (!File.Exists(Path.Combine(fullDLLPath)))
                 {
                     allDLLsExist = false;
                 }
