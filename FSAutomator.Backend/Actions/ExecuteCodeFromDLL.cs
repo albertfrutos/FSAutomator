@@ -18,7 +18,7 @@ namespace FSAutomator.Backend.Actions
         public string MethodName { get; set; }
         public bool IncludeAsExternalAutomator { get; set; } = false;
 
-        public string DLLPackageFolder = "";
+        public string PackFolder = "";
 
         AutoResetEvent evento = new AutoResetEvent(false);
 
@@ -26,24 +26,25 @@ namespace FSAutomator.Backend.Actions
         {
             
         }
-        public ExecuteCodeFromDLL(string DLLName, string ClassName, string MethodName, bool IncludeAsExternalAutomator)
+        public ExecuteCodeFromDLL(string DLLName, string DLLPath, string ClassName, string MethodName, bool IncludeAsExternalAutomator)
         {
             this.DLLName = DLLName;
-            this.DLLPackageFolder = "";
+            this.DLLPath = DLLPath;
+            this.PackFolder = "";
             this.ClassName = ClassName;
             this.MethodName = MethodName;
             this.IncludeAsExternalAutomator = IncludeAsExternalAutomator;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             var lastValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
 
 
-
-            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPackageFolder, this.DLLName);
+            // note àssar a this.DLLPath
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Automations", this.PackFolder, this.DLLName);
             var DLL = Assembly.LoadFrom(path);
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);
             var type = DLL.GetType(classPath);

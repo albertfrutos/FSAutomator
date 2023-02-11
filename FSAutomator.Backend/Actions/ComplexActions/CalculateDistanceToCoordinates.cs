@@ -15,11 +15,8 @@ namespace FSAutomator.Backend.Actions
 
         public string currentLongitude;
 
-        private AutomationFile automationFile;
-
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            this.automationFile = automationFile;
 
             GetCurrentCoordinates(sender, connection);
 
@@ -40,9 +37,9 @@ namespace FSAutomator.Backend.Actions
 
         private void GetCurrentCoordinates(object sender, SimConnect connection)
         {
-            currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection, automationFile).ComputedResult;
+            currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection).ComputedResult;
 
-            currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection, automationFile).ComputedResult;
+            currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection).ComputedResult;
         }
     }
 }

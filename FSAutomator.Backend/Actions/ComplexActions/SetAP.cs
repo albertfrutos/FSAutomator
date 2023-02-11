@@ -12,7 +12,7 @@ namespace FSAutomator.Backend.Actions
 
         private AutomationFile automationFile;
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var apCurrentStatus = GetCurrentAPStatus(sender, connection);
 
@@ -30,7 +30,7 @@ namespace FSAutomator.Backend.Actions
         private string GetCurrentAPStatus(object sender, SimConnect connection)
         {
 
-            var receivedData = new GetVariable("AUTOPILOT MASTER").ExecuteAction(sender, connection, automationFile).ComputedResult;
+            var receivedData = new GetVariable("AUTOPILOT MASTER").ExecuteAction(sender, connection).ComputedResult;
             
             return receivedData;
         }

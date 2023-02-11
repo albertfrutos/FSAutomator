@@ -270,7 +270,7 @@ namespace FSAutomator.Backend.Utilities
             }
             else if (itemId == "Variable")
             {
-                valueToOperateOn = new GetVariable(itemArg).ExecuteAction(sender, connection, null).ComputedResult;
+                valueToOperateOn = new GetVariable(itemArg).ExecuteAction(sender, connection).ComputedResult;
                 //note pensar de posar a default a null el automationFile d'aquelles variables que no el necessitin.
             }
 

@@ -24,7 +24,7 @@ namespace FSAutomator.Backend.Actions
 
         bool isValueReached = false;
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
@@ -38,7 +38,7 @@ namespace FSAutomator.Backend.Actions
 
             do
             {
-                var variableResult = new GetVariable(this.VariableName).ExecuteAction(sender, connection, automationFile).ComputedResult;
+                var variableResult = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
                 CheckVariableRecovered(variableResult);
                 Thread.Sleep(CheckInterval); // NOTE : do it with a Timer
             } while(!this.isValueReached);

@@ -99,10 +99,22 @@ namespace FSAutomator.Backend
 
             foreach (FSAutomatorAction action in actionsList)
             {
-                AddAction(action);
+                var finalAction = ApplyActionModifications(fileToLoad, action);
+
+                AddAction(finalAction);
             }
 
             return;
+        }
+
+        private static FSAutomatorAction ApplyActionModifications(AutomationFile fileToLoad, FSAutomatorAction action)
+        {
+            if (action.Name == "ExecuteCodeFromDLL")
+            {
+                (action.ActionObject as ExecuteCodeFromDLL).PackFolder = fileToLoad.PackageName;
+            }
+
+            return action;
         }
 
         public void AddAction(FSAutomatorAction action)

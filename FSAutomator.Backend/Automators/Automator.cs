@@ -46,7 +46,7 @@ namespace FSAutomator.Backend.Automators
         private bool RunAction(FSAutomatorAction action)
         {
             action.Status = "Running";
-            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection, action.AutomationFile});
+            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection});
             lastOperationValue = result.ComputedResult;
             action.Result = result;
             action.Status = "Done";

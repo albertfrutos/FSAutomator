@@ -13,9 +13,9 @@ namespace FSAutomator.Backend.Actions
         internal string IsVariableTheExpectedValue;
 
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection, automationFile).ComputedResult;
+            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
 
             this.IsVariableTheExpectedValue = (result == VariableExpectedValue).ToString();
 

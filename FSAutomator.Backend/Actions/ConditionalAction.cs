@@ -25,7 +25,7 @@ namespace FSAutomator.Backend.Actions
 
 
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             bool isConditionTrue = false;
 
@@ -61,6 +61,8 @@ namespace FSAutomator.Backend.Actions
             }
 
             ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);          
+
+            // note si es true pero esta empty, es va al false... arreglar!
 
             if (isConditionTrue && !string.IsNullOrEmpty(ActionIfTrueUniqueID))
             {

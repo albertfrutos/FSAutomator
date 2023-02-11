@@ -12,7 +12,7 @@ namespace FSAutomator.Backend.Actions
         public double Number { get; set; }
         public string ItemToOperateOver { get; set; }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var valueToOperateOn = Utils.GetValueToOperateOnFromTag(sender, connection, this.ItemToOperateOver);
 

@@ -22,9 +22,9 @@ namespace FSAutomator.Backend.Automators
             this.DLLPath = DLLPath;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            //note mirar com treure el path= .... i fer us de automationFile
+            //note mirar com treure el Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location .... File.Info....FullName
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPath);
             var DLL = Assembly.LoadFile(path);
 

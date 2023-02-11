@@ -28,7 +28,7 @@ namespace FSAutomator.Backend.Actions
             throw new NotImplementedException();
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
 
             this.EventValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.EventValue);

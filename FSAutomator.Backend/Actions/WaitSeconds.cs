@@ -17,7 +17,7 @@ namespace FSAutomator.Backend.Actions
         double totalSeconds;
 
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile)
+        public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             totalSeconds = Convert.ToDouble(this.WaitTime);
 

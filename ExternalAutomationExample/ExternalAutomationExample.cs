@@ -8,7 +8,7 @@ namespace FSAutomator.ExternalAutomation
 {
     public class ExternalAutomation
     {
-        public string Execute(object sender, SimConnect connection, AutomationFile automationFile, AutoResetEvent evento)
+        public string Execute(object sender, SimConnect connection, AutoResetEvent evento)
         {
             // To get here, you need to execute the automation as dll.
             //new SendEvent("HEADING_BUG_SET", "25").ExecuteAction(this, connection, MainReturnValueEvent, MainUnlockNextStep);

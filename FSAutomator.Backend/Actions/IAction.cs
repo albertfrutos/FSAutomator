@@ -6,6 +6,6 @@ namespace FSAutomator.Backend.Actions
 {
     interface IAction
     {
-        public ActionResult ExecuteAction(object sender, SimConnect connection, AutomationFile automationFile);
+        public ActionResult ExecuteAction(object sender, SimConnect connection);
     }
 }
