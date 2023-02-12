@@ -134,7 +134,7 @@ namespace FSAutomator.Backend.Utilities
             var automationFiles = Directory.GetFiles(@"Automations", "*.json", SearchOption.TopDirectoryOnly).ToList();
             automationFiles.AddRange(Directory.GetFiles(@"Automations", "*.dll", SearchOption.TopDirectoryOnly).ToList());
 
-            var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath, Directory.GetParent(automationFilePath).FullName)).ToList();
+            var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath, Directory.GetParent(automationFilePath).FullName, false)).ToList();
 
             var automationPackPaths = Directory.GetDirectories(@"Automations");
 
@@ -146,7 +146,7 @@ namespace FSAutomator.Backend.Utilities
                 var visibleName = String.Format("{0} [{1}]", packageName, "json, pack");
                 var basePath = Directory.GetParent(filePath).FullName;
 
-                var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath, basePath);
+                var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath, basePath, true);
 
                 var actionList = Utils.GetAutomationsObjectList(jsonAutomationFile);
 
@@ -154,7 +154,7 @@ namespace FSAutomator.Backend.Utilities
                     .Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true)
                     .Select(z => new AutomationFile(
                         (z.ActionObject as ExecuteCodeFromDLL).DLLName,
-                        packageName,
+                        "",
                         String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", packageName),
                         Path.Combine("Automations",Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
                         Directory.GetParent(Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName

@@ -51,7 +51,7 @@ namespace FSAutomator.BackEnd
             {
                 var JSONPath = jsonFileName[0];
 
-                var automationFile = new AutomationFile(Path.GetFileName(JSONPath), Path.GetFileNameWithoutExtension(JSONPath), "", JSONPath, "");
+                var automationFile = new AutomationFile(Path.GetFileName(JSONPath), Path.GetFileNameWithoutExtension(JSONPath), "", JSONPath, "", true);
 
                 var actionList = Utils.GetAutomationsObjectList(automationFile);
 

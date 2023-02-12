@@ -3,7 +3,7 @@
     {
       "Name": "WaitSeconds",
       "Parameters": {
-        "WaitTime": "10",
+        "WaitTime": "10"
       }
     },
     {
@@ -11,6 +11,16 @@
       "UniqueID": "5h0t3o",
       "Parameters": {
         "DLLName": "TestPack.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "true"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
         "ClassName": "Lalala",
         "MethodName": "LalalaTest",
         "IncludeAsExternalAutomator": "true"
