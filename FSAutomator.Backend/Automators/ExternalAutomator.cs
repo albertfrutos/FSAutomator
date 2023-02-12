@@ -1,4 +1,5 @@
-﻿using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Reflection;
 
@@ -23,6 +24,7 @@ namespace FSAutomator.Backend.Automators
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
+            //note mirar com treure el Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location .... File.Info....FullName
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPath);
             var DLL = Assembly.LoadFile(path);
 

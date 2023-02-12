@@ -8,6 +8,7 @@ namespace FSAutomator.Backend.Entities
 {
     public class FSAutomatorAction : INotifyPropertyChanged
     {
+        private int i_Id;
         private string s_Name;
         private string s_UniqueID;
         private string s_Status;
@@ -18,18 +19,21 @@ namespace FSAutomator.Backend.Entities
         private bool b_isAuxiliary;
         private bool b_stopOnError;
         private string s_validationOutcome;
+        private string s_mainFilePath;
+        private AutomationFile o_AutomationFile;
 
-        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError)
+        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
         {
             s_Name = name;
             s_UniqueID = uniqueID;
             s_Status = status;
-            s_Parameters = JsonConvert.SerializeObject(actionObject);
+            s_Parameters = JsonConvert.SerializeObject(actionObject, Formatting.Indented);
             s_Result = new ActionResult("", null);
             o_Object = actionObject;
             b_isValidated = false;
             b_isAuxiliary = isAuxiliary;
             b_stopOnError = stopOnError;
+            o_AutomationFile = automationFile;
         }
 
         public FSAutomatorAction(string name, string status)
@@ -51,6 +55,18 @@ namespace FSAutomator.Backend.Entities
             {
                 s_Name = value;
                 RaisePropertyChanged("Name");
+            }
+        }
+
+        [JsonIgnore]
+        public int Id
+        {
+            get { return i_Id; }
+
+            set
+            {
+                i_Id = value;
+                RaisePropertyChanged("Id");
             }
         }
         
@@ -75,6 +91,17 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("StopOnError");
             }
         }
+        
+        public AutomationFile AutomationFile
+        {
+            get { return o_AutomationFile; }
+
+            set
+            {
+                o_AutomationFile = value;
+                RaisePropertyChanged("AutomationFile");
+            }
+        }
 
         public string UniqueID
         {
@@ -87,6 +114,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public string Status
         {
             get { return s_Status; }
@@ -118,6 +146,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public string ParametersBeautified
         {
             get { return s_Parameters; }
@@ -127,6 +156,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public ActionResult Result
         {
             get
@@ -151,7 +181,20 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("ActionObject");
             }
         }
-        
+
+        [JsonIgnore]
+        public string MainFilePath
+        {
+            get { return s_mainFilePath; }
+            //note revisar si cal
+            set
+            {
+                s_mainFilePath = value;
+                RaisePropertyChanged("MainFilePath");
+            }
+        }
+
+        [JsonIgnore]
         public bool IsValidated
         {
             get { return b_isValidated; }
@@ -163,6 +206,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonIgnore]
         public string ValidationOutcome
         {
             get { return s_validationOutcome; }

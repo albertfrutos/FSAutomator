@@ -29,11 +29,11 @@ namespace FSAutomator.Backend.Actions
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 
-            var valueToOperate = Utils.GetValueToOperateOnFromTag(sender, connection, this.ThresholdValue);
+            this.ThresholdValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.ThresholdValue);
 
-            if (!Utils.IsNumericDouble(valueToOperate))
+            if (!Utils.IsNumericDouble(this.ThresholdValue))
             {
-                return new ActionResult($"ThresholdValue not a number - {valueToOperate}", null, true);
+                return new ActionResult($"ThresholdValue not a number - {this.ThresholdValue}", null, true);
             }
 
             do

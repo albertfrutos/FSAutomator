@@ -1,6 +1,16 @@
 ﻿{
   "Actions": [
     {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "true"
+      }
+    },
+    {
       "Name": "MemoryRegisterWrite",
       "Parameters": {
         "Value": "01a-",

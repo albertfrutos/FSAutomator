@@ -18,7 +18,7 @@
       "Name": "SendEvent",
       "Parameters": {
         "EventName": "HEADING_BUG_SET",
-        "EventValue": "330"
+        "EventValue": "134"
       }
     },
     {

@@ -4,8 +4,19 @@
     {
         public string FileName { get; set; }
         public string PackageName { get; set; } = null;
+        public bool IsPackage { get; set; }
         public string VisibleName { get; set; }
+        public string FilePath { get; set; }
+        public string BasePath { get; set; }
 
-        public AutomationFile(string name, string packageName = "", string visibleName = "") { FileName = name; PackageName = packageName; VisibleName = visibleName != "" ? visibleName : FileName; }
+        public AutomationFile(string fileName, string packageName = "", string visibleName = "", string filePath = "", string basePath = "", bool isPackage = false)
+        {
+            FileName = fileName;
+            PackageName = packageName;
+            this.IsPackage = isPackage;
+            VisibleName = visibleName != "" ? visibleName : FileName;
+            FilePath = filePath;
+            BasePath = basePath;
+        }
     }
 }

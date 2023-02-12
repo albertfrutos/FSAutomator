@@ -3,6 +3,7 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd;
+using FSAutomator.BackEnd.Entities;
 using FSAutomator.BackEnd.Validators;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
@@ -18,17 +19,14 @@ namespace FSAutomator.Backend
     {
         private SimConnect m_SimConnect = null;
 
-        public Automator automator = null;
+        public Automator automator = new Automator();
 
-        GeneralStatus status = new GeneralStatus
+        public GeneralStatus status = new GeneralStatus();
+
+
+        public BackendMain()
         {
-            isConnectedToSim = false
-        };
-
-
-        public BackendMain(ObservableCollection<FSAutomatorAction> ActionList)
-        {
-            this.automator = new Automator(ActionList);
+            
         }
 
         public void Execute()
@@ -47,73 +45,107 @@ namespace FSAutomator.Backend
             }
         }
 
-        public void SaveAutomation(AutomationFile automation)
+        public string SaveAutomation(AutomationFile automation, string newFileName)
         {
-            var automationFilePath = Path.Combine("Automations", automation.PackageName, automation.FileName);
+
+            var automationFilePath = Path.Combine("Automations", automation.PackageName, newFileName + ".json");
+            var isDLLAutomation = automator.ActionList.Select(x => x.Name == "DLLAutomation").Any();
+            
+            if (isDLLAutomation)
+            {
+                return "Saving DLLs is not supported";
+            }
+
             var json = Utils.GetJSONTextFromAutomationList(automator.ActionList);
             File.WriteAllText(automationFilePath, json);
+            return "Automation saved successfully";
         }
 
         public void LoadActions(AutomationFile fileToLoad)
         {
-            automator.ActionList.Clear();
+            ClearAutomationList();
 
             var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
 
             if (fileToLoad.FileName.EndsWith(".json"))
             {
-                LoadJSONActions(fileToLoadPath); //"Automations\\bb\\bb.json"
+                LoadJSONActions(fileToLoad); //"Automations\\bb\\bb.json"
             }
             else if (fileToLoad.FileName.EndsWith(".dll"))
             {
-                LoadDLLActions(fileToLoad.FileName,fileToLoadPath);   //"Automations\\ExternalAutomationExample.dll"
+                LoadDLLActions(fileToLoad);   //"Automations\\ExternalAutomationExample.dll"
             }
-            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), fileToLoadPath);
+
+            ValidateActions();
         }
 
-        private void LoadDLLActions(string DLLFileName, string DLLFilePath)
+        private void LoadDLLActions(AutomationFile fileToLoad)
         {
-            //fer un getname i terure el nom
-            var externalAutomatorObject = new ExternalAutomator(DLLFileName, DLLFilePath); //"Automations\\ExternalAutomationExample.dll"
+                        var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+
+        //fer un getname i terure el nom
+        var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath); //"Automations\\ExternalAutomationExample.dll"
             var uniqueID = Guid.NewGuid().ToString();
-            automator.ActionList.Add(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", DLLFilePath, externalAutomatorObject,false,true));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", fileToLoadPath, externalAutomatorObject, false, true,fileToLoad));
         }
 
-        public void ValidateActions(string JSONFilePath)
+        public List<string> ValidateActions()
         {
-            ActionJSONValidator.ValidateActions(automator.ActionList.ToArray(), JSONFilePath);
+            status.validationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
+            status.isAutomationFullyValidated = status.validationIssues.Count == 0;
+            return status.validationIssues;
         }
 
         public List<string> GetValidationIssuesList()
         {
-            return automator.ActionList.Where(x => x.ValidationOutcome != "").Select(x => x.ValidationOutcome).ToList();
+            return status.validationIssues;
         }
 
-        private void LoadJSONActions(string filePath)
+        private void LoadJSONActions(AutomationFile fileToLoad)
         {
-            var actionsList = Utils.GetAutomationsObjectList(filePath); //"Automations\\bb\\bb.json"
+            //var filePath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+
+            var actionsList = Utils.GetAutomationsObjectList(fileToLoad); //"Automations\\bb\\bb.json"
 
             foreach (FSAutomatorAction action in actionsList)
             {
-                if (!action.IsAuxiliary)
-                {
-                    automator.ActionList.Add(action);
-                }
-                else
-                {
-                    automator.AuxiliaryActionList.Add(action);
-                }
+                var finalAction = ApplyActionModifications(fileToLoad, action);
+
+                AddAction(finalAction);
             }
 
             return;
         }
 
+        private static FSAutomatorAction ApplyActionModifications(AutomationFile fileToLoad, FSAutomatorAction action)
+        {
+            if (action.Name == "ExecuteCodeFromDLL")
+            {
+                (action.ActionObject as ExecuteCodeFromDLL).PackFolder = fileToLoad.PackageName;
+            }
 
+            return action;
+        }
 
-        public void AddActionAfterPosition(int position, string actionJSON)
+        public void AddAction(FSAutomatorAction action)
+        {
+            if (!action.IsAuxiliary)
+            {
+                automator.ActionList.Add(action);
+            }
+            else
+            {
+                automator.AuxiliaryActionList.Add(action);
+            }
+
+            automator.RebuildActionListIndices();
+        }
+
+        public void AddJSONActionAfterPosition(int position, string actionJSON, AutomationFile automationFile)
         {
             var jsonObject = JObject.Parse(actionJSON);
             var actionName = jsonObject["Name"].ToString();
+
             var actionParameters = jsonObject["Parameters"].ToString();
             var uniqueID = Guid.NewGuid().ToString();
             var stopOnError = (bool)jsonObject["StopOnError"];
@@ -123,9 +155,13 @@ namespace FSAutomator.Backend
 
             var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false, stopOnError);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false, stopOnError, automationFile);
 
             automator.ActionList.Insert(position + 1, action);
+
+            automator.RebuildActionListIndices();
+
+            //status.validationIssues = ValidateActions()
         }
 
         public int MoveActionDown(int selectedIndex)
@@ -138,6 +174,9 @@ namespace FSAutomator.Backend
             FSAutomatorAction temp = automator.ActionList[selectedIndex];
             automator.ActionList[selectedIndex] = automator.ActionList[selectedIndex + 1];
             automator.ActionList[selectedIndex + 1] = temp;
+
+            automator.RebuildActionListIndices();
+
             return selectedIndex + 1;
         }
         
@@ -151,7 +190,22 @@ namespace FSAutomator.Backend
             FSAutomatorAction temp = automator.ActionList[selectedIndex];
             automator.ActionList[selectedIndex] = automator.ActionList[selectedIndex - 1];
             automator.ActionList[selectedIndex - 1] = temp;
+
+            automator.RebuildActionListIndices();
+
             return selectedIndex - 1;
+        }
+
+        public void RemoveAction(int index)
+        {
+            if (automator.ActionList.Count > 0 && index >= 0)
+            {
+                automator.ActionList.Remove(automator.ActionList[index]);
+                automator.RebuildActionListIndices();
+            }
+
+            
+
         }
 
 
@@ -167,6 +221,12 @@ namespace FSAutomator.Backend
             m_SimConnect?.ReceiveMessage();
         }
 
+        public void ClearAutomationList()
+        {
+            automator.ActionList.Clear();
+            automator.AuxiliaryActionList.Clear();
+        }
+
         public void Disconnect()
         {
             Console.WriteLine("Disconnect");
@@ -180,7 +240,7 @@ namespace FSAutomator.Backend
             }
         }
 
-        public bool Connect(IntPtr m_hWnd, int WM_USER_SIMCONNECT)
+        public void Connect(IntPtr m_hWnd, int WM_USER_SIMCONNECT)
         {
             Trace.WriteLine("Connect BackEnd");
 
@@ -197,13 +257,13 @@ namespace FSAutomator.Backend
                 /// Listen to exceptions
                 m_SimConnect.OnRecvException += new SimConnect.RecvExceptionEventHandler(Simconnect_OnRecvException);
 
-                return true;
+                status.isConnectedToSim = true;
 
             }
             catch (COMException ex)
             {
                 Trace.WriteLine("Connection to KH failed: " + ex.Message);
-                return false;
+                status.isConnectedToSim = false;
                 //MessageBox.Show(String.Format("Could not connect to MSFS: {0}", ex.Message), "Connection Error");
             }
 
@@ -234,6 +294,11 @@ namespace FSAutomator.Backend
         public void ImportAutomationFromFilePath(string filepath)
         {
             new Importers().ImportAutomationFromFilePath(filepath);
+        }
+
+        public ObservableCollection<FSAutomatorAction> GetActionList()
+        {
+            return automator.ActionList;
         }
     }
 }

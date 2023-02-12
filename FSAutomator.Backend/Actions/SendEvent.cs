@@ -23,6 +23,11 @@ namespace FSAutomator.Backend.Actions
 
         }
 
+        internal void ExecuteAction(SetAP setAP, SimConnect connection)
+        {
+            throw new NotImplementedException();
+        }
+
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
 

@@ -6,8 +6,17 @@ using System.Threading.Tasks;
 
 namespace FSAutomator.BackEnd
 {
-    internal class GeneralStatus
+    public class GeneralStatus
     {
-        internal bool isConnectedToSim { get; set; }
+        public bool isConnectedToSim { get; set; }
+        public bool isAutomationFullyValidated { get; set; } //note fer i refactor
+        public List<string> validationIssues { get; set; }
+
+        public GeneralStatus()
+        {
+            isConnectedToSim = false;
+            isAutomationFullyValidated = false;
+            validationIssues = new List<string>();
+        }
     }
 }

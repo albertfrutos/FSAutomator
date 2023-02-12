@@ -30,6 +30,7 @@ namespace FSAutomator.Backend.Actions
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             bool error = false;
+            this.VariableValue = null;
 
             variable = new Variable().GetVariableInformation(this.VariableName);
 

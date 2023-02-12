@@ -3,7 +3,7 @@
     {
       "Name": "WaitSeconds",
       "Parameters": {
-        "WaitTime": "10",
+        "WaitTime": "10"
       }
     },
     {

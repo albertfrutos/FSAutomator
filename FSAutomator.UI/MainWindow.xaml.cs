@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace FSAutomator
 {
+    // https://learn.microsoft.com/en-us/windows/communitytoolkit/controls/datagrid_guidance/rowdetails
+    // https://stackoverflow.com/questions/3829137/i-need-the-expand-collapse-for-rowdetailstemplate
+    // https://www.google.com/search?q=RowDetailsTemplate+collapse&oq=RowDetailsTemplate+collapse&aqs=chrome..69i57j0i22i30l3j69i60l2.1643j0j7&sourceid=chrome&ie=UTF-8
 
     interface IBaseSimConnectWrapper
     {
@@ -65,6 +70,28 @@ namespace FSAutomator
         private void mnuExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Expander_Expanded(object sender, RoutedEventArgs e)
+        {
+            for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)
+                if (vis is DataGridRow)
+                {
+                    var row = (DataGridRow)vis;
+                    row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                    break;
+                }
+        }
+
+        private void Expander_Collapsed(object sender, RoutedEventArgs e)
+        {
+            for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)
+                if (vis is DataGridRow)
+                {
+                    var row = (DataGridRow)vis;
+                    row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                    break;
+                }
         }
     }
 

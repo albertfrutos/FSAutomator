@@ -24,9 +24,9 @@ namespace FSAutomator.ViewModel
 {
     public class MainWindowViewModel : INotifyPropertyChanged, IBaseSimConnectWrapper
     {
-        public ObservableCollection<FSAutomatorAction> l_ActionListUI;
+        private ObservableCollection<FSAutomatorAction> l_ActionListUI;
         private FSAutomatorAction l_SActionListUI;
-        private int l_SIActionListUI;
+        private int l_SIActionListUI = -1;
         private string l_SAutomationName = "";
 
         BackendMain backEnd = null;
@@ -38,7 +38,6 @@ namespace FSAutomator.ViewModel
         private AutomationFile l_SAutomationFilesList;
         private List<string> l_ValidationOutcomeCleaned;
         private bool b_EditMode = false;
-        private bool m_isConnected = false;
 
 
         private ICommand? b_ButtonLoadActions;
@@ -186,10 +185,10 @@ namespace FSAutomator.ViewModel
 
         public MainWindowViewModel()
         {
+            backEnd = new BackendMain();
 
-            l_ActionListUI = new ObservableCollection<FSAutomatorAction>();
+            ActionListUI = backEnd.GetActionList();
 
-            backEnd = new BackendMain(ActionListUI);
 
             RefreshAutomationFilesList();
             InitializeNewAutomation();
@@ -213,8 +212,19 @@ namespace FSAutomator.ViewModel
 
         private void SaveCurrentAutomation(object obj)
         {
-            backEnd.SaveAutomation(l_SAutomationFilesList);
-        }
+            var filename = SAutomationName;
+
+            if (!(filename.Length > 0))
+            {
+                MessageBox.Show("Please enter an automation name.", "Error");
+                return;
+            }
+
+            var saveResult = backEnd.SaveAutomation(SAutomationFilesList, SAutomationName);
+            RefreshAutomationFilesList();
+            
+            MessageBox.Show(saveResult);
+        -}
 
 
 
@@ -228,7 +238,7 @@ namespace FSAutomator.ViewModel
                 MessageBox.Show("Please enter an automation name.", "Error");
                 return;
             }
-            else if (backEnd.ExportAutomation(filename, destinationPath, l_SAutomationFilesList))
+            else if (backEnd.ExportAutomation(filename, destinationPath, SAutomationFilesList))
             {
                 MessageBox.Show("Export finished.", "Finished");
             }
@@ -238,46 +248,47 @@ namespace FSAutomator.ViewModel
                 return;
             }
 
-            ActionListUI.Clear();
-            this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
+            backEnd.ClearAutomationList();
+            //this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
 
             RefreshAutomationFilesList();
         }
 
         private void RefreshAutomationFilesList()
         {
-            var selectedAutomation = l_SAutomationFilesList;
+            var selectedAutomation = SAutomationFilesList;
             AutomationFilesList = Utils.GetAutomationFilesList();
-            l_SAutomationFilesList = selectedAutomation;
+            SAutomationFilesList = selectedAutomation;
         }
 
 
         private void MoveActionUp(object obj)
         {
-            var selectedIndex = l_ActionListUI.IndexOf(l_SActionListUI);
+            var selectedIndex = ActionListUI.IndexOf(SActionListUI);
 
 
             SIActionListUI = backEnd.MoveActionUp(selectedIndex);
+            SIActionListUI = -1;
+
         }
 
         private void MoveActionDown(object obj)
         {
-            var selectedIndex = l_ActionListUI.IndexOf(l_SActionListUI);
+            var selectedIndex = ActionListUI.IndexOf(SActionListUI);
             SIActionListUI = backEnd.MoveActionDown(selectedIndex);
+            SIActionListUI = -1;
+
         }
 
 
 
         private void RemoveAction(object obj)
         {
-            var currentSelectedIndex = l_SIActionListUI;
+            var currentSelectedIndex = SIActionListUI;
 
-            l_ActionListUI.Remove(l_SActionListUI);
+            backEnd.RemoveAction(currentSelectedIndex);
 
-            if (l_ActionListUI.Count > 0)
-            {
-                l_SIActionListUI = currentSelectedIndex - 1;
-            }
+            SIActionListUI = -1;
         }
 
         private void AddAction(object obj)
@@ -294,10 +305,9 @@ namespace FSAutomator.ViewModel
                     return;
                 }
 
-                var selectedIndex = l_ActionListUI.IndexOf(l_SActionListUI);
+                var selectedIndex = ActionListUI.IndexOf(SActionListUI);
 
-                backEnd.AddActionAfterPosition(selectedIndex, newActionJSON);
-                ValidateActions(null);
+                backEnd.AddJSONActionAfterPosition(selectedIndex, newActionJSON, l_SAutomationFilesList);
             }
             catch (Exception ex)
             {
@@ -337,7 +347,10 @@ namespace FSAutomator.ViewModel
 
         public ObservableCollection<FSAutomatorAction> ActionListUI
         {
-            get { return l_ActionListUI; }
+            get {
+                l_ActionListUI = backEnd.GetActionList();
+                return l_ActionListUI;
+            }
 
             set
             {
@@ -418,28 +431,15 @@ namespace FSAutomator.ViewModel
         {
             get
             {
-                return l_ValidationOutcomeCleaned;
+                return backEnd.status.validationIssues; //l_ValidationOutcomeCleaned;
 
             }
             set
             {
-                l_ValidationOutcomeCleaned = value;
+                backEnd.status.validationIssues = value;
                 RaisePropertyChanged("ValidationOutcomeCleaned");
             }
 
-        }
-
-        public bool IsConnected
-        {
-            get
-            {
-                return m_isConnected;
-            }
-            set
-            {
-                m_isConnected = value;
-                RaisePropertyChanged("IsConnected");
-            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -477,7 +477,7 @@ namespace FSAutomator.ViewModel
         private void Connect(object commandParameter)
         {
             Trace.WriteLine("Connect ViewModel");
-            IsConnected = backEnd.Connect(m_hWnd, WM_USER_SIMCONNECT);
+            backEnd.Connect(m_hWnd, WM_USER_SIMCONNECT);
 
 
         }
@@ -485,14 +485,15 @@ namespace FSAutomator.ViewModel
         public void LoadActions(object obj)
         {
 
-            if (l_SAutomationFilesList is null)
+            if (SAutomationFilesList is null)
             {
                 return;
             }
 
-            SAutomationName = Path.GetFileNameWithoutExtension(SAutomationFilesList.FileName);
+            //SAutomationName = Path.GetFileNameWithoutExtension(SAutomationFilesList.FileName);
 
-            backEnd.LoadActions(l_SAutomationFilesList);
+            backEnd.LoadActions(SAutomationFilesList);
+            SAutomationName = l_SAutomationFilesList.FileName;
             this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
         }
 
@@ -532,8 +533,7 @@ namespace FSAutomator.ViewModel
         {
             if (backEnd != null)
             {
-                backEnd.ValidateActions(Path.Combine("Automations", l_SAutomationFilesList.PackageName, l_SAutomationFilesList.FileName));
-                this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
+                this.ValidationOutcomeCleaned = backEnd.ValidateActions();
             }
         }
     }
