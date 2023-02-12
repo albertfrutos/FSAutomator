@@ -43,7 +43,6 @@ namespace FSAutomator.Backend.Actions
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
 
 
-            // note àssar a this.DLLPath
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Automations", this.PackFolder, this.DLLName);
             var DLL = Assembly.LoadFrom(path);
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);

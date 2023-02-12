@@ -3,6 +3,7 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd;
+using FSAutomator.BackEnd.Entities;
 using FSAutomator.BackEnd.Validators;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
@@ -44,11 +45,20 @@ namespace FSAutomator.Backend
             }
         }
 
-        public void SaveAutomation(AutomationFile automation, string newFileName)
+        public string SaveAutomation(AutomationFile automation, string newFileName)
         {
+
             var automationFilePath = Path.Combine("Automations", automation.PackageName, newFileName + ".json");
+            var isDLLAutomation = automator.ActionList.Select(x => x.Name == "DLLAutomation").Any();
+            
+            if (isDLLAutomation)
+            {
+                return "Saving DLLs is not supported";
+            }
+
             var json = Utils.GetJSONTextFromAutomationList(automator.ActionList);
             File.WriteAllText(automationFilePath, json);
+            return "Automation saved successfully";
         }
 
         public void LoadActions(AutomationFile fileToLoad)

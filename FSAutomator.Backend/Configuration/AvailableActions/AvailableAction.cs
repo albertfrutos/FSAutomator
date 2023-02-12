@@ -26,11 +26,5 @@ namespace FSAutomator.BackEnd.Configuration
             return actions;
         }
 
-        public List<string> GetAvailableActionsName()
-        {
-            var availableActions = GetAvailableActions().FSAutomatorAvailableActions.Select(x => x.Name).ToList();
-            return availableActions;
-        }
-
     }
 }

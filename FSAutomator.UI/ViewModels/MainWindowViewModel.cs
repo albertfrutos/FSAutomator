@@ -212,8 +212,19 @@ namespace FSAutomator.ViewModel
 
         private void SaveCurrentAutomation(object obj)
         {
-            backEnd.SaveAutomation(SAutomationFilesList, SAutomationName);
-        }
+            var filename = SAutomationName;
+
+            if (!(filename.Length > 0))
+            {
+                MessageBox.Show("Please enter an automation name.", "Error");
+                return;
+            }
+
+            var saveResult = backEnd.SaveAutomation(SAutomationFilesList, SAutomationName);
+            RefreshAutomationFilesList();
+            
+            MessageBox.Show(saveResult);
+        -}
 
 
 
@@ -482,6 +493,7 @@ namespace FSAutomator.ViewModel
             //SAutomationName = Path.GetFileNameWithoutExtension(SAutomationFilesList.FileName);
 
             backEnd.LoadActions(SAutomationFilesList);
+            SAutomationName = l_SAutomationFilesList.FileName;
             this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
         }
 

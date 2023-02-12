@@ -20,49 +20,41 @@ namespace FSAutomator.BackEnd.Validators
                 // note if coordinates are null, they are properly validated in grren --> ERROR! also all complexactions must be reviewe in regards of validation criteria (they are not inspected here).
                 bool actionIsValidated = true;
 
-                if (action.Name == "ConditionalAction")
+                switch (action.Name)
                 {
-                    actionIsValidated = ValidateConditionalAction(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "ExecuteCodeFromDLL")
-                {
-                    actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "ExpectVariableValue")
-                {
-                    actionIsValidated = ValidateExpectVariableValue(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "GetVariable")
-                {
-                    actionIsValidated = ValidateGetVariable(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "MemoryRegisterRead")
-                {
-                    actionIsValidated = ValidateMemoryRegisterRead(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "MemoryRegisterWrite")
-                {
-                    actionIsValidated = ValidateMemoryRegisterWrite(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "OperateValue")
-                {
-                    actionIsValidated = ValidateOperateValue(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "SendEvent")
-                {
-                    actionIsValidated = ValidateSendEvent(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "WaitSeconds")
-                {
-                    actionIsValidated = ValidateWaitSeconds(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "WaitUntilVariableReachesNumericValue")
-                {
-                    actionIsValidated = ValidateWaitUntilVariableReachesNumericValue(actionList, validationIssues, index, action);
-                }
-                else if (action.Name == "DLLAutomation")
-                {
-                    actionIsValidated = ValidateDLLAutomation(actionList, validationIssues, index, action);
+                    case "ConditionalAction":
+                        actionIsValidated = ValidateConditionalAction(actionList, validationIssues, index, action);
+                        break;
+                    case "ExecuteCodeFromDLL":
+                        actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action);
+                        break;
+                    case "ExpectVariableValue":
+                        actionIsValidated = ValidateExpectVariableValue(actionList, validationIssues, index, action);
+                        break;
+                    case "GetVariable":
+                        actionIsValidated = ValidateGetVariable(actionList, validationIssues, index, action);
+                        break;
+                    case "MemoryRegisterRead":
+                        actionIsValidated = ValidateMemoryRegisterRead(actionList, validationIssues, index, action);
+                        break;
+                    case "MemoryRegisterWrite":
+                        actionIsValidated = ValidateMemoryRegisterWrite(actionList, validationIssues, index, action);
+                        break;
+                    case "OperateValue":
+                        actionIsValidated = ValidateOperateValue(actionList, validationIssues, index, action);
+                        break;
+                    case "SendEvent":
+                        actionIsValidated = ValidateSendEvent(actionList, validationIssues, index, action);
+                        break;
+                    case "WaitSeconds":
+                        actionIsValidated = ValidateWaitSeconds(actionList, validationIssues, index, action);
+                        break;
+                    case "WaitUntilVariableReachesNumericValue":
+                        actionIsValidated = ValidateWaitUntilVariableReachesNumericValue(actionList, validationIssues, index, action);
+                        break;
+                    case "DLLAutomation":
+                        actionIsValidated = ValidateDLLAutomation(actionList, validationIssues, index, action);
+                        break;
                 }
 
 
@@ -188,7 +180,7 @@ namespace FSAutomator.BackEnd.Validators
             //"bbdll\\ExternalAutomationExample.dll"
 
             // note fer coses perque els packs no fan bé el path ara mateix, falta la "pack folder"
-            var realDLLPath = Path.Combine("Automations", DLLName);
+            var realDLLPath = Path.Combine(action.AutomationFile.BasePath, DLLName);
 
             if (DLLName == String.Empty || !File.Exists(realDLLPath))
                 {
@@ -204,7 +196,7 @@ namespace FSAutomator.BackEnd.Validators
         {
             bool actionIsValidated = true;
 
-            var DLLPath = (action.ActionObject as ExternalAutomator).DLLPath;
+            var DLLPath = action.AutomationFile.FilePath;
 
 
             //"C:\\Users\\Albert\\source\\repos\\FSAutomator\\FSAutomator.UI\\bin\\Debug\\net6.0-windows\\Automations"

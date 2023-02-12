@@ -15,16 +15,6 @@
         "MethodName": "LalalaTest",
         "IncludeAsExternalAutomator": "true"
       }
-    },
-    {
-      "Name": "ExecuteCodeFromDLL",
-      "UniqueID": "5h0t3o",
-      "Parameters": {
-        "DLLName": "ExternalAutomationExample.dll",
-        "ClassName": "Lalala",
-        "MethodName": "LalalaTest",
-        "IncludeAsExternalAutomator": "true"
-      }
     }
   ]
 }

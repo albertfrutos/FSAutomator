@@ -114,13 +114,6 @@ namespace FSAutomator.Backend.Utilities
                 var actionObject = Activator.CreateInstance(actionType);
 
                 actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-                
-                /*
-                if (actionName == "ExecuteCodeFromDLL")
-                {
-                    (actionObject as ExecuteCodeFromDLL).DLLPath = Path.Combine(Directory.GetParent(fileToLoad.FilePath).FullName, (actionObject as ExecuteCodeFromDLL).DLLName);
-                }
-                */
 
                 var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
 
