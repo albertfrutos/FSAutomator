@@ -23,11 +23,32 @@ namespace FSAutomator.Backend.Actions
         internal FSAutomatorAction? CurrentAction = null;
 
         bool isValueReached = false;
+        public WaitUntilVariableReachesNumericValue()
+        {
+            
+        }
+
+        public WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
+        {
+            VariableName = variableName;
+            Comparison = comparison;
+            ThresholdValue = thresholdValue;
+            CheckInterval = checkInterval;
+        }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
+            if (!AllowedComparisonValues.Contains(Comparison))
+            {
+                return new ActionResult($"Comparison not supported - {this.Comparison}", null, true);
+            }
+
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
-            CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
+            
+            if(actionsList != null)
+            {
+                CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
+            }
 
             this.ThresholdValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.ThresholdValue);
 
@@ -53,7 +74,10 @@ namespace FSAutomator.Backend.Actions
             var currentValue = Convert.ToDouble(variable);
             var thresHoldValue = Convert.ToDouble(this.ThresholdValue);
             this.variableValue = variable;
-            CurrentAction.Result.VisibleResult = String.Format("Current value - {0}", this.variableValue);
+            if (CurrentAction != null)
+            {
+                CurrentAction.Result.VisibleResult = String.Format("Current value - {0}", this.variableValue);
+            }
 
             bool result = false;
 

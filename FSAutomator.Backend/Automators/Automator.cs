@@ -15,7 +15,6 @@ namespace FSAutomator.Backend.Automators
 
         public Dictionary<string, string> MemoryRegisters = new Dictionary<string, string>();
         public FlightModel flightModel;
-        
 
         public string lastOperationValue = "";
 

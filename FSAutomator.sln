@@ -11,8 +11,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExternalAutomationExample",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{9D37DED6-967C-4ED5-BE51-DE7A5A93EC86}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSAutomator.Interface", "FSAutomator.Interface\FSAutomator.Interface.csproj", "{554AA366-C3EF-4677-8C5B-20536932B1B3}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,10 +29,6 @@ Global
 		{9D20B8A8-AF07-4A21-AF1F-6D4B9F54A664}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D20B8A8-AF07-4A21-AF1F-6D4B9F54A664}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D20B8A8-AF07-4A21-AF1F-6D4B9F54A664}.Release|Any CPU.Build.0 = Release|Any CPU
-		{554AA366-C3EF-4677-8C5B-20536932B1B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{554AA366-C3EF-4677-8C5B-20536932B1B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{554AA366-C3EF-4677-8C5B-20536932B1B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{554AA366-C3EF-4677-8C5B-20536932B1B3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,7 +37,6 @@ Global
 		{5EFBB97E-213E-4861-8F87-D77691E72237} = {9D37DED6-967C-4ED5-BE51-DE7A5A93EC86}
 		{DF719DE8-6126-4650-B4A3-461BDB11A6EC} = {9D37DED6-967C-4ED5-BE51-DE7A5A93EC86}
 		{9D20B8A8-AF07-4A21-AF1F-6D4B9F54A664} = {9D37DED6-967C-4ED5-BE51-DE7A5A93EC86}
-		{554AA366-C3EF-4677-8C5B-20536932B1B3} = {9D37DED6-967C-4ED5-BE51-DE7A5A93EC86}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3CE96F35-1C1B-4BCB-91B8-D98D9B72ED2C}

@@ -16,6 +16,15 @@ namespace FSAutomator.Backend.Actions
 
         double totalSeconds;
 
+        public WaitSeconds()
+        {
+            
+        }
+
+        public WaitSeconds(string time)
+        {
+            WaitTime = time;
+        }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {

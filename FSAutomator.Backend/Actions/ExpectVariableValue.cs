@@ -12,7 +12,16 @@ namespace FSAutomator.Backend.Actions
 
         internal string IsVariableTheExpectedValue;
 
-
+        internal ExpectVariableValue(string variableName, string variableExpectedValue)
+        {
+            VariableName = variableName;
+            VariableExpectedValue = variableExpectedValue;
+        }
+        
+        internal ExpectVariableValue()
+        {
+        
+        }
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;

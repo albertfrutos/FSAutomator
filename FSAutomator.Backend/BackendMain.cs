@@ -3,7 +3,7 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd;
-using FSAutomator.BackEnd.Entities;
+using FSAutomator.BackEnd.AutomationImportersAndExporters;
 using FSAutomator.BackEnd.Validators;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
@@ -11,7 +11,6 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace FSAutomator.Backend
 {

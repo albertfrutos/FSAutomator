@@ -22,9 +22,9 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        public GetVariable(string name)
+        public GetVariable(string variableName)
         {
-            VariableName = name;
+            VariableName = variableName;
             VariableValue = null;
         }
         public ActionResult ExecuteAction(object sender, SimConnect connection)

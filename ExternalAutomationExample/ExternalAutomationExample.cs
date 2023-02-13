@@ -1,21 +1,24 @@
 ﻿using Microsoft.FlightSimulator.SimConnect;
-using FSAutomator.Backend.Actions;
 using System.Collections.ObjectModel;
 using FSAutomator.Backend.Entities;
 using System.Diagnostics;
+using FSAutomator.Backend.Automators;
+
 
 namespace FSAutomator.ExternalAutomation
 {
     public class ExternalAutomation
     {
-        public string Execute(object sender, SimConnect connection, AutoResetEvent evento)
+        public string Execute(FSAutomatorInterface FSAutomator)
         {
             // To get here, you need to execute the automation as dll.
             //new SendEvent("HEADING_BUG_SET", "25").ExecuteAction(this, connection, MainReturnValueEvent, MainUnlockNextStep);
             Trace.WriteLine("test ExecuteTest");
 
             //new GetVariable("ATC ID").ExecuteAction(this, connection, MainReturnValueEvent, MainUnlockNextStep);
-            evento.Set();
+            var a = FSAutomator.TextTest("abcd").VisibleResult;
+            Trace.WriteLine(a);
+            //FSAutomator.FinishEvent.Set();
             return "finish exe.";
         }
 

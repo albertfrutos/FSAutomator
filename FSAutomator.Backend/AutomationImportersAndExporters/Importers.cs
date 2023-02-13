@@ -12,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSAutomator.BackEnd
+namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 {
     internal class Importers
     {
