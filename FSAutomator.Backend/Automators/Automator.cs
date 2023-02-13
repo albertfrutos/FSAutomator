@@ -27,11 +27,11 @@ namespace FSAutomator.Backend.Automators
 
         }
 
-        public void Execute()
+        public void ExecuteActionList()
         {
             foreach (FSAutomatorAction action in ActionList)
             {
-                var stopExecution = RunAction(action);
+                var stopExecution = RunAndProcessAction(action);
 
                 if (stopExecution)
                 {
@@ -43,10 +43,10 @@ namespace FSAutomator.Backend.Automators
 
         }
 
-        private bool RunAction(FSAutomatorAction action)
+        private bool RunAndProcessAction(FSAutomatorAction action)
         {
             action.Status = "Running";
-            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection});
+            ActionResult result = ExecuteAction(action);
             lastOperationValue = result.ComputedResult;
             action.Result = result;
             action.Status = "Done";
@@ -54,6 +54,11 @@ namespace FSAutomator.Backend.Automators
             var stopExecution = result.Error && action.StopOnError;
 
             return stopExecution;
+        }
+
+        internal ActionResult ExecuteAction(FSAutomatorAction action)
+        {
+            return (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
         }
 
         internal void RebuildActionListIndices()

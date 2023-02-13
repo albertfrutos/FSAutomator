@@ -31,7 +31,7 @@ namespace FSAutomator.Backend
 
         public void Execute()
         {
-            automator.Execute();
+            automator.ExecuteActionList();
         }
 
         public SimConnect Connection

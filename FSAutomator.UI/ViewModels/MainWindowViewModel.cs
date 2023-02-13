@@ -224,7 +224,7 @@ namespace FSAutomator.ViewModel
             RefreshAutomationFilesList();
             
             MessageBox.Show(saveResult);
-        -}
+        }
 
 
 
@@ -316,14 +316,6 @@ namespace FSAutomator.ViewModel
 
         }
 
-        private void Execute(object obj, DoWorkEventArgs args)
-        {
-            if (backEnd is not null)
-            {
-                backEnd.Execute();
-            }
-
-        }
 
         private async void ExecuteTask(object commandParameter)
         {
