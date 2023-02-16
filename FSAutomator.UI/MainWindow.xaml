@@ -107,7 +107,7 @@
             <Menu DockPanel.Dock="Top" Height="22" Background="{x:Null}" VerticalAlignment="Top">
                 <MenuItem Header="_File">
                     <Separator />
-                    <MenuItem Header="_Exit" Click="mnuExit_Click"/>
+                    <MenuItem Header="_Exit" Click="MnuExit_Click"/>
                 </MenuItem>
                 <MenuItem Header="Automation">
                     <MenuItem Header="Execute" Command="{Binding ButtonExecute}"/>

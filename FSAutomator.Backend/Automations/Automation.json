@@ -1,7 +1,7 @@
 ﻿{
   "Actions": [
     {
-      "Name": "ExecuteCodeFromDLL",
+      "Name": "",
       "UniqueID": "5h0t3o",
       "Parameters": {
         "DLLName": "ExternalAutomationExample.dll",

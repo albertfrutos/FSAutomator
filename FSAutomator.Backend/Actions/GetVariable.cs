@@ -32,6 +32,8 @@ namespace FSAutomator.Backend.Actions
             bool error = false;
             this.VariableValue = null;
 
+            var returnResult = "";
+
             variable = new Variable().GetVariableInformation(this.VariableName);
 
             if (variable is not null && variable.Type is not null)
@@ -64,13 +66,17 @@ namespace FSAutomator.Backend.Actions
                 connection.ClearDataDefinition(defineID);
 
                 evento.WaitOne();
+
+                returnResult = $"Variable value is {this.VariableValue }";
+
             }
             else
             {
                 error = true;
+                returnResult = "Variable does not exist.";
             }
 
-            return new ActionResult($"Variable value is {this.VariableValue }", this.VariableValue, error);
+            return new ActionResult(returnResult, this.VariableValue, error);
 
         }
 

@@ -16,6 +16,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 {
     internal class Importers
     {
+
         internal void ImportAutomationFromFilePath(string filepath)
         {
             var filetype = Path.GetExtension(filepath);
@@ -54,6 +55,12 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                 var automationFile = new AutomationFile(Path.GetFileName(JSONPath), Path.GetFileNameWithoutExtension(JSONPath), "", JSONPath, "", true);
 
                 var actionList = Utils.GetAutomationsObjectList(automationFile);
+
+                if (actionList is null)
+                {
+                    //handle
+                    return;
+                }
 
                 List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
@@ -105,6 +112,14 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
             var automationFile = new AutomationFile(JSONFileName, "", "", JSONPath, "");
 
             var actionList = Utils.GetAutomationsObjectList(automationFile);
+
+            if (actionList is null)
+            {
+                var exMessage = String.Format("There was a problem while processing the action list for {0}", JSONFileName);
+                
+                return;
+
+            }
 
             List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 

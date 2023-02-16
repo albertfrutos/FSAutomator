@@ -11,9 +11,9 @@ namespace FSAutomator.Backend.Actions
         public double FinalLatitude { get; set; }
         public double FinalLongitude { get; set; }
 
-        public string currentLatitude; 
+        public string currentLatitude = String.Empty; 
 
-        public string currentLongitude;
+        public string currentLongitude = String.Empty;
 
 
 

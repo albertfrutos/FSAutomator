@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
@@ -10,9 +11,6 @@ namespace FSAutomator.Backend.Automators
     {
         public SimConnect connection;
 
-        public event EventHandler<string> NewReturnValue;
-        public event EventHandler UnlockNextStep;
-
         public Dictionary<string, string> MemoryRegisters = new Dictionary<string, string>();
         public FlightModel flightModel;
 
@@ -21,6 +19,7 @@ namespace FSAutomator.Backend.Automators
         public ObservableCollection<FSAutomatorAction> ActionList = new ObservableCollection<FSAutomatorAction>();
         public ObservableCollection<FSAutomatorAction> AuxiliaryActionList = new ObservableCollection<FSAutomatorAction>();
 
+
         public Automator()
         {
 
@@ -28,8 +27,19 @@ namespace FSAutomator.Backend.Automators
 
         public void ExecuteActionList()
         {
+            /*
+            if(this.connection == null)
+            {
+                var exMessage = "Connection not active"; //handle
+                return;
+            }
+            */
+
+            this.flightModel = new FlightModel(this.connection);
+
             foreach (FSAutomatorAction action in ActionList)
             {
+
                 var stopExecution = RunAndProcessAction(action);
 
                 if (stopExecution)

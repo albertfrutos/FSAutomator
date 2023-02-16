@@ -10,8 +10,6 @@ namespace FSAutomator.Backend.Actions
 
         public string APStatus { get; set; }
 
-        private AutomationFile automationFile;
-
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var apCurrentStatus = GetCurrentAPStatus(sender, connection);
@@ -24,7 +22,6 @@ namespace FSAutomator.Backend.Actions
             var newAPStatus = GetCurrentAPStatus(sender, connection);
 
             return new ActionResult($"Final AP status: {newAPStatus}", newAPStatus);
-
         }
 
         private string GetCurrentAPStatus(object sender, SimConnect connection)

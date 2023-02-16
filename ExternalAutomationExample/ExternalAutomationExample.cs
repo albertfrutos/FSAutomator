@@ -23,6 +23,7 @@ namespace FSAutomator.ExternalAutomation
         }
 
         public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
+        // note fer un objecte amb tot això per evitar tenir-ho que passar.
         {
             // To get here, you need to execute the automation as dll.
             //new SendEvent("HEADING_BUG_SET", "25").ExecuteAction(this, connection, MainReturnValueEvent, MainUnlockNextStep);

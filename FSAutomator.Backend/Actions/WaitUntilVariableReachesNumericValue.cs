@@ -16,11 +16,9 @@ namespace FSAutomator.Backend.Actions
 
         internal string[] AllowedComparisonValues = { "<", ">", "=" };
 
-        internal FlightModel fm;
-
         private string variableValue = string.Empty;
 
-        internal FSAutomatorAction? CurrentAction = null;
+        internal FSAutomatorAction CurrentAction = null;
 
         bool isValueReached = false;
         public WaitUntilVariableReachesNumericValue()

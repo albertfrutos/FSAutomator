@@ -4,6 +4,7 @@ using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd;
 using FSAutomator.BackEnd.AutomationImportersAndExporters;
+using FSAutomator.BackEnd.Entities;
 using FSAutomator.BackEnd.Validators;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
@@ -20,12 +21,12 @@ namespace FSAutomator.Backend
 
         public Automator automator = new Automator();
 
+
         public GeneralStatus status = new GeneralStatus();
 
 
         public BackendMain()
         {
-            
         }
 
         public void Execute()
@@ -63,6 +64,8 @@ namespace FSAutomator.Backend
         public void LoadActions(AutomationFile fileToLoad)
         {
             ClearAutomationList();
+
+           
 
             var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
 
@@ -104,9 +107,15 @@ namespace FSAutomator.Backend
         {
             //var filePath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
 
-            var actionsList = Utils.GetAutomationsObjectList(fileToLoad); //"Automations\\bb\\bb.json"
+            var actionList = Utils.GetAutomationsObjectList(fileToLoad); //"Automations\\bb\\bb.json"
 
-            foreach (FSAutomatorAction action in actionsList)
+            if (actionList is null)
+            {
+                var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName); //handle
+                return;
+            }
+
+            foreach (FSAutomatorAction action in actionList)
             {
                 var finalAction = ApplyActionModifications(fileToLoad, action);
 
@@ -256,8 +265,6 @@ namespace FSAutomator.Backend
                 /// Listen to exceptions
                 m_SimConnect.OnRecvException += new SimConnect.RecvExceptionEventHandler(Simconnect_OnRecvException);
 
-                status.isConnectedToSim = true;
-
             }
             catch (COMException ex)
             {
@@ -271,7 +278,6 @@ namespace FSAutomator.Backend
         private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)
         {
             this.automator.connection = this.m_SimConnect;
-            this.automator.flightModel = new FlightModel(this.m_SimConnect);
             status.isConnectedToSim = true;
         }
 
