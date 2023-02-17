@@ -186,9 +186,17 @@ namespace FSAutomator.ViewModel
             }
         }
 
+        public void ErrorReceiver(object sender, string data)
+        {
+            MessageBox.Show(data);
+            Trace.WriteLine("ui " + data);
+        }
+
         public MainWindowViewModel()
         {
             backEnd = new BackendMain();//handle
+
+            backEnd.status.Report += ErrorReceiver;
 
             ActionListUI = backEnd.GetActionList();
 
@@ -431,13 +439,28 @@ namespace FSAutomator.ViewModel
         {
             get
             {
-                return backEnd.status.validationIssues; //l_ValidationOutcomeCleaned;
+                return backEnd.status.ValidationIssues; //l_ValidationOutcomeCleaned;
 
             }
             set
             {
-                backEnd.status.validationIssues = value;
+                backEnd.status.ValidationIssues = value;
                 RaisePropertyChanged("ValidationOutcomeCleaned");
+            }
+
+        }
+
+        public bool ConnectionStatus
+        {
+            get
+            {
+                return backEnd.status.IsConnectedToSim; //l_ValidationOutcomeCleaned;
+
+            }
+            set
+            {
+                backEnd.status.IsConnectedToSim = value;
+                RaisePropertyChanged("ConnectionStatus");
             }
 
         }

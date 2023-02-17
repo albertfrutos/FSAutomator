@@ -22,7 +22,7 @@ namespace FSAutomator.Backend
         public Automator automator = new Automator();
 
 
-        public GeneralStatus status = new GeneralStatus();
+        public GeneralStatus status = GeneralStatus.GetInstance;
 
 
         public BackendMain()
@@ -65,8 +65,6 @@ namespace FSAutomator.Backend
         {
             ClearAutomationList();
 
-           
-
             var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
 
             if (fileToLoad.FileName.EndsWith(".json"))
@@ -93,14 +91,14 @@ namespace FSAutomator.Backend
 
         public List<string> ValidateActions()
         {
-            status.validationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
-            status.isAutomationFullyValidated = status.validationIssues.Count == 0;
-            return status.validationIssues;
+            status.ValidationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
+            status.IsAutomationFullyValidated = status.ValidationIssues.Count == 0;
+            return status.ValidationIssues;
         }
 
         public List<string> GetValidationIssuesList()
         {
-            return status.validationIssues;
+            return status.ValidationIssues;
         }
 
         private void LoadJSONActions(AutomationFile fileToLoad)
@@ -244,7 +242,7 @@ namespace FSAutomator.Backend
                 /// Dispose serves the same purpose as SimConnect_Close()
                 m_SimConnect.Dispose();
                 m_SimConnect = null;
-                status.isConnectedToSim = false;
+                status.IsConnectedToSim = false;
             }
         }
 
@@ -269,7 +267,7 @@ namespace FSAutomator.Backend
             catch (COMException ex)
             {
                 Trace.WriteLine("Connection to KH failed: " + ex.Message);
-                status.isConnectedToSim = false;
+                status.IsConnectedToSim = false;
                 //MessageBox.Show(String.Format("Could not connect to MSFS: {0}", ex.Message), "Connection Error");
             }
 
@@ -278,21 +276,21 @@ namespace FSAutomator.Backend
         private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)
         {
             this.automator.connection = this.m_SimConnect;
-            status.isConnectedToSim = true;
+            status.IsConnectedToSim = true;
         }
 
         private void Simconnect_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
         {
             Console.WriteLine("An exception occurred Simconnect_OnRecvException: {0}", data.dwException.ToString());
             SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
-            status.isConnectedToSim = false;
+            status.IsConnectedToSim = false;
 
             //note llançar excepció amb event quan es faci el sistema d'estat principal
         }
 
         private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
         {
-            status.isConnectedToSim = false;
+            status.IsConnectedToSim = false;
             Console.WriteLine("Simulator has exited. Closing connection and exiting Simulator module");
         }
 

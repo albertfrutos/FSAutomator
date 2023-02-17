@@ -19,6 +19,7 @@ namespace FSAutomator.Backend.Automators
         public ObservableCollection<FSAutomatorAction> ActionList = new ObservableCollection<FSAutomatorAction>();
         public ObservableCollection<FSAutomatorAction> AuxiliaryActionList = new ObservableCollection<FSAutomatorAction>();
 
+        public GeneralStatus status = GeneralStatus.GetInstance;
 
         public Automator()
         {
@@ -27,13 +28,13 @@ namespace FSAutomator.Backend.Automators
 
         public void ExecuteActionList()
         {
-            /*
+            
             if(this.connection == null)
             {
-                var exMessage = "Connection not active"; //handle
+                var message = "Connection not active"; //handle
+                status.ReportEvent(message);
                 return;
             }
-            */
 
             this.flightModel = new FlightModel(this.connection);
 
