@@ -1,14 +1,15 @@
 ﻿using FSAutomator.BackEnd.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSAutomator.BackEnd
+namespace FSAutomator.BackEnd.Entities
 {
-    public sealed class GeneralStatus
+    public sealed class GeneralStatus : INotifyPropertyChanged
     {
         private bool b_IsConnectedToSim { get; set; } = false;
         private bool b_IsAutomationFullyValidated { get; set; } //note fer i refactor
@@ -16,7 +17,9 @@ namespace FSAutomator.BackEnd
 
         private static GeneralStatus instance = null;
 
-        public event EventHandler<string> Report;
+        public event EventHandler<string> ReportErrorEvent;
+
+        public event EventHandler<bool> ConnectionStatusChangeEvent;
 
         public static GeneralStatus GetInstance
         {
@@ -33,26 +36,61 @@ namespace FSAutomator.BackEnd
         public bool IsConnectedToSim
         {
             get { return this.b_IsConnectedToSim; }
-            set { this.b_IsConnectedToSim = value;}
+            set
+            {
+                if (IsConnectedToSim != value)
+                {
+                    this.b_IsConnectedToSim = value;
+                    ConnectionChangeEvent();
+                }
+                RaisePropertyChanged("IsConnectedToSim");
+            }
         }
 
         public bool IsAutomationFullyValidated
         {
             get { return this.b_IsAutomationFullyValidated; }
-            set { this.b_IsAutomationFullyValidated = value;}
+            set
+            {
+                this.b_IsAutomationFullyValidated = value;
+                RaisePropertyChanged("IsAutomationFullyValidated");
+            }
         }
 
         public List<string> ValidationIssues
         {
             get { return this.l_ValidationIssues; }
-            set { this.l_ValidationIssues = value; }
+            set
+            {
+                this.l_ValidationIssues = value;
+                RaisePropertyChanged("ValidationIssues");
+            }
         }
 
-        public void ReportEvent(string data)  // note add to public interface
+        public void ReportError(string msg)  // note add to public interface
         {
-            if (this.Report != null)
+            if (this.ReportErrorEvent != null)
             {
-                this.Report.Invoke(this, data);
+                this.ReportErrorEvent.Invoke(this, msg);
+            }
+        }
+        
+        private void ConnectionChangeEvent() 
+        {
+            if (this.ConnectionStatusChangeEvent != null)
+            {
+                this.ConnectionStatusChangeEvent.Invoke(this, this.IsConnectedToSim);
+                Trace.WriteLine("csc inv");
+            }
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void RaisePropertyChanged(string propName)
+        {
+            if (PropertyChanged != null)
+            {
+                Task.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName)));
             }
         }
 

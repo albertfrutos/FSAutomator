@@ -2,6 +2,7 @@
 using FSAutomator.Backend.Actions;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
+using System.Diagnostics;
 
 namespace FSAutomator.Backend.Automators
 {
@@ -9,18 +10,42 @@ namespace FSAutomator.Backend.Automators
     {
         private Automator Automator { get; }
         private SimConnect Connection { get; }
-
         private AutoResetEvent FinishEvent { get; }
+        private GeneralStatus Status { get; set; }
+
+        public event EventHandler<bool> ConnectionStatusChangeEvent;
+
+        public event EventHandler<string> ReportErrorEvent;
 
 
-        public FSAutomatorInterface(Automator automator, SimConnect connection, AutoResetEvent finishEvent)
+
+        public FSAutomatorInterface(Automator automator, SimConnect connection, AutoResetEvent finishEvent, GeneralStatus status)
         {
-            Automator = automator;
-            Connection = connection;
-            FinishEvent = finishEvent;
+            this.Automator = automator;
+            this.Connection = connection;
+            this.FinishEvent = finishEvent;
+            this.Status = status;
+            Status.ConnectionStatusChangeEvent += NotifyConnectionStatusChange;
+            Status.ReportErrorEvent += ReportError;
         }
 
+        #region Interface Events
 
+        private void NotifyConnectionStatusChange(object sender, bool connectionStatus)
+        {
+            Trace.WriteLine("csc int");
+            this.ConnectionStatusChangeEvent.Invoke(this, connectionStatus);
+        }
+
+        private void ReportError(object sender, string msg)
+        {
+            Trace.WriteLine("ReportError");
+            this.ReportErrorEvent.Invoke(this, msg);
+        }
+
+        #endregion
+
+        #region Interface Actions
 
         public ActionResult GetVariable(string variableName)
         {
@@ -57,17 +82,25 @@ namespace FSAutomator.Backend.Automators
             return result;
         }
 
+        #endregion
+
         public ActionResult TextTest (string text)
         {
+            
             return new ActionResult(text,text,false);
         }
 
-        public void EndAutomation()
+        public void AutomationHasEnded()
         {
             FinishEvent.Set();
             return;
         }
-        
+
+        public bool IsConnectedToSim()
+        {
+            Status.IsConnectedToSim = true;
+            return Status.IsConnectedToSim;
+        }
 
     }
 }

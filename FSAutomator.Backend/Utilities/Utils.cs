@@ -74,8 +74,6 @@ namespace FSAutomator.Backend.Utilities
         {
             try
             {
-
-
                 var filePath = fileToLoad.FilePath;
 
                 var json = File.ReadAllText(filePath);
@@ -117,7 +115,8 @@ namespace FSAutomator.Backend.Utilities
 
                 if (!availableActions.Contains(actionName))
                 {
-                    var exMessage = String.Format("The action {0} is not supported.", actionName);//handle
+                    var exMessage = String.Format("The action {0} is not supported.", actionName);
+                    GeneralStatus.GetInstance.ReportError(exMessage);
                     return null;
                 }
 

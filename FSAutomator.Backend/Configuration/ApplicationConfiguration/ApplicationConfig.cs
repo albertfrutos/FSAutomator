@@ -1,0 +1,51 @@
+﻿using FSAutomator.BackEnd.Entities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+
+namespace FSAutomator.BackEnd.Configuration
+{
+    public sealed class ApplicationConfig
+    {
+        private string s_AutomationsFolder { get; set; }
+        private string s_ExportFolder { get; set; }
+
+        private static ApplicationConfig instance = null;
+
+        public static ApplicationConfig GetInstance
+        {
+            get
+            { 
+                if (instance == null)
+                {
+                    instance = Initialize();
+                }
+                return instance;
+            }
+        }
+
+        private static ApplicationConfig Initialize()
+        {
+            var json = File.ReadAllText(Path.Combine("Configuration", "ApplicationConfiguration", "ApplicationConfiguration.json"));
+            var applicationConfig = JsonConvert.DeserializeObject<ApplicationConfig>(json);
+            return applicationConfig;
+        }
+
+        public string AutomationsFolder
+        {
+            get { return this.s_AutomationsFolder; }
+            set { this.s_AutomationsFolder = value; }
+        }
+
+        public string ExportFolder
+        {
+            get { return this.s_ExportFolder; }
+            set { this.s_ExportFolder = value; }
+        }
+    }
+}

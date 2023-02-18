@@ -24,7 +24,7 @@ namespace FSAutomator.Backend.Automators
 
         public ActionResult ExecuteAction(Automator sender, SimConnect connection)
         {
-            var externalAutomatorInterface = new FSAutomatorInterface(sender, connection, finishEvent);
+            var externalAutomatorInterface = new FSAutomatorInterface(sender, connection, finishEvent, GeneralStatus.GetInstance);
 
             //note mirar com treure el Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location .... File.Info....FullName
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPath);

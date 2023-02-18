@@ -186,24 +186,16 @@ namespace FSAutomator.ViewModel
             }
         }
 
-        public void ErrorReceiver(object sender, string data)
-        {
-            MessageBox.Show(data);
-            Trace.WriteLine("ui " + data);
-        }
-
         public MainWindowViewModel()
         {
             backEnd = new BackendMain();//handle
 
-            backEnd.status.Report += ErrorReceiver;
+            SubscribeToEvents();
 
             ActionListUI = backEnd.GetActionList();
 
-
             RefreshAutomationFilesList();
             InitializeNewAutomation();
-
 
             ButtonLoadActions = new RelayCommand(new Action<object>(LoadActions));
             ButtonRemove = new RelayCommand(new Action<object>(RemoveAction));
@@ -217,14 +209,29 @@ namespace FSAutomator.ViewModel
             ButtonSaveAs = new RelayCommand(new Action<object>(SaveCurrentAutomation));
             ButtonExport = new RelayCommand(new Action<object>(ExportCurrentAutomationAs));
 
-
-
         }
 
-        private void test(object sender, string error)
+        private void SubscribeToEvents()
         {
-            MessageBox.Show(error);
+            backEnd.status.ReportErrorEvent += ReportEventReceiver;
+            backEnd.status.ConnectionStatusChangeEvent += ConnectionStatusReceiver;
         }
+
+        #region Event Receivers
+        public void ReportEventReceiver(object sender, string data)
+        {
+            //this.ConnectionStatus = backEnd.status.IsConnectedToSim;
+            MessageBox.Show(data);
+            Trace.WriteLine("ui " + data);
+        }
+
+        private void ConnectionStatusReceiver(object? sender, bool e)
+        {
+            this.ConnectionStatus = backEnd.status.IsConnectedToSim;
+            //MessageBox.Show("updated connection status"); //activar
+        }
+
+        #endregion
 
         private void SaveCurrentAutomation(object obj)
         {
@@ -241,8 +248,6 @@ namespace FSAutomator.ViewModel
             
             MessageBox.Show(saveResult);
         }
-
-
 
         private void ExportCurrentAutomationAs(object obj)
         {
@@ -269,7 +274,6 @@ namespace FSAutomator.ViewModel
 
             RefreshAutomationFilesList();
         }
-
         private void RefreshAutomationFilesList()
         {
             var selectedAutomation = SAutomationFilesList;
@@ -277,11 +281,9 @@ namespace FSAutomator.ViewModel
             SAutomationFilesList = selectedAutomation;
         }
 
-
         private void MoveActionUp(object obj)
         {
             var selectedIndex = ActionListUI.IndexOf(SActionListUI);
-
 
             SIActionListUI = backEnd.MoveActionUp(selectedIndex);
             SIActionListUI = -1;
@@ -494,6 +496,7 @@ namespace FSAutomator.ViewModel
         {
             Trace.WriteLine("Disconnect ViewModel");
             backEnd.Disconnect();
+            //this.ConnectionStatus = backEnd.status.IsConnectedToSim;
         }
 
 
@@ -501,8 +504,6 @@ namespace FSAutomator.ViewModel
         {
             Trace.WriteLine("Connect ViewModel");
             backEnd.Connect(m_hWnd, WM_USER_SIMCONNECT);
-
-
         }
 
         public void LoadActions(object obj)

@@ -28,11 +28,13 @@ namespace FSAutomator.Backend.Automators
 
         public void ExecuteActionList()
         {
-            
-            if(this.connection == null)
+            //status.ReportEvent("prova reportevent"); // activar
+            //return;
+
+            if(this.connection != null)
             {
                 var message = "Connection not active"; //handle
-                status.ReportEvent(message);
+                status.ReportError(message);
                 return;
             }
 
@@ -68,7 +70,8 @@ namespace FSAutomator.Backend.Automators
 
         internal ActionResult ExecuteAction(FSAutomatorAction action)
         {
-            return (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
+            var result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
+            return result;
         }
 
         internal void RebuildActionListIndices()

@@ -4,6 +4,7 @@ using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd;
 using FSAutomator.BackEnd.AutomationImportersAndExporters;
+using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
 using FSAutomator.BackEnd.Validators;
 using Microsoft.FlightSimulator.SimConnect;
@@ -21,9 +22,9 @@ namespace FSAutomator.Backend
 
         public Automator automator = new Automator();
 
-
         public GeneralStatus status = GeneralStatus.GetInstance;
 
+        public ApplicationConfig config = ApplicationConfig.GetInstance;
 
         public BackendMain()
         {
@@ -31,6 +32,7 @@ namespace FSAutomator.Backend
 
         public void Execute()
         {
+            
             automator.ExecuteActionList();
         }
 
@@ -48,7 +50,7 @@ namespace FSAutomator.Backend
         public string SaveAutomation(AutomationFile automation, string newFileName)
         {
 
-            var automationFilePath = Path.Combine("Automations", automation.PackageName, newFileName + ".json");
+            var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, newFileName + ".json");
             var isDLLAutomation = automator.ActionList.Select(x => x.Name == "DLLAutomation").Any();
             
             if (isDLLAutomation)
@@ -65,7 +67,7 @@ namespace FSAutomator.Backend
         {
             ClearAutomationList();
 
-            var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+            var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
 
             if (fileToLoad.FileName.EndsWith(".json"))
             {
@@ -81,7 +83,7 @@ namespace FSAutomator.Backend
 
         private void LoadDLLActions(AutomationFile fileToLoad)
         {
-                        var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+                        var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
 
         //fer un getname i terure el nom
         var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath); //"Automations\\ExternalAutomationExample.dll"
@@ -248,6 +250,9 @@ namespace FSAutomator.Backend
 
         public void Connect(IntPtr m_hWnd, int WM_USER_SIMCONNECT)
         {
+            status.IsConnectedToSim = true; // note posar-ho bé
+            return; // note treure return
+
             Trace.WriteLine("Connect BackEnd");
 
 
@@ -267,8 +272,6 @@ namespace FSAutomator.Backend
             catch (COMException ex)
             {
                 Trace.WriteLine("Connection to KH failed: " + ex.Message);
-                status.IsConnectedToSim = false;
-                //MessageBox.Show(String.Format("Could not connect to MSFS: {0}", ex.Message), "Connection Error");
             }
 
         }

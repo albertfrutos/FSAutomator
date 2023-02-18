@@ -205,11 +205,11 @@
                         <Style TargetType="Ellipse">
                             <Style.Triggers>
 
-                                <DataTrigger Binding="{Binding Path=ConnectionStatus}" Value="True">
+                                <DataTrigger Binding="{Binding ConnectionStatus}" Value="True">
                                     <Setter Property="Fill"
                                     Value="Green" />
                                 </DataTrigger>
-                                <DataTrigger Binding="{Binding Path=ConnectionStatus}" Value="False">
+                                <DataTrigger Binding="{Binding ConnectionStatus}" Value="False">
                                     <Setter Property="Fill"
                                     Value="Red" />
                                 </DataTrigger>

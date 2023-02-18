@@ -18,7 +18,7 @@ namespace FSAutomator.BackEnd.Configuration
     public class AvailableActions
     {
         public List<AvailableAction> FSAutomatorAvailableActions { get; set; }
-
+        // note update json with properties, at least review
         public AvailableActions GetAvailableActions()
         {
             var json = File.ReadAllText(@"Configuration\AvailableActions\FSAutomatorAvailableActions.json");

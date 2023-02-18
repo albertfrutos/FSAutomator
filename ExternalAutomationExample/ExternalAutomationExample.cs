@@ -11,15 +11,26 @@ namespace FSAutomator.ExternalAutomation
     {
         public string Execute(FSAutomatorInterface FSAutomator)
         {
-            // To get here, you need to execute the automation as dll.
-            //new SendEvent("HEADING_BUG_SET", "25").ExecuteAction(this, connection, MainReturnValueEvent, MainUnlockNextStep);
             Trace.WriteLine("test ExecuteTest");
 
-            //new GetVariable("ATC ID").ExecuteAction(this, connection, MainReturnValueEvent, MainUnlockNextStep);
             var a = FSAutomator.TextTest("abcd").VisibleResult;
-            Trace.WriteLine(a);
-            //FSAutomator.FinishEvent.Set();
+            FSAutomator.ConnectionStatusChangeEvent += ConnectionChangeStatusReceiver;
+            FSAutomator.ReportErrorEvent += ReportErrorReceiver;
+
+            FSAutomator.IsConnectedToSim();
+            
+            FSAutomator.AutomationHasEnded();
             return "finish exe.";
+        }
+
+        private void ReportErrorReceiver(object? sender, string e)
+        {
+            Trace.WriteLine("launched report error  -  " + e);
+        }
+
+        private void ConnectionChangeStatusReceiver(object? sender, bool e)
+        {
+            Trace.WriteLine("launched changed status conenction  - " + e);
         }
 
         public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
