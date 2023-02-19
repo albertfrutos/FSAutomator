@@ -246,7 +246,7 @@ namespace FSAutomator.ViewModel
             var saveResult = backEnd.SaveAutomation(SAutomationFilesList, SAutomationName);
             RefreshAutomationFilesList();
             
-            MessageBox.Show(saveResult);
+            backEnd.status.ReportError(saveResult);
         }
 
         private void ExportCurrentAutomationAs(object obj)

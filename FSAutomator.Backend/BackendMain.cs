@@ -51,15 +51,22 @@ namespace FSAutomator.Backend
         {
 
             var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, newFileName + ".json");
-            var isDLLAutomation = automator.ActionList.Select(x => x.Name == "DLLAutomation").Any();
+            var isDLLAutomation = automator.ActionList.Where(x => x.Name == "DLLAutomation").Any();
             
             if (isDLLAutomation)
             {
-                return "Saving DLLs is not supported";
+                return "Saving DLL automations is not supported";
+            }
+
+            if (automator.ActionList.Count == 0)
+            {
+                return "No actions to save";
             }
 
             var json = Utils.GetJSONTextFromAutomationList(automator.ActionList);
+
             File.WriteAllText(automationFilePath, json);
+
             return "Automation saved successfully";
         }
 
