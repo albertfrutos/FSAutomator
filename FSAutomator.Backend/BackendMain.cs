@@ -159,6 +159,13 @@ namespace FSAutomator.Backend
             var stopOnError = (bool)jsonObject["StopOnError"];
 
             Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
+
+            if(actionType == null)
+            {
+                status.ReportError($"Action name ({actionName}) does not exist. Did you select an action?");
+                return;
+            }
+
             Activator.CreateInstance(actionType);
 
             var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });

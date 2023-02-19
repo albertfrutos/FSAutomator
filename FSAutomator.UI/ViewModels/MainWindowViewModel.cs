@@ -314,7 +314,7 @@ namespace FSAutomator.ViewModel
             try
             {
                 AddActionWindow addAction = new AddActionWindow();
-                addAction.DataContext = new AddActionViewModel();
+                //addAction.DataContext = new AddActionViewModel();
                 addAction.ShowDialog();
                 var newActionJSON = addAction.finalJSON;
 

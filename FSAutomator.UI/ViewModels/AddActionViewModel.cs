@@ -70,10 +70,13 @@ namespace FSAutomator.ViewModel
 
                 writer.WritePropertyName("Parameters");
                 writer.WriteStartObject();
-                foreach (Parameter param in ActionParameters)
+                if(ActionParameters != null)
                 {
-                    writer.WritePropertyName(param.Name);
-                    writer.WriteValue(param.Value);
+                    foreach (Parameter param in ActionParameters)
+                    {
+                        writer.WritePropertyName(param.Name);
+                        writer.WriteValue(param.Value);
+                    }
                 }
                 writer.WriteEndObject();
                 writer.WriteEnd();
