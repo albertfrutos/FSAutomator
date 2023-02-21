@@ -26,7 +26,7 @@ namespace FSAutomator.Backend.Actions
             
         }
 
-        public WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
+        internal WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
         {
             VariableName = variableName;
             Comparison = comparison;

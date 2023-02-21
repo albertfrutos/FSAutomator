@@ -26,7 +26,7 @@ namespace FSAutomator.Backend.Actions
         {
             
         }
-        public ExecuteCodeFromDLL(string DLLName, string DLLPath, string ClassName, string MethodName, bool IncludeAsExternalAutomator)
+        internal ExecuteCodeFromDLL(string DLLName, string DLLPath, string ClassName, string MethodName, bool IncludeAsExternalAutomator)
         {
             this.DLLName = DLLName;
             this.DLLPath = DLLPath;

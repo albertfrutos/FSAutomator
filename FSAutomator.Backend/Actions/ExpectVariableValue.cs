@@ -18,7 +18,7 @@ namespace FSAutomator.Backend.Actions
             VariableExpectedValue = variableExpectedValue;
         }
         
-        public ExpectVariableValue()
+        internal ExpectVariableValue()
         {
         
         }

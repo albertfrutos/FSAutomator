@@ -21,7 +21,7 @@ namespace FSAutomator.Backend.Actions
             
         }
 
-        public WaitSeconds(string time)
+        internal WaitSeconds(string time)
         {
             WaitTime = time;
         }

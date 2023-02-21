@@ -17,12 +17,12 @@ namespace FSAutomator.Backend.Actions
 
         private Variable variable;
 
-        public GetVariable()
+        internal GetVariable()
         {
 
         }
 
-        public GetVariable(string variableName)
+        internal GetVariable(string variableName)
         {
             VariableName = variableName;
             VariableValue = null;
