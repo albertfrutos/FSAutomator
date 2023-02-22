@@ -19,9 +19,7 @@ namespace FSAutomator.Backend.Actions
         internal List<string> AllowedNumberComparisonValues = new List<string>(){ "<", ">", "=", "<>" };
         internal List<string> AllowedStringComparisonValues = new List<string>() { "=", "<>" };
 
-        internal FlightModel fm;
-
-        internal FSAutomatorAction? CurrentAction = null;
+        internal FSAutomatorAction CurrentAction = null;
 
 
 

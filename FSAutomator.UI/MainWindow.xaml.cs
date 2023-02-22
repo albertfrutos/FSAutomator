@@ -67,7 +67,7 @@ namespace FSAutomator
             return IntPtr.Zero;
         }
 
-        private void mnuExit_Click(object sender, RoutedEventArgs e)
+        private void MnuExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }

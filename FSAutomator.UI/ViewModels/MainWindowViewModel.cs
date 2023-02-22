@@ -19,6 +19,8 @@ using FSAutomator.Backend.Utilities;
 using FSAutomator.Backend.Actions;
 using System.Diagnostics;
 using System.IO.Compression;
+using FSAutomator.BackEnd;
+using FSAutomator.BackEnd.Entities;
 
 namespace FSAutomator.ViewModel
 {
@@ -36,8 +38,9 @@ namespace FSAutomator.ViewModel
 
         private List<AutomationFile> l_AutomationFilesList;
         private AutomationFile l_SAutomationFilesList;
-        private List<string> l_ValidationOutcomeCleaned;
         private bool b_EditMode = false;
+
+
 
 
         private ICommand? b_ButtonLoadActions;
@@ -185,14 +188,14 @@ namespace FSAutomator.ViewModel
 
         public MainWindowViewModel()
         {
-            backEnd = new BackendMain();
+            backEnd = new BackendMain();//handle
+
+            SubscribeToEvents();
 
             ActionListUI = backEnd.GetActionList();
 
-
             RefreshAutomationFilesList();
             InitializeNewAutomation();
-
 
             ButtonLoadActions = new RelayCommand(new Action<object>(LoadActions));
             ButtonRemove = new RelayCommand(new Action<object>(RemoveAction));
@@ -206,9 +209,29 @@ namespace FSAutomator.ViewModel
             ButtonSaveAs = new RelayCommand(new Action<object>(SaveCurrentAutomation));
             ButtonExport = new RelayCommand(new Action<object>(ExportCurrentAutomationAs));
 
-
-
         }
+
+        private void SubscribeToEvents()
+        {
+            backEnd.status.ReportErrorEvent += ReportEventReceiver;
+            backEnd.status.ConnectionStatusChangeEvent += ConnectionStatusReceiver;
+        }
+
+        #region Event Receivers
+        public void ReportEventReceiver(object sender, string data)
+        {
+            //this.ConnectionStatus = backEnd.status.IsConnectedToSim;
+            MessageBox.Show(data);
+            Trace.WriteLine("ui " + data);
+        }
+
+        private void ConnectionStatusReceiver(object? sender, bool e)
+        {
+            this.ConnectionStatus = backEnd.status.IsConnectedToSim;
+            //MessageBox.Show("updated connection status"); //activar
+        }
+
+        #endregion
 
         private void SaveCurrentAutomation(object obj)
         {
@@ -223,10 +246,8 @@ namespace FSAutomator.ViewModel
             var saveResult = backEnd.SaveAutomation(SAutomationFilesList, SAutomationName);
             RefreshAutomationFilesList();
             
-            MessageBox.Show(saveResult);
-        -}
-
-
+            backEnd.status.ReportError(saveResult);
+        }
 
         private void ExportCurrentAutomationAs(object obj)
         {
@@ -253,7 +274,6 @@ namespace FSAutomator.ViewModel
 
             RefreshAutomationFilesList();
         }
-
         private void RefreshAutomationFilesList()
         {
             var selectedAutomation = SAutomationFilesList;
@@ -261,11 +281,9 @@ namespace FSAutomator.ViewModel
             SAutomationFilesList = selectedAutomation;
         }
 
-
         private void MoveActionUp(object obj)
         {
             var selectedIndex = ActionListUI.IndexOf(SActionListUI);
-
 
             SIActionListUI = backEnd.MoveActionUp(selectedIndex);
             SIActionListUI = -1;
@@ -296,7 +314,7 @@ namespace FSAutomator.ViewModel
             try
             {
                 AddActionWindow addAction = new AddActionWindow();
-                addAction.DataContext = new AddActionViewModel();
+                //addAction.DataContext = new AddActionViewModel();
                 addAction.ShowDialog();
                 var newActionJSON = addAction.finalJSON;
 
@@ -316,14 +334,6 @@ namespace FSAutomator.ViewModel
 
         }
 
-        private void Execute(object obj, DoWorkEventArgs args)
-        {
-            if (backEnd is not null)
-            {
-                backEnd.Execute();
-            }
-
-        }
 
         private async void ExecuteTask(object commandParameter)
         {
@@ -431,13 +441,28 @@ namespace FSAutomator.ViewModel
         {
             get
             {
-                return backEnd.status.validationIssues; //l_ValidationOutcomeCleaned;
+                return backEnd.status.ValidationIssues; //l_ValidationOutcomeCleaned;
 
             }
             set
             {
-                backEnd.status.validationIssues = value;
+                backEnd.status.ValidationIssues = value;
                 RaisePropertyChanged("ValidationOutcomeCleaned");
+            }
+
+        }
+
+        public bool ConnectionStatus
+        {
+            get
+            {
+                return backEnd.status.IsConnectedToSim; //l_ValidationOutcomeCleaned;
+
+            }
+            set
+            {
+                backEnd.status.IsConnectedToSim = value;
+                RaisePropertyChanged("ConnectionStatus");
             }
 
         }
@@ -471,6 +496,7 @@ namespace FSAutomator.ViewModel
         {
             Trace.WriteLine("Disconnect ViewModel");
             backEnd.Disconnect();
+            //this.ConnectionStatus = backEnd.status.IsConnectedToSim;
         }
 
 
@@ -478,8 +504,6 @@ namespace FSAutomator.ViewModel
         {
             Trace.WriteLine("Connect ViewModel");
             backEnd.Connect(m_hWnd, WM_USER_SIMCONNECT);
-
-
         }
 
         public void LoadActions(object obj)

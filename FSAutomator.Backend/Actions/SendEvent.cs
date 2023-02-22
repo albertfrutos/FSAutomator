@@ -12,20 +12,15 @@ namespace FSAutomator.Backend.Actions
         public string EventName { get; set; }
         public string EventValue { get; set; }
 
-        public SendEvent(string name, string value)
+        internal SendEvent(string name, string value)
         {
             this.EventName = name;
             this.EventValue = value;
         }
 
-        public SendEvent() 
+        internal SendEvent() 
         {
 
-        }
-
-        internal void ExecuteAction(SetAP setAP, SimConnect connection)
-        {
-            throw new NotImplementedException();
         }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)

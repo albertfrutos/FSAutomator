@@ -1,0 +1,10 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "GetVariable",
+      "Parameters": {
+        "VariableName": "ATC ID"
+      }
+    }
+  ]
+}

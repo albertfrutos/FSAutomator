@@ -3,6 +3,8 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd;
+using FSAutomator.BackEnd.AutomationImportersAndExporters;
+using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
 using FSAutomator.BackEnd.Validators;
 using Microsoft.FlightSimulator.SimConnect;
@@ -11,7 +13,6 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Text;
 
 namespace FSAutomator.Backend
 {
@@ -21,17 +22,18 @@ namespace FSAutomator.Backend
 
         public Automator automator = new Automator();
 
-        public GeneralStatus status = new GeneralStatus();
+        public GeneralStatus status = GeneralStatus.GetInstance;
 
+        public ApplicationConfig config = ApplicationConfig.GetInstance;
 
         public BackendMain()
         {
-            
         }
 
         public void Execute()
         {
-            automator.Execute();
+            
+            automator.ExecuteActionList();
         }
 
         public SimConnect Connection
@@ -48,16 +50,23 @@ namespace FSAutomator.Backend
         public string SaveAutomation(AutomationFile automation, string newFileName)
         {
 
-            var automationFilePath = Path.Combine("Automations", automation.PackageName, newFileName + ".json");
-            var isDLLAutomation = automator.ActionList.Select(x => x.Name == "DLLAutomation").Any();
+            var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, newFileName + ".json");
+            var isDLLAutomation = automator.ActionList.Where(x => x.Name == "DLLAutomation").Any();
             
             if (isDLLAutomation)
             {
-                return "Saving DLLs is not supported";
+                return "Saving DLL automations is not supported";
+            }
+
+            if (automator.ActionList.Count == 0)
+            {
+                return "No actions to save";
             }
 
             var json = Utils.GetJSONTextFromAutomationList(automator.ActionList);
+
             File.WriteAllText(automationFilePath, json);
+
             return "Automation saved successfully";
         }
 
@@ -65,7 +74,7 @@ namespace FSAutomator.Backend
         {
             ClearAutomationList();
 
-            var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+            var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
 
             if (fileToLoad.FileName.EndsWith(".json"))
             {
@@ -81,7 +90,7 @@ namespace FSAutomator.Backend
 
         private void LoadDLLActions(AutomationFile fileToLoad)
         {
-                        var fileToLoadPath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
+                        var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
 
         //fer un getname i terure el nom
         var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath); //"Automations\\ExternalAutomationExample.dll"
@@ -91,23 +100,29 @@ namespace FSAutomator.Backend
 
         public List<string> ValidateActions()
         {
-            status.validationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
-            status.isAutomationFullyValidated = status.validationIssues.Count == 0;
-            return status.validationIssues;
+            status.ValidationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
+            status.IsAutomationFullyValidated = status.ValidationIssues.Count == 0;
+            return status.ValidationIssues;
         }
 
         public List<string> GetValidationIssuesList()
         {
-            return status.validationIssues;
+            return status.ValidationIssues;
         }
 
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
             //var filePath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
 
-            var actionsList = Utils.GetAutomationsObjectList(fileToLoad); //"Automations\\bb\\bb.json"
+            var actionList = Utils.GetAutomationsObjectList(fileToLoad); //"Automations\\bb\\bb.json"
 
-            foreach (FSAutomatorAction action in actionsList)
+            if (actionList is null)
+            {
+                var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName); //handle
+                return;
+            }
+
+            foreach (FSAutomatorAction action in actionList)
             {
                 var finalAction = ApplyActionModifications(fileToLoad, action);
 
@@ -151,6 +166,13 @@ namespace FSAutomator.Backend
             var stopOnError = (bool)jsonObject["StopOnError"];
 
             Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
+
+            if(actionType == null)
+            {
+                status.ReportError($"Action name ({actionName}) does not exist. Did you select an action?");
+                return;
+            }
+
             Activator.CreateInstance(actionType);
 
             var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
@@ -236,12 +258,15 @@ namespace FSAutomator.Backend
                 /// Dispose serves the same purpose as SimConnect_Close()
                 m_SimConnect.Dispose();
                 m_SimConnect = null;
-                status.isConnectedToSim = false;
+                status.IsConnectedToSim = false;
             }
         }
 
         public void Connect(IntPtr m_hWnd, int WM_USER_SIMCONNECT)
         {
+            status.IsConnectedToSim = true; // note posar-ho bé
+            return; // note treure return
+
             Trace.WriteLine("Connect BackEnd");
 
 
@@ -257,14 +282,10 @@ namespace FSAutomator.Backend
                 /// Listen to exceptions
                 m_SimConnect.OnRecvException += new SimConnect.RecvExceptionEventHandler(Simconnect_OnRecvException);
 
-                status.isConnectedToSim = true;
-
             }
             catch (COMException ex)
             {
                 Trace.WriteLine("Connection to KH failed: " + ex.Message);
-                status.isConnectedToSim = false;
-                //MessageBox.Show(String.Format("Could not connect to MSFS: {0}", ex.Message), "Connection Error");
             }
 
         }
@@ -272,22 +293,21 @@ namespace FSAutomator.Backend
         private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)
         {
             this.automator.connection = this.m_SimConnect;
-            this.automator.flightModel = new FlightModel(this.m_SimConnect);
-            status.isConnectedToSim = true;
+            status.IsConnectedToSim = true;
         }
 
         private void Simconnect_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
         {
             Console.WriteLine("An exception occurred Simconnect_OnRecvException: {0}", data.dwException.ToString());
             SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
-            status.isConnectedToSim = false;
+            status.IsConnectedToSim = false;
 
             //note llançar excepció amb event quan es faci el sistema d'estat principal
         }
 
         private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
         {
-            status.isConnectedToSim = false;
+            status.IsConnectedToSim = false;
             Console.WriteLine("Simulator has exited. Closing connection and exiting Simulator module");
         }
 

@@ -17,20 +17,22 @@ namespace FSAutomator.Backend.Actions
 
         private Variable variable;
 
-        public GetVariable()
+        internal GetVariable()
         {
 
         }
 
-        public GetVariable(string name)
+        internal GetVariable(string variableName)
         {
-            VariableName = name;
+            VariableName = variableName;
             VariableValue = null;
         }
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             bool error = false;
             this.VariableValue = null;
+
+            var returnResult = "";
 
             variable = new Variable().GetVariableInformation(this.VariableName);
 
@@ -64,13 +66,17 @@ namespace FSAutomator.Backend.Actions
                 connection.ClearDataDefinition(defineID);
 
                 evento.WaitOne();
+
+                returnResult = $"Variable value is {this.VariableValue }";
+
             }
             else
             {
                 error = true;
+                returnResult = "Variable does not exist.";
             }
 
-            return new ActionResult($"Variable value is {this.VariableValue }", this.VariableValue, error);
+            return new ActionResult(returnResult, this.VariableValue, error);
 
         }
 

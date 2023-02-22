@@ -3,13 +3,14 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Automations\Automation.json" />
     <None Remove="Automations\Automation_Test.json" />
     <None Remove="Automations\Conditionals_Test.json" />
+    <None Remove="Configuration\ApplicationConfiguration\ApplicationConfiguration.json" />
     <None Remove="Configuration\AvailableFixedBoolItems\FSAutomatorFixedBoolItems.json" />
     <None Remove="Configuration\FSAutomatorAvailableActions.json" />
   </ItemGroup>
@@ -23,6 +24,9 @@
     </Content>
     <Content Include="Automations\Automation_Test.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\ApplicationConfiguration\ApplicationConfiguration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Configuration\AvailableActions\FSAutomatorAvailableActions.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
