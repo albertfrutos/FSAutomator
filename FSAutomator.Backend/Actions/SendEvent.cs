@@ -18,7 +18,7 @@ namespace FSAutomator.Backend.Actions
             this.EventValue = value;
         }
 
-        internal SendEvent() 
+        public SendEvent() 
         {
 
         }
@@ -41,7 +41,7 @@ namespace FSAutomator.Backend.Actions
                 connection.TransmitClientEvent(0U, (Enum)eventToSend, (uint)Convert.ToDouble(EventValue), (Enum)NOTIFICATION_GROUPS.GROUP0, SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                 connection.ClearNotificationGroup(NOTIFICATION_GROUPS.GROUP0);
 
-                return new ActionResult($"{EventValue} has been sent", this.EventValue);
+                return new ActionResult($"{EventName} - {EventValue} has been sent", this.EventValue);
 
             }
             else

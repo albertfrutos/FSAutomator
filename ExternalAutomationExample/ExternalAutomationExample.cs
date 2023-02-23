@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using FSAutomator.Backend.Entities;
 using System.Diagnostics;
 using FSAutomator.Backend.Automators;
-
+using FSAutomator.BackEnd.Entities;
 
 namespace FSAutomator.ExternalAutomation
 {
@@ -23,7 +23,7 @@ namespace FSAutomator.ExternalAutomation
             return "finish exe.";
         }
 
-        private void ReportErrorReceiver(object? sender, string e)
+        private void ReportErrorReceiver(object? sender, InternalMessage e)
         {
             Trace.WriteLine("launched report error  -  " + e);
         }

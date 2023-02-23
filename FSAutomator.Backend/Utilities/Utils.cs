@@ -115,7 +115,7 @@ namespace FSAutomator.Backend.Utilities
 
                 if (!availableActions.Contains(actionName))
                 {
-                    var exMessage = String.Format("The action {0} is not supported.", actionName);
+                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", "Error", true);
                     GeneralStatus.GetInstance.ReportError(exMessage);
                     return null;
                 }

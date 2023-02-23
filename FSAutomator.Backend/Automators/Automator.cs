@@ -31,9 +31,9 @@ namespace FSAutomator.Backend.Automators
             //status.ReportEvent("prova reportevent"); // activar
             //return;
 
-            if(this.connection != null)
+            if(this.connection == null)
             {
-                var message = "Connection not active"; //handle
+                var message = new InternalMessage("Connection not active","Error",true); //handle
                 status.ReportError(message);
                 return;
             }

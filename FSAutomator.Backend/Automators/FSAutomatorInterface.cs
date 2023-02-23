@@ -15,7 +15,7 @@ namespace FSAutomator.Backend.Automators
 
         public event EventHandler<bool> ConnectionStatusChangeEvent;
 
-        public event EventHandler<string> ReportErrorEvent;
+        public event EventHandler<InternalMessage> ReportErrorEvent;
 
 
 
@@ -37,7 +37,7 @@ namespace FSAutomator.Backend.Automators
             this.ConnectionStatusChangeEvent.Invoke(this, connectionStatus);
         }
 
-        private void ReportError(object sender, string msg)
+        private void ReportError(object sender, InternalMessage msg)
         {
             Trace.WriteLine("ReportError");
             this.ReportErrorEvent.Invoke(this, msg);
@@ -98,7 +98,6 @@ namespace FSAutomator.Backend.Automators
 
         public bool IsConnectedToSim()
         {
-            Status.IsConnectedToSim = true;
             return Status.IsConnectedToSim;
         }
 

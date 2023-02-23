@@ -13,16 +13,7 @@ namespace FSAutomator
     // https://stackoverflow.com/questions/3829137/i-need-the-expand-collapse-for-rowdetailstemplate
     // https://www.google.com/search?q=RowDetailsTemplate+collapse&oq=RowDetailsTemplate+collapse&aqs=chrome..69i57j0i22i30l3j69i60l2.1643j0j7&sourceid=chrome&ie=UTF-8
 
-    interface IBaseSimConnectWrapper
-    {
-        int GetUserSimConnectWinEvent();
-        void ReceiveSimConnectMessage();
-        void SetWindowHandle(IntPtr _hWnd);
-        void Disconnect();
-    }
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
+
     public partial class MainWindow : Window
     {
         public MainWindow()
@@ -30,68 +21,9 @@ namespace FSAutomator
             InitializeComponent();
         }
 
-        protected HwndSource GetHWinSource()
-        {
-            return PresentationSource.FromVisual(this) as HwndSource;
-        }
-
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            base.OnSourceInitialized(e);
-            GetHWinSource().AddHook(WndProc);
-            if (this.DataContext is IBaseSimConnectWrapper oBaseSimConnectWrapper)
-            {
-                oBaseSimConnectWrapper.SetWindowHandle(GetHWinSource().Handle);
-            }
-        }
-
-        private IntPtr WndProc(IntPtr hWnd, int iMsg, IntPtr hWParam, IntPtr hLParam, ref bool bHandled)
-        {
-            //Trace.WriteLine("Received!! {0}", iMsg.ToString());
-            if (this.DataContext is IBaseSimConnectWrapper oBaseSimConnectWrapper)
-            {
-                try
-                {
-                    if (iMsg == oBaseSimConnectWrapper.GetUserSimConnectWinEvent())
-                    {
-                        Trace.WriteLine("RECEIVED FROM FS!! {0}", iMsg.ToString());
-                        oBaseSimConnectWrapper.ReceiveSimConnectMessage();
-                    }
-                }
-                catch
-                {
-                    oBaseSimConnectWrapper.Disconnect();
-                }
-            }
-
-            return IntPtr.Zero;
-        }
-
         private void MnuExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
-        }
-
-        private void Expander_Expanded(object sender, RoutedEventArgs e)
-        {
-            for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)
-                if (vis is DataGridRow)
-                {
-                    var row = (DataGridRow)vis;
-                    row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-                    break;
-                }
-        }
-
-        private void Expander_Collapsed(object sender, RoutedEventArgs e)
-        {
-            for (var vis = sender as Visual; vis != null; vis = VisualTreeHelper.GetParent(vis) as Visual)
-                if (vis is DataGridRow)
-                {
-                    var row = (DataGridRow)vis;
-                    row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-                    break;
-                }
         }
     }
 

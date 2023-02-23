@@ -20,7 +20,11 @@ namespace FSAutomator.Backend
     {
         private SimConnect m_SimConnect = null;
 
+        private EventWaitHandle _simConnectEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
+
         public Automator automator = new Automator();
+
+        private Thread _simConnectReceiveThread = null;
 
         public GeneralStatus status = GeneralStatus.GetInstance;
 
@@ -47,27 +51,32 @@ namespace FSAutomator.Backend
             }
         }
 
-        public string SaveAutomation(AutomationFile automation, string newFileName)
+        public InternalMessage SaveAutomation(AutomationFile automation, string newFileName)
         {
+
+            if (!(newFileName.Length > 0))
+            {
+                return new InternalMessage("Please enter an automation name.","",false);
+            }
 
             var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, newFileName + ".json");
             var isDLLAutomation = automator.ActionList.Where(x => x.Name == "DLLAutomation").Any();
             
             if (isDLLAutomation)
             {
-                return "Saving DLL automations is not supported";
+                return new InternalMessage("Saving DLL automations is not supported", "", false);
             }
 
-            if (automator.ActionList.Count == 0)
+            if (!automator.ActionList.Any())
             {
-                return "No actions to save";
+                return new InternalMessage("No actions to save", "", false);
             }
 
             var json = Utils.GetJSONTextFromAutomationList(automator.ActionList);
 
             File.WriteAllText(automationFilePath, json);
 
-            return "Automation saved successfully";
+            return new InternalMessage("Automation saved successfully", "" , false);
         }
 
         public void LoadActions(AutomationFile fileToLoad)
@@ -78,11 +87,11 @@ namespace FSAutomator.Backend
 
             if (fileToLoad.FileName.EndsWith(".json"))
             {
-                LoadJSONActions(fileToLoad); //"Automations\\bb\\bb.json"
+                LoadJSONActions(fileToLoad); 
             }
             else if (fileToLoad.FileName.EndsWith(".dll"))
             {
-                LoadDLLActions(fileToLoad);   //"Automations\\ExternalAutomationExample.dll"
+                LoadDLLActions(fileToLoad);  
             }
 
             ValidateActions();
@@ -169,7 +178,8 @@ namespace FSAutomator.Backend
 
             if(actionType == null)
             {
-                status.ReportError($"Action name ({actionName}) does not exist. Did you select an action?");
+                var message = new InternalMessage($"Action name ({actionName}) does not exist. Did you select an action?", "Error", true);
+                status.ReportError(message);
                 return;
             }
 
@@ -231,16 +241,20 @@ namespace FSAutomator.Backend
         }
 
 
-        public bool ExportAutomation(string filename, string destinationPath, AutomationFile l_SAutomationFilesList)
+        public InternalMessage ExportAutomation(string filename, string destinationPath, AutomationFile l_SAutomationFilesList)
         {
             var exportStatus = new Exporters().ExportAutomation(filename, destinationPath, this.automator.ActionList, l_SAutomationFilesList);
+            if (exportStatus.IsError)
+            {
+                ClearAutomationList();
+            }
             return exportStatus;
         }
 
         public void ReceiveSimConnectMessage()
         {
             Trace.WriteLine("Receive in BackEnd!!");
-            m_SimConnect?.ReceiveMessage();
+            //m_SimConnect?.ReceiveMessage();
         }
 
         public void ClearAutomationList()
@@ -262,32 +276,50 @@ namespace FSAutomator.Backend
             }
         }
 
-        public void Connect(IntPtr m_hWnd, int WM_USER_SIMCONNECT)
+        public void Connect()
         {
-            status.IsConnectedToSim = true; // note posar-ho bé
-            return; // note treure return
-
-            Trace.WriteLine("Connect BackEnd");
-
 
             try
             {
-                /// The constructor is similar to SimConnect_Open in the native API
-                m_SimConnect = new SimConnect("Simconnect - FSAutomator", m_hWnd, (uint)WM_USER_SIMCONNECT, null, 0);
+                m_SimConnect = new SimConnect("Simconnect - FSAutomator", IntPtr.Zero, 0, _simConnectEventHandle, 0);
 
-                /// Listen to connect and quit msgs
                 m_SimConnect.OnRecvOpen += new SimConnect.RecvOpenEventHandler(Simconnect_OnRecvOpen);
                 m_SimConnect.OnRecvQuit += new SimConnect.RecvQuitEventHandler(Simconnect_OnRecvQuit);
-
-                /// Listen to exceptions
                 m_SimConnect.OnRecvException += new SimConnect.RecvExceptionEventHandler(Simconnect_OnRecvException);
 
+                StartMessageReceiveThreadHandler();
             }
             catch (COMException ex)
             {
-                Trace.WriteLine("Connection to KH failed: " + ex.Message);
+                Trace.WriteLine("Connection to simulator failed: " + ex.Message);
             }
 
+
+
+        }
+
+        private void StartMessageReceiveThreadHandler()
+        {
+            _simConnectReceiveThread = new Thread(new ThreadStart(SimConnect_MessageReceiveThreadHandler));
+            _simConnectReceiveThread.IsBackground = true;
+            _simConnectReceiveThread.Start();
+
+        }
+        private void SimConnect_MessageReceiveThreadHandler()
+        {
+            while (true)
+            {
+                _simConnectEventHandle.WaitOne();
+
+                try
+                {
+                    m_SimConnect?.ReceiveMessage();
+                }
+                catch
+                {
+                    // ignored
+                }
+            }
         }
 
         private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)

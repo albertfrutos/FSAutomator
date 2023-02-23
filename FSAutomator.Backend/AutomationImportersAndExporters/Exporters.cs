@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -16,10 +17,13 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 {
     internal class Exporters
     {
-        internal bool ExportAutomation(string fileName, string destinationPath, ObservableCollection<FSAutomatorAction> actionList, AutomationFile automationFile)
+        internal InternalMessage ExportAutomation(string fileName, string destinationPath, ObservableCollection<FSAutomatorAction> actionList, AutomationFile automationFile)
         {
+
+
             var exportPath = @"Exports";
-            if (actionList is not null && actionList.Count() > 0)
+
+            if (actionList is not null && actionList.Any())
             {
                 if (!Directory.Exists(exportPath))
                 {
@@ -47,6 +51,11 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
                         if (allDLLsExist)
                         {
+                            if (!(fileName.Length > 0))
+                            {
+                                return new InternalMessage("Please enter an automation name", "Error", true);
+                            }
+
                             var json = Utils.GetJSONTextFromAutomationList(actionList, packageName);
                             ExportPack(fileName, packageName, automationFile, json);
 
@@ -55,17 +64,22 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                 }
                 else //standalone json
                 {
+                    if (!(fileName.Length > 0))
+                    {
+                        return new InternalMessage("Please enter an automation name", "Error", true);
+                    }
+
                     var jsonFileName = Path.Combine(destinationPath, Path.GetFileNameWithoutExtension(fileName) + ".json");
                     var json = Utils.GetJSONTextFromAutomationList(actionList);
                     List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
                     ExportJson(jsonFileName, json, dllFilesInAction, exportPath);
                 }
 
-                return true;
+                return new InternalMessage("Export finished", "",false);
 
             }
 
-            return false;
+            return new InternalMessage("There is nothing to save", "Error", true);
 
         }
 

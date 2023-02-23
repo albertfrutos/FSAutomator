@@ -17,7 +17,7 @@ namespace FSAutomator.Backend.Actions
 
         private Variable variable;
 
-        internal GetVariable()
+        public GetVariable()
         {
 
         }

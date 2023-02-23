@@ -24,7 +24,7 @@ using FSAutomator.BackEnd.Entities;
 
 namespace FSAutomator.ViewModel
 {
-    public class MainWindowViewModel : INotifyPropertyChanged, IBaseSimConnectWrapper
+    public class MainWindowViewModel : INotifyPropertyChanged
     {
         private ObservableCollection<FSAutomatorAction> l_ActionListUI;
         private FSAutomatorAction l_SActionListUI;
@@ -33,15 +33,9 @@ namespace FSAutomator.ViewModel
 
         BackendMain backEnd = null;
 
-        public const int WM_USER_SIMCONNECT = 0x0402;
-        private IntPtr m_hWnd = new IntPtr(0);
-
         private List<AutomationFile> l_AutomationFilesList;
         private AutomationFile l_SAutomationFilesList;
         private bool b_EditMode = false;
-
-
-
 
         private ICommand? b_ButtonLoadActions;
         private ICommand? b_ButtonExecute;
@@ -55,6 +49,121 @@ namespace FSAutomator.ViewModel
         private ICommand b_ButtonSaveAs;
         private ICommand b_ButtonExport;
 
+        #region Properties
+
+        public ObservableCollection<FSAutomatorAction> ActionListUI
+        {
+            get
+            {
+                l_ActionListUI = backEnd.GetActionList();
+                return l_ActionListUI;
+            }
+
+            set
+            {
+                l_ActionListUI = value;
+                RaisePropertyChanged("ActionListUI");
+            }
+        }
+
+        public List<AutomationFile> AutomationFilesList
+        {
+            get { return l_AutomationFilesList; }
+
+            set
+            {
+                var selectedItem = SAutomationFilesList;
+                l_AutomationFilesList = value;
+                RaisePropertyChanged("AutomationFilesList");
+                SAutomationFilesList = selectedItem;
+            }
+        }
+
+        public AutomationFile SAutomationFilesList
+        {
+            get { return l_SAutomationFilesList; }
+
+            set
+            {
+                l_SAutomationFilesList = value;
+                RaisePropertyChanged("SAutomationFilesList");
+            }
+        }
+
+        public string SAutomationName
+        {
+            get { return l_SAutomationName; }
+
+            set
+            {
+                l_SAutomationName = value;
+                RaisePropertyChanged("SAutomationName");
+            }
+        }
+
+        public FSAutomatorAction SActionListUI
+        {
+            get { return l_SActionListUI; }
+
+            set
+            {
+                l_SActionListUI = value;
+            }
+        }
+
+        public int SIActionListUI
+        {
+            get { return l_SIActionListUI; }
+
+            set
+            {
+                l_SIActionListUI = value;
+                RaisePropertyChanged("SIActionListUI");
+            }
+        }
+
+        public bool EditMode
+        {
+            get { return b_EditMode; }
+
+            set
+            {
+                b_EditMode = value;
+                RaisePropertyChanged("EditMode");
+            }
+        }
+
+        public List<string> ValidationOutcomeCleaned
+        {
+            get
+            {
+                return backEnd.status.ValidationIssues; //l_ValidationOutcomeCleaned;
+            }
+            set
+            {
+                backEnd.status.ValidationIssues = value;
+                RaisePropertyChanged("ValidationOutcomeCleaned");
+            }
+
+        }
+
+        public bool ConnectionStatus
+        {
+            get
+            {
+                return backEnd.status.IsConnectedToSim; //l_ValidationOutcomeCleaned;
+            }
+            set
+            {
+                backEnd.status.IsConnectedToSim = value;
+                RaisePropertyChanged("ConnectionStatus");
+            }
+
+        }
+
+        #endregion
+
+        #region ICommand
         public ICommand ButtonLoadActions
         {
             get
@@ -186,13 +295,16 @@ namespace FSAutomator.ViewModel
             }
         }
 
+        #endregion
+
         public MainWindowViewModel()
         {
-            backEnd = new BackendMain();//handle
+            backEnd = new BackendMain();
+            ActionListUI = backEnd.GetActionList();
 
             SubscribeToEvents();
 
-            ActionListUI = backEnd.GetActionList();
+            
 
             RefreshAutomationFilesList();
             InitializeNewAutomation();
@@ -218,35 +330,25 @@ namespace FSAutomator.ViewModel
         }
 
         #region Event Receivers
-        public void ReportEventReceiver(object sender, string data)
+
+        public void ReportEventReceiver(object sender, InternalMessage msg)
         {
-            //this.ConnectionStatus = backEnd.status.IsConnectedToSim;
-            MessageBox.Show(data);
-            Trace.WriteLine("ui " + data);
+            MessageBox.Show(msg.Message);
         }
 
         private void ConnectionStatusReceiver(object? sender, bool e)
         {
             this.ConnectionStatus = backEnd.status.IsConnectedToSim;
-            //MessageBox.Show("updated connection status"); //activar
         }
 
         #endregion
 
         private void SaveCurrentAutomation(object obj)
         {
-            var filename = SAutomationName;
-
-            if (!(filename.Length > 0))
-            {
-                MessageBox.Show("Please enter an automation name.", "Error");
-                return;
-            }
-
-            var saveResult = backEnd.SaveAutomation(SAutomationFilesList, SAutomationName);
+            var result = backEnd.SaveAutomation(SAutomationFilesList, SAutomationName);
             RefreshAutomationFilesList();
             
-            backEnd.status.ReportError(saveResult);
+            backEnd.status.ReportError(result);
         }
 
         private void ExportCurrentAutomationAs(object obj)
@@ -254,23 +356,7 @@ namespace FSAutomator.ViewModel
             var filename = SAutomationName;
             var destinationPath = @"Exports";
 
-            if (!(filename.Length > 0))
-            {
-                MessageBox.Show("Please enter an automation name.", "Error");
-                return;
-            }
-            else if (backEnd.ExportAutomation(filename, destinationPath, SAutomationFilesList))
-            {
-                MessageBox.Show("Export finished.", "Finished");
-            }
-            else
-            {
-                MessageBox.Show("There is nothing to save.", "Error");
-                return;
-            }
-
-            backEnd.ClearAutomationList();
-            //this.ValidationOutcomeCleaned = backEnd.GetValidationIssuesList();
+            var result = backEnd.ExportAutomation(filename, destinationPath, SAutomationFilesList);
 
             RefreshAutomationFilesList();
         }
@@ -295,10 +381,7 @@ namespace FSAutomator.ViewModel
             var selectedIndex = ActionListUI.IndexOf(SActionListUI);
             SIActionListUI = backEnd.MoveActionDown(selectedIndex);
             SIActionListUI = -1;
-
         }
-
-
 
         private void RemoveAction(object obj)
         {
@@ -314,7 +397,6 @@ namespace FSAutomator.ViewModel
             try
             {
                 AddActionWindow addAction = new AddActionWindow();
-                //addAction.DataContext = new AddActionViewModel();
                 addAction.ShowDialog();
                 var newActionJSON = addAction.finalJSON;
 
@@ -349,124 +431,6 @@ namespace FSAutomator.ViewModel
         }
 
 
-
-        public void SetWindowHandle(IntPtr _hWnd)
-        {
-            m_hWnd = _hWnd;
-        }
-
-        public ObservableCollection<FSAutomatorAction> ActionListUI
-        {
-            get {
-                l_ActionListUI = backEnd.GetActionList();
-                return l_ActionListUI;
-            }
-
-            set
-            {
-                l_ActionListUI = value;
-                RaisePropertyChanged("ActionListUI");
-            }
-        }
-
-        public List<AutomationFile> AutomationFilesList
-        {
-            get { return l_AutomationFilesList; }
-
-            set
-            {
-                var selectedItem = SAutomationFilesList;
-                l_AutomationFilesList = value;
-                RaisePropertyChanged("AutomationFilesList");
-                SAutomationFilesList = selectedItem;
-
-            }
-        }
-
-        public AutomationFile SAutomationFilesList
-        {
-            get { return l_SAutomationFilesList; }
-
-            set
-            {
-                l_SAutomationFilesList = value;
-                RaisePropertyChanged("SAutomationFilesList");
-            }
-        }
-
-        public string SAutomationName
-        {
-            get { return l_SAutomationName; }
-
-            set
-            {
-                l_SAutomationName = value;
-                RaisePropertyChanged("SAutomationName");
-            }
-        }
-
-        public FSAutomatorAction SActionListUI
-        {
-            get { return l_SActionListUI; }
-
-            set
-            {
-                l_SActionListUI = value;
-            }
-        }
-
-        public int SIActionListUI
-        {
-            get { return l_SIActionListUI; }
-
-            set
-            {
-                l_SIActionListUI = value;
-                RaisePropertyChanged("SIActionListUI");
-            }
-        }
-
-        public bool EditMode
-        {
-            get { return b_EditMode; }
-
-            set
-            {
-                b_EditMode = value;
-                RaisePropertyChanged("EditMode");
-            }
-        }
-
-        public List<string> ValidationOutcomeCleaned
-        {
-            get
-            {
-                return backEnd.status.ValidationIssues; //l_ValidationOutcomeCleaned;
-
-            }
-            set
-            {
-                backEnd.status.ValidationIssues = value;
-                RaisePropertyChanged("ValidationOutcomeCleaned");
-            }
-
-        }
-
-        public bool ConnectionStatus
-        {
-            get
-            {
-                return backEnd.status.IsConnectedToSim; //l_ValidationOutcomeCleaned;
-
-            }
-            set
-            {
-                backEnd.status.IsConnectedToSim = value;
-                RaisePropertyChanged("ConnectionStatus");
-            }
-
-        }
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public void RaisePropertyChanged(string propName)
@@ -481,16 +445,8 @@ namespace FSAutomator.ViewModel
         public void ReceiveSimConnectMessage()
         {
             Trace.WriteLine("Receive from Model!!");
-            backEnd.ReceiveSimConnectMessage();
+            //backEnd.ReceiveSimConnectMessage();
         }
-
-
-        public int GetUserSimConnectWinEvent()
-        {
-            return WM_USER_SIMCONNECT;
-        }
-
-
 
         public void Disconnect()
         {
@@ -503,7 +459,7 @@ namespace FSAutomator.ViewModel
         private void Connect(object commandParameter)
         {
             Trace.WriteLine("Connect ViewModel");
-            backEnd.Connect(m_hWnd, WM_USER_SIMCONNECT);
+            backEnd.Connect();
         }
 
         public void LoadActions(object obj)

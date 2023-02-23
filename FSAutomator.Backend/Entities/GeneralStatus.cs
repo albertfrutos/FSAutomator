@@ -17,7 +17,7 @@ namespace FSAutomator.BackEnd.Entities
 
         private static GeneralStatus instance = null;
 
-        public event EventHandler<string> ReportErrorEvent;
+        public event EventHandler<InternalMessage> ReportErrorEvent;
 
         public event EventHandler<bool> ConnectionStatusChangeEvent;
 
@@ -67,7 +67,7 @@ namespace FSAutomator.BackEnd.Entities
             }
         }
 
-        public void ReportError(string msg)  // note add to public interface
+        public void ReportError(InternalMessage msg)  // note add to public interface
         {
             if (this.ReportErrorEvent != null)
             {
