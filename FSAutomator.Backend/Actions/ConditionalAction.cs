@@ -3,7 +3,6 @@ using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -16,12 +15,15 @@ namespace FSAutomator.Backend.Actions
         public string ActionIfTrueUniqueID { get; set; } = null;
         public string ActionIfFalseUniqueID { get; set; } = null;
 
-        internal List<string> AllowedNumberComparisonValues = new List<string>(){ "<", ">", "=", "<>" };
+        internal List<string> AllowedNumberComparisonValues = new List<string>() { "<", ">", "=", "<>" };
         internal List<string> AllowedStringComparisonValues = new List<string>() { "=", "<>" };
 
         internal FSAutomatorAction CurrentAction = null;
 
+        public ConditionalAction()
+        {
 
+        }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
@@ -49,7 +51,7 @@ namespace FSAutomator.Backend.Actions
                 {
                     return new ActionResult("String comparison only allowed with = or <>", null, true);
                 }
-                
+
             }
             else
             {
@@ -81,34 +83,20 @@ namespace FSAutomator.Backend.Actions
         private static ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
         {
             var action = auxiliaryActionList.Where(x => x.UniqueID == actionUniqueID).First();
-            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection});
+            ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection });
             return result;
         }
 
         private bool CheckCondition(dynamic firstMember, dynamic secondMember)
         {
-            bool result;
-            
-            switch (Comparison)
+            var result = Comparison switch
             {
-                case "<":
-                    result = firstMember < secondMember;
-                    break;
-                case ">":
-                    result = firstMember > secondMember;
-                    break;
-                case "=":
-                case "==":
-                    result = firstMember == secondMember;
-                    break;
-                case "<>":
-                    result = firstMember != secondMember;
-                    break;
-                default:
-                    result = false;
-                    break;
-            }
-            
+                "<" => firstMember < secondMember,
+                ">" => firstMember > secondMember,
+                "=" or "==" => firstMember == secondMember,
+                "<>" => firstMember != secondMember,
+                _ => false,
+            };
             return result;
 
         }

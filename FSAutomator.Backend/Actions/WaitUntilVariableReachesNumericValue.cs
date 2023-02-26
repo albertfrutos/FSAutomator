@@ -23,7 +23,7 @@ namespace FSAutomator.Backend.Actions
         bool isValueReached = false;
         public WaitUntilVariableReachesNumericValue()
         {
-            
+
         }
 
         internal WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
@@ -42,8 +42,8 @@ namespace FSAutomator.Backend.Actions
             }
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
-            
-            if(actionsList != null)
+
+            if (actionsList != null)
             {
                 CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
             }
@@ -60,7 +60,7 @@ namespace FSAutomator.Backend.Actions
                 var variableResult = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
                 CheckVariableRecovered(variableResult);
                 Thread.Sleep(CheckInterval); // NOTE : do it with a Timer
-            } while(!this.isValueReached);
+            } while (!this.isValueReached);
 
             return new ActionResult($"Accomplished - {this.variableValue}", this.variableValue);
 

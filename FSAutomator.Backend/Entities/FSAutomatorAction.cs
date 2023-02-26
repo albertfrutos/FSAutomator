@@ -39,12 +39,12 @@ namespace FSAutomator.Backend.Entities
         public FSAutomatorAction(string name, string status)
         {
             s_Name = name;
-            s_Status= status;
+            s_Status = status;
         }
-        
+
         public FSAutomatorAction()
         {
-            
+
         }
 
         public string Name
@@ -69,7 +69,7 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("Id");
             }
         }
-        
+
         public bool IsAuxiliary
         {
             get { return b_isAuxiliary; }
@@ -80,7 +80,7 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("IsAuxiliary");
             }
         }
-        
+
         public bool StopOnError
         {
             get { return b_stopOnError; }
@@ -91,7 +91,7 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("StopOnError");
             }
         }
-        
+
         public AutomationFile AutomationFile
         {
             get { return o_AutomationFile; }

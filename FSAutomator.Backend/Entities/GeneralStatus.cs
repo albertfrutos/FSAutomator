@@ -1,11 +1,4 @@
-﻿using FSAutomator.BackEnd.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel;
 
 namespace FSAutomator.BackEnd.Entities
 {
@@ -24,7 +17,7 @@ namespace FSAutomator.BackEnd.Entities
         public static GeneralStatus GetInstance
         {
             get
-            { 
+            {
                 if (instance == null)
                 {
                     instance = new GeneralStatus();
@@ -74,13 +67,12 @@ namespace FSAutomator.BackEnd.Entities
                 this.ReportErrorEvent.Invoke(this, msg);
             }
         }
-        
-        private void ConnectionChangeEvent() 
+
+        private void ConnectionChangeEvent()
         {
             if (this.ConnectionStatusChangeEvent != null)
             {
                 this.ConnectionStatusChangeEvent.Invoke(this, this.IsConnectedToSim);
-                Trace.WriteLine("csc inv");
             }
         }
 

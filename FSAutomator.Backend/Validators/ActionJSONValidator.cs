@@ -1,6 +1,5 @@
-﻿using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Automators;
+﻿using FSAutomator.Backend.Actions;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
@@ -94,7 +93,7 @@ namespace FSAutomator.BackEnd.Validators
                 var issue = String.Format("ConditionalAction[{0}]: Both true and false UniqueID for execution are missing", index);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
 
-                
+
             }
 
             return actionIsValidated;
@@ -139,7 +138,7 @@ namespace FSAutomator.BackEnd.Validators
             bool actionIsValidated = true;
 
             var variableName = (action.ActionObject as GetVariable).VariableName;
-            
+
             if (!VariableExists(variableName))
             {
                 var issue = String.Format("GetVariable [{0}]: Variable {1} does not exist.", index, variableName);
@@ -183,7 +182,7 @@ namespace FSAutomator.BackEnd.Validators
             var realDLLPath = Path.Combine(action.AutomationFile.BasePath, DLLName);
 
             if (DLLName == String.Empty || !File.Exists(realDLLPath))
-                {
+            {
                 var issue = String.Format("DLLAutomation [{0}]: Referenced DLL ({1}) does not exist", index, realDLLPath);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
@@ -191,7 +190,7 @@ namespace FSAutomator.BackEnd.Validators
             return actionIsValidated;
 
         }
-        
+
         private static bool ValidateDLLAutomation(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
         {
             bool actionIsValidated = true;
@@ -205,7 +204,7 @@ namespace FSAutomator.BackEnd.Validators
 
 
             if (DLLPath == String.Empty || !File.Exists(DLLPath))
-                {
+            {
                 var issue = String.Format("DLLAutomation [{0}]: Referenced DLL ({1}) does not exist", index, DLLPath);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
@@ -294,7 +293,7 @@ namespace FSAutomator.BackEnd.Validators
         private static bool ValidateMemoryRegisterRead(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
         {
             bool actionIsValidated = true;
-            
+
             //The ID you are trying to read has not been written yet
 
             var idToRead = (action.ActionObject as MemoryRegisterRead).Id;
@@ -314,7 +313,8 @@ namespace FSAutomator.BackEnd.Validators
 
                 var remainingIDsToRead = writtenIDsUpToNow.Except(readIDsUpToNowWithSelectedRemoval).ToList();
 
-                if (!remainingIDsToRead.Contains(idToRead)){
+                if (!remainingIDsToRead.Contains(idToRead))
+                {
                     var issue = String.Format("MemoryRegisterRead [{0}]: trying to read a register with ID not available. Maybe removed during previous read?", index);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }

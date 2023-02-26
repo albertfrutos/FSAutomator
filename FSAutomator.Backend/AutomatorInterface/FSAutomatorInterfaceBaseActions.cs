@@ -1,99 +1,81 @@
-﻿using FSAutomator.Backend;
-using FSAutomator.Backend.Actions;
+﻿using FSAutomator.Backend.Actions;
+using FSAutomator.Backend.Automators;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
-using System.Diagnostics;
 
-namespace FSAutomator.Backend.Automators
+namespace FSAutomator.Backend.AutomatorInterface
 {
-    public class FSAutomatorInterface
+    public class FSAutomatorInterfaceBaseActions
     {
-        private Automator Automator { get; }
-        private SimConnect Connection { get; }
-        private AutoResetEvent FinishEvent { get; }
+
+
+        internal Automator automator { get; set; }
+        internal SimConnect Connection { get; set; }
         private GeneralStatus Status { get; set; }
 
-        public event EventHandler<bool> ConnectionStatusChangeEvent;
-
-        public event EventHandler<InternalMessage> ReportErrorEvent;
-
-
-
-        public FSAutomatorInterface(Automator automator, SimConnect connection, AutoResetEvent finishEvent, GeneralStatus status)
+        public FSAutomatorInterfaceBaseActions(Automator automator, SimConnect connection)
         {
-            this.Automator = automator;
+            this.automator = automator;
             this.Connection = connection;
-            this.FinishEvent = finishEvent;
-            this.Status = status;
-            Status.ConnectionStatusChangeEvent += NotifyConnectionStatusChange;
-            Status.ReportErrorEvent += ReportError;
         }
 
+        /*
         #region Interface Events
 
         private void NotifyConnectionStatusChange(object sender, bool connectionStatus)
         {
-            Trace.WriteLine("csc int");
             this.ConnectionStatusChangeEvent.Invoke(this, connectionStatus);
         }
 
-        private void ReportError(object sender, InternalMessage msg)
+        public void ReportError(object sender, InternalMessage msg)
         {
-            Trace.WriteLine("ReportError");
             this.ReportErrorEvent.Invoke(this, msg);
         }
 
         #endregion
+        */
 
         #region Interface Actions
 
         public ActionResult GetVariable(string variableName)
         {
             var action = new GetVariable(variableName);
-            var result = action.ExecuteAction(Automator, Connection);
+            var result = action.ExecuteAction(automator, Connection);
             return result;
         }
 
         public ActionResult ExpectVariableValue(string variableName, string variableExpectedValue)
         {
             var action = new ExpectVariableValue(variableName, variableExpectedValue);
-            var result = action.ExecuteAction(Automator, Connection);
+            var result = action.ExecuteAction(automator, Connection);
             return result;
         }
 
         public ActionResult SendEvent(string eventName, string eventValue)
         {
             var action = new SendEvent(eventName, eventValue);
-            var result = action.ExecuteAction(Automator, Connection);
+            var result = action.ExecuteAction(automator, Connection);
             return result;
         }
 
         public ActionResult WaitSeconds(string time)
         {
             var action = new WaitSeconds(time);
-            var result = action.ExecuteAction(Automator, Connection);
+            var result = action.ExecuteAction(automator, Connection);
             return result;
         }
 
         public ActionResult WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
         {
             var action = new WaitUntilVariableReachesNumericValue(variableName, comparison, thresholdValue, checkInterval);
-            var result = action.ExecuteAction(Automator, Connection);
+            var result = action.ExecuteAction(automator, Connection);
             return result;
         }
 
-        #endregion
 
-        public ActionResult TextTest (string text)
+        public ActionResult TextTest(string visible, string computed, bool isError)
         {
-            
-            return new ActionResult(text,text,false);
-        }
-
-        public void AutomationHasEnded()
-        {
-            FinishEvent.Set();
-            return;
+            return new ActionResult(visible, computed, isError);
         }
 
         public bool IsConnectedToSim()
@@ -101,5 +83,7 @@ namespace FSAutomator.Backend.Automators
             return Status.IsConnectedToSim;
         }
 
+
+        #endregion
     }
 }

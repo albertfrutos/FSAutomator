@@ -2,7 +2,6 @@
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
-using System.Timers;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -18,7 +17,7 @@ namespace FSAutomator.Backend.Actions
 
         public WaitSeconds()
         {
-            
+
         }
 
         internal WaitSeconds(string time)
@@ -33,7 +32,7 @@ namespace FSAutomator.Backend.Actions
             waitTimer = new System.Timers.Timer(1000);
 
             waitTimer.Elapsed += delegate { OnTick(sender); };
-            
+
             waitTimer.Start();
 
             evento.WaitOne();
@@ -45,7 +44,7 @@ namespace FSAutomator.Backend.Actions
         {
             TimeSpan t = TimeSpan.FromSeconds(totalSeconds);
             var remainingTime = $"{t.Hours:D2}:{t.Minutes:D2}:{t.Seconds:D2}";
-            
+
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
             var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
 

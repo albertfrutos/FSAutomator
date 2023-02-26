@@ -2,7 +2,6 @@
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd;
 using FSAutomator.BackEnd.AutomationImportersAndExporters;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
@@ -36,17 +35,19 @@ namespace FSAutomator.Backend
 
         public void Execute()
         {
-            
+
             automator.ExecuteActionList();
         }
 
         public SimConnect Connection
         {
-            get {
+            get
+            {
                 return m_SimConnect;
             }
-            set { 
-             
+            set
+            {
+
 
             }
         }
@@ -56,12 +57,12 @@ namespace FSAutomator.Backend
 
             if (!(newFileName.Length > 0))
             {
-                return new InternalMessage("Please enter an automation name.","",false);
+                return new InternalMessage("Please enter an automation name.", "", false);
             }
 
             var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, newFileName + ".json");
             var isDLLAutomation = automator.ActionList.Where(x => x.Name == "DLLAutomation").Any();
-            
+
             if (isDLLAutomation)
             {
                 return new InternalMessage("Saving DLL automations is not supported", "", false);
@@ -76,7 +77,7 @@ namespace FSAutomator.Backend
 
             File.WriteAllText(automationFilePath, json);
 
-            return new InternalMessage("Automation saved successfully", "" , false);
+            return new InternalMessage("Automation saved successfully", "", false);
         }
 
         public void LoadActions(AutomationFile fileToLoad)
@@ -87,11 +88,11 @@ namespace FSAutomator.Backend
 
             if (fileToLoad.FileName.EndsWith(".json"))
             {
-                LoadJSONActions(fileToLoad); 
+                LoadJSONActions(fileToLoad);
             }
             else if (fileToLoad.FileName.EndsWith(".dll"))
             {
-                LoadDLLActions(fileToLoad);  
+                LoadDLLActions(fileToLoad);
             }
 
             ValidateActions();
@@ -99,12 +100,12 @@ namespace FSAutomator.Backend
 
         private void LoadDLLActions(AutomationFile fileToLoad)
         {
-                        var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
+            var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
 
-        //fer un getname i terure el nom
-        var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath); //"Automations\\ExternalAutomationExample.dll"
+            //fer un getname i terure el nom
+            var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath); //"Automations\\ExternalAutomationExample.dll"
             var uniqueID = Guid.NewGuid().ToString();
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", fileToLoadPath, externalAutomatorObject, false, true,fileToLoad));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", fileToLoadPath, externalAutomatorObject, false, true, fileToLoad));
         }
 
         public List<string> ValidateActions()
@@ -176,7 +177,7 @@ namespace FSAutomator.Backend
 
             Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
 
-            if(actionType == null)
+            if (actionType == null)
             {
                 var message = new InternalMessage($"Action name ({actionName}) does not exist. Did you select an action?", "Error", true);
                 status.ReportError(message);
@@ -211,7 +212,7 @@ namespace FSAutomator.Backend
 
             return selectedIndex + 1;
         }
-        
+
         public int MoveActionUp(int selectedIndex)
         {
             if (selectedIndex == 0 || selectedIndex == -1)
@@ -236,7 +237,7 @@ namespace FSAutomator.Backend
                 automator.RebuildActionListIndices();
             }
 
-            
+
 
         }
 
@@ -333,6 +334,7 @@ namespace FSAutomator.Backend
             Console.WriteLine("An exception occurred Simconnect_OnRecvException: {0}", data.dwException.ToString());
             SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
             status.IsConnectedToSim = false;
+            Disconnect();
 
             //note llançar excepció amb event quan es faci el sistema d'estat principal
         }
@@ -340,6 +342,7 @@ namespace FSAutomator.Backend
         private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
         {
             status.IsConnectedToSim = false;
+            Disconnect();
             Console.WriteLine("Simulator has exited. Closing connection and exiting Simulator module");
         }
 

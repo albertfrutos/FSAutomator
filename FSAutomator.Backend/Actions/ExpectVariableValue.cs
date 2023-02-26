@@ -1,5 +1,4 @@
-﻿using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
+﻿using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 
@@ -17,10 +16,10 @@ namespace FSAutomator.Backend.Actions
             VariableName = variableName;
             VariableExpectedValue = variableExpectedValue;
         }
-        
-        internal ExpectVariableValue()
+
+        public ExpectVariableValue()
         {
-        
+
         }
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {

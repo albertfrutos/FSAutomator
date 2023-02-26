@@ -1,12 +1,11 @@
-﻿using FSAutomator.Backend.Entities;
-using System.Collections.ObjectModel;
+﻿using FSAutomator.Backend.Actions;
+using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Entities;
+using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using FSAutomator.Backend.Actions;
+using System.Collections.ObjectModel;
 using System.Text;
-using Microsoft.FlightSimulator.SimConnect;
-using FSAutomator.BackEnd;
-using FSAutomator.BackEnd.Entities;
 
 namespace FSAutomator.Backend.Utilities
 {
@@ -50,11 +49,11 @@ namespace FSAutomator.Backend.Utilities
 
         public static List<string> GetDLLFilesInJSONActionList(ObservableCollection<FSAutomatorAction> actionList)
         {
-            var a =  actionList.Where(x => x.ActionObject.GetType().GetProperty("DLLName")?.GetValue(x.ActionObject) != null).Select(y => Path.Combine(Directory.GetParent(y.AutomationFile.FilePath).FullName, y.ActionObject.GetType().GetProperty("DLLName").GetValue(y.ActionObject).ToString())).Distinct().ToList();
+            var a = actionList.Where(x => x.ActionObject.GetType().GetProperty("DLLName")?.GetValue(x.ActionObject) != null).Select(y => Path.Combine(Directory.GetParent(y.AutomationFile.FilePath).FullName, y.ActionObject.GetType().GetProperty("DLLName").GetValue(y.ActionObject).ToString())).Distinct().ToList();
             return a;
         }
 
-        public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction, string packDirName="")
+        public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction, string packDirName = "")
         {
             var allDLLsExist = true;
 
@@ -133,7 +132,7 @@ namespace FSAutomator.Backend.Utilities
                 {
                     isAuxiliary = token["IsAuxiliary"].ToString().ToLower() == "true" ? true : false;
                 }
-                
+
                 if (token["StopOnError"] != null)
                 {
                     stopOnError = token["StopOnError"].ToString().ToLower() == "true" ? true : false;
@@ -164,7 +163,7 @@ namespace FSAutomator.Backend.Utilities
 
             foreach (string packPath in automationPackPaths)
             {
-                var filePath = Directory.GetFiles(packPath,"*.json",SearchOption.TopDirectoryOnly).FirstOrDefault();
+                var filePath = Directory.GetFiles(packPath, "*.json", SearchOption.TopDirectoryOnly).FirstOrDefault();
 
                 var fileName = Path.GetFileName(filePath);
                 var packageName = Path.GetFileNameWithoutExtension(fileName);
@@ -180,19 +179,19 @@ namespace FSAutomator.Backend.Utilities
                     continue;
                 }
 
-                    var dllFilesAsExternalAutomatorAutomationFileList = actionList.Where(x => x.Name == "ExecuteCodeFromDLL")
-                        .Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true)
-                        .Select(z => new AutomationFile(
-                            (z.ActionObject as ExecuteCodeFromDLL).DLLName,
-                            "",
-                            String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", packageName),
-                            Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
-                            Directory.GetParent(Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
-                            )).ToList();
+                var dllFilesAsExternalAutomatorAutomationFileList = actionList.Where(x => x.Name == "ExecuteCodeFromDLL")
+                    .Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true)
+                    .Select(z => new AutomationFile(
+                        (z.ActionObject as ExecuteCodeFromDLL).DLLName,
+                        "",
+                        String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", packageName),
+                        Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
+                        Directory.GetParent(Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
+                        )).ToList();
 
-                    automationsToLoad.Add(jsonAutomationFile);
-                    automationsToLoad.AddRange(dllFilesAsExternalAutomatorAutomationFileList);
-                
+                automationsToLoad.Add(jsonAutomationFile);
+                automationsToLoad.AddRange(dllFilesAsExternalAutomatorAutomationFileList);
+
             }
             return automationsToLoad;
         }
@@ -220,7 +219,7 @@ namespace FSAutomator.Backend.Utilities
                 writer.WritePropertyName("Actions");
                 writer.WriteStartArray();
 
-                
+
 
                 foreach (FSAutomatorAction action in automationList)
                 {

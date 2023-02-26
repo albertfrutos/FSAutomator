@@ -1,9 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FSAutomator.BackEnd.Configuration
 {
@@ -20,7 +15,7 @@ namespace FSAutomator.BackEnd.Configuration
         {
             var json = File.ReadAllText(@"Configuration\AvailableFixedBoolItems\FSAutomatorFixedBoolItems.json");
             var items = JsonConvert.DeserializeObject<string[]>(json);
-            foreach(string item in items)
+            foreach (string item in items)
             {
                 FSAutomatorFixedBoolItems.Add(new AvailableFixedBoolItem
                 {

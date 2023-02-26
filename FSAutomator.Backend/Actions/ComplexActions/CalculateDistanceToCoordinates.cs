@@ -1,5 +1,4 @@
-﻿using FSAutomator.Backend.Entities;
-using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.BackEnd.Entities;
 using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
@@ -11,9 +10,20 @@ namespace FSAutomator.Backend.Actions
         public double FinalLatitude { get; set; }
         public double FinalLongitude { get; set; }
 
-        public string currentLatitude; 
+        public string currentLatitude;
 
         public string currentLongitude;
+
+        public CalculateDistanceToCoordinates()
+        {
+
+        }
+
+        public CalculateDistanceToCoordinates(string lat, string lon)
+        {
+            this.FinalLatitude = Convert.ToDouble(lat);
+            this.FinalLongitude = Convert.ToDouble(lon);
+        }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {

@@ -1,12 +1,4 @@
-﻿using FSAutomator.BackEnd.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace FSAutomator.BackEnd.Configuration
 {
@@ -20,7 +12,7 @@ namespace FSAutomator.BackEnd.Configuration
         public static ApplicationConfig GetInstance
         {
             get
-            { 
+            {
                 if (instance == null)
                 {
                     instance = Initialize();

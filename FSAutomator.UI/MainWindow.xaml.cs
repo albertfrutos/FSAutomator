@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Interop;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace FSAutomator
@@ -57,7 +53,7 @@ namespace FSAutomator
             switch (value)
             {
                 case true:
-                    return new BitmapImage(new Uri(@"icons\validationPassed.ico", UriKind.Relative)); 
+                    return new BitmapImage(new Uri(@"icons\validationPassed.ico", UriKind.Relative));
                 case false:
                     return new BitmapImage(new Uri(@"icons\validationFailed.ico", UriKind.Relative));
             }

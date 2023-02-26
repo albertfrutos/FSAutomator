@@ -1,7 +1,6 @@
-﻿using FSAutomator.BackEnd.Entities;
-using FSAutomator.Backend.Utilities;
+﻿using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
-using FSAutomator.Backend.Entities;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -11,6 +10,11 @@ namespace FSAutomator.Backend.Actions
         public string Operation { get; set; }
         public double Number { get; set; }
         public string ItemToOperateOver { get; set; }
+
+        public OperateValue()
+        {
+
+        }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
@@ -22,30 +26,16 @@ namespace FSAutomator.Backend.Actions
             {
                 var numToOperate = double.Parse(valueToOperateOn);
 
-                double newVariableValue;
-
-                switch (Operation)
+                var newVariableValue = Operation switch
                 {
-                    case "+":
-                        newVariableValue = numToOperate + Number;
-                        break;
-                    case "-":
-                        newVariableValue = numToOperate - Number;
-                        break;
-                    case "*":
-                        newVariableValue = numToOperate * Number;
-                        break;
-                    case "/":
-                        newVariableValue = numToOperate / Number;
-                        break;
-                    case "NOT":  //only for booleans
-                        newVariableValue = numToOperate == 0 ? 1 : 0;
-                        break;
-                    default:
-                        newVariableValue = numToOperate;
-                        break;
-                }
-                
+                    "+" => numToOperate + Number,
+                    "-" => numToOperate - Number,
+                    "*" => numToOperate * Number,
+                    "/" => numToOperate / Number,
+                    //only for booleans
+                    "NOT" => numToOperate == 0 ? 1 : 0,
+                    _ => numToOperate,
+                };
                 return new ActionResult(newVariableValue.ToString(), newVariableValue.ToString());
 
             }

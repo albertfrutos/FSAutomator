@@ -1,17 +1,8 @@
-﻿using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Entities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO.Compression;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 {
@@ -40,7 +31,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                 {
 
 
-                     List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
+                    List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
 
                     if (dllFilesInAction.Any())
                     {
@@ -75,7 +66,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                     ExportJson(jsonFileName, json, dllFilesInAction, exportPath);
                 }
 
-                return new InternalMessage("Export finished", "",false);
+                return new InternalMessage("Export finished", "", false);
 
             }
 

@@ -1,13 +1,13 @@
-﻿using System;
+﻿using FSAutomator.BackEnd.Configuration;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Input;
-using System.ComponentModel;
 using System.Threading.Tasks;
-using System.IO;
-using Newtonsoft.Json;
-using FSAutomator.BackEnd.Configuration;
+using System.Windows.Input;
 
 namespace FSAutomator.ViewModel
 {
@@ -70,7 +70,7 @@ namespace FSAutomator.ViewModel
 
                 writer.WritePropertyName("Parameters");
                 writer.WriteStartObject();
-                if(ActionParameters != null)
+                if (ActionParameters != null)
                 {
                     foreach (Parameter param in ActionParameters)
                     {
@@ -99,7 +99,7 @@ namespace FSAutomator.ViewModel
             }
 
         }
-        
+
         public List<AvailableFixedBoolItem> FixedBoolItems
         {
             get
@@ -114,7 +114,7 @@ namespace FSAutomator.ViewModel
             }
 
         }
-        
+
         public string SerializedJSON
         {
             get
@@ -129,8 +129,8 @@ namespace FSAutomator.ViewModel
             }
 
         }
-        
-        
+
+
         public List<Parameter> ActionParameters
         {
             get
@@ -145,7 +145,7 @@ namespace FSAutomator.ViewModel
             }
 
         }
-        
+
         public Parameter SActionParameters
         {
             get
@@ -161,7 +161,7 @@ namespace FSAutomator.ViewModel
             }
 
         }
-        
+
         public string[] AvailableActionsNames
         {
             get
@@ -187,7 +187,7 @@ namespace FSAutomator.ViewModel
             }
 
         }
-        
+
         public string SFixedBoolItemName
         {
             get
@@ -203,9 +203,9 @@ namespace FSAutomator.ViewModel
             }
 
         }
-        
-      
-        
+
+
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -217,7 +217,7 @@ namespace FSAutomator.ViewModel
             }
         }
 
-        
+
 
 
 

@@ -1,5 +1,4 @@
-﻿using FSAutomator.Backend.Entities;
-using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -9,9 +8,14 @@ namespace FSAutomator.Backend.Actions
         public bool RemoveAfterRead { get; set; }
         public string Id { get; set; }
 
+        public MemoryRegisterRead()
+        {
+
+        }
+
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            var memoryRegisters = (Dictionary<string,string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
+            var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 
             if (memoryRegisters.Count == 0)
             {
@@ -19,8 +23,8 @@ namespace FSAutomator.Backend.Actions
             }
 
             var registers = memoryRegisters.Where(x => x.Key == this.Id).ToList();
-            
-            if(registers.Count == 0)
+
+            if (registers.Count == 0)
             {
                 return new ActionResult($"No registers matching the Id provided have been found", null, true);
             }

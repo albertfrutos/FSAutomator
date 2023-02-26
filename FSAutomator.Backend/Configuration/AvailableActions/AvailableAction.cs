@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace FSAutomator.BackEnd.Configuration
+﻿namespace FSAutomator.BackEnd.Configuration
 {
     public class AvailableAction
     {
@@ -38,7 +36,7 @@ namespace FSAutomator.BackEnd.Configuration
                     Name = action,
                     Parameters = Type.GetType("FSAutomator.Backend.Actions." + action).GetProperties().Select(x => new Parameter() { Name = x.Name }).ToList()
                 });
-                
+
             }
 
 

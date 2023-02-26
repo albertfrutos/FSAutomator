@@ -7,7 +7,7 @@ namespace FSAutomator.Backend.Entities.FlightModelEntities
 
         public ReferenceSpeeds(IniFile ini)
         {
-            
+
             this.FullFlapsStallSpeed = ini.Read("full_flaps_stall_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
             this.FlapsUpStallSpeed = ini.Read("flaps_up_stall_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
             this.CruiseSpeed = ini.Read("cruise_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();

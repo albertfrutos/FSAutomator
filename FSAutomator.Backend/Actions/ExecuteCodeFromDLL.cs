@@ -3,7 +3,6 @@ using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace FSAutomator.Backend.Actions
@@ -11,7 +10,7 @@ namespace FSAutomator.Backend.Actions
     public class ExecuteCodeFromDLL : IAction
     {
         public string DLLName { get; set; }
-       
+
         [JsonIgnore]
         public string DLLPath { get; set; }
         public string ClassName { get; set; }
@@ -24,7 +23,7 @@ namespace FSAutomator.Backend.Actions
 
         public ExecuteCodeFromDLL()
         {
-            
+
         }
         internal ExecuteCodeFromDLL(string DLLName, string DLLPath, string ClassName, string MethodName, bool IncludeAsExternalAutomator)
         {
