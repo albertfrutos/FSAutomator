@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
@@ -18,6 +19,8 @@ namespace FSAutomator.Backend.Actions
         public bool IncludeAsExternalAutomator { get; set; } = false;
 
         public string PackFolder = "";
+
+        public ApplicationConfig Config = ApplicationConfig.GetInstance;
 
         AutoResetEvent evento = new AutoResetEvent(false);
 
@@ -42,7 +45,7 @@ namespace FSAutomator.Backend.Actions
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
 
             // note try to remove PackFolder
-            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"Automations", this.PackFolder, this.DLLName);
+            var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Config.AutomationsFolder, this.PackFolder, this.DLLName);
             var DLL = Assembly.LoadFrom(path);
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);
             var type = DLL.GetType(classPath);

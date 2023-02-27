@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
@@ -8,11 +9,11 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 {
     internal class Exporters
     {
-        internal InternalMessage ExportAutomation(string fileName, string destinationPath, ObservableCollection<FSAutomatorAction> actionList, AutomationFile automationFile)
+        public ApplicationConfig Config = ApplicationConfig.GetInstance;
+
+        internal InternalMessage ExportAutomation(string fileName, ObservableCollection<FSAutomatorAction> actionList, AutomationFile automationFile)
         {
-
-
-            var exportPath = @"Exports";
+            var exportPath = Config.ExportFolder;
 
             if (actionList is not null && actionList.Any())
             {
@@ -24,7 +25,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                 if (actionList[0].Name == "DLLAutomation")
                 {
                     var DLLFileName = (actionList[0].ActionObject as FSAutomator.Backend.Automators.ExternalAutomator).DLLName;
-                    var SavedDLLFileName = Path.Combine(destinationPath, DLLFileName);
+                    var SavedDLLFileName = Path.Combine(exportPath, DLLFileName);
                     ExportDLLAutomation(SavedDLLFileName, automationFile);
                 }
                 else if (automationFile.IsPackage)   //this is a JSON, maybe within a pack, maybe standalone
@@ -38,7 +39,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                         var packageName = automationFile.PackageName;
                         var automationFileName = automationFile.FileName;
 
-                        bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction, Path.Combine(@"Automations", packageName));
+                        bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction, Path.Combine(Config.AutomationsFolder, packageName));
 
                         if (allDLLsExist)
                         {
@@ -60,7 +61,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                         return new InternalMessage("Please enter an automation name", "Error", true);
                     }
 
-                    var jsonFileName = Path.Combine(destinationPath, Path.GetFileNameWithoutExtension(fileName) + ".json");
+                    var jsonFileName = Path.Combine(exportPath, Path.GetFileNameWithoutExtension(fileName) + ".json");
                     var json = Utils.GetJSONTextFromAutomationList(actionList);
                     List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
                     ExportJson(jsonFileName, json, dllFilesInAction, exportPath);
@@ -76,20 +77,20 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
         private void ExportPack(string filename, string packageName, AutomationFile automationFile, string json)
         {
-            var tempDirPath = Path.Combine(@"Temp", filename);
+            var tempDirPath = Path.Combine(Config.TempFolder, filename);
             var JSONPath = Path.Combine(tempDirPath, automationFile.FileName);
             var newJSONPath = Path.Combine(tempDirPath, filename + ".json");
 
             Directory.CreateDirectory(tempDirPath);
 
-            Utils.CopyFullDirectory(Path.Combine("Automations", packageName).ToString(), tempDirPath);
+            Utils.CopyFullDirectory(Path.Combine(Config.AutomationsFolder, packageName).ToString(), tempDirPath);
             Utils.DeleteFilesFromDirectoryWithExtension(tempDirPath, "bak");
 
             File.Delete(JSONPath);
 
             File.WriteAllText(newJSONPath, json);
 
-            var exportsPath = Path.Combine(Directory.GetParent(filename).ToString(), @"Exports");
+            var exportsPath = Path.Combine(Directory.GetParent(filename).ToString(), Config.ExportFolder);
             var zipPath = Path.Combine(exportsPath, filename + ".zip");
 
             if (File.Exists(zipPath))

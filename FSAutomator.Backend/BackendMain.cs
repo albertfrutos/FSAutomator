@@ -45,11 +45,7 @@ namespace FSAutomator.Backend
             {
                 return m_SimConnect;
             }
-            set
-            {
-
-
-            }
+            set { }
         }
 
         public InternalMessage SaveAutomation(AutomationFile automation, string newFileName)
@@ -102,8 +98,7 @@ namespace FSAutomator.Backend
         {
             var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
 
-            //fer un getname i terure el nom
-            var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath); //"Automations\\ExternalAutomationExample.dll"
+            var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath);
             var uniqueID = Guid.NewGuid().ToString();
             AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", fileToLoadPath, externalAutomatorObject, false, true, fileToLoad));
         }
@@ -122,9 +117,7 @@ namespace FSAutomator.Backend
 
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
-            //var filePath = Path.Combine("Automations", fileToLoad.PackageName, fileToLoad.FileName);
-
-            var actionList = Utils.GetAutomationsObjectList(fileToLoad); //"Automations\\bb\\bb.json"
+            var actionList = Utils.GetAutomationsObjectList(fileToLoad);
 
             if (actionList is null)
             {
@@ -193,8 +186,6 @@ namespace FSAutomator.Backend
             automator.ActionList.Insert(position + 1, action);
 
             automator.RebuildActionListIndices();
-
-            //status.validationIssues = ValidateActions()
         }
 
         public int MoveActionDown(int selectedIndex)
@@ -236,26 +227,17 @@ namespace FSAutomator.Backend
                 automator.ActionList.Remove(automator.ActionList[index]);
                 automator.RebuildActionListIndices();
             }
-
-
-
         }
 
 
-        public InternalMessage ExportAutomation(string filename, string destinationPath, AutomationFile l_SAutomationFilesList)
+        public InternalMessage ExportAutomation(string filename, AutomationFile l_SAutomationFilesList)
         {
-            var exportStatus = new Exporters().ExportAutomation(filename, destinationPath, this.automator.ActionList, l_SAutomationFilesList);
+            var exportStatus = new Exporters().ExportAutomation(filename, this.automator.ActionList, l_SAutomationFilesList);
             if (exportStatus.IsError)
             {
                 ClearAutomationList();
             }
             return exportStatus;
-        }
-
-        public void ReceiveSimConnectMessage()
-        {
-            Trace.WriteLine("Receive in BackEnd!!");
-            //m_SimConnect?.ReceiveMessage();
         }
 
         public void ClearAutomationList()
@@ -270,7 +252,6 @@ namespace FSAutomator.Backend
 
             if (m_SimConnect != null)
             {
-                /// Dispose serves the same purpose as SimConnect_Close()
                 m_SimConnect.Dispose();
                 m_SimConnect = null;
                 status.IsConnectedToSim = false;

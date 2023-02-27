@@ -342,9 +342,8 @@ namespace FSAutomator.ViewModel
         private void ExportCurrentAutomationAs(object obj)
         {
             var filename = SelectedAutomationName;
-            var destinationPath = @"Exports";
 
-            var result = backEnd.ExportAutomation(filename, destinationPath, SelectedItemAutomationFilesList);
+            var result = backEnd.ExportAutomation(filename, SelectedItemAutomationFilesList);
 
             RefreshAutomationFilesList();
         }
@@ -353,6 +352,7 @@ namespace FSAutomator.ViewModel
             var selectedAutomation = SelectedItemAutomationFilesList;
             AutomationFilesList = Utils.GetAutomationFilesList();
             SelectedItemAutomationFilesList = selectedAutomation;
+            backEnd.ClearAutomationList();
         }
 
         private void MoveActionUp(object obj)
@@ -417,7 +417,6 @@ namespace FSAutomator.ViewModel
             }
 
         }
-
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

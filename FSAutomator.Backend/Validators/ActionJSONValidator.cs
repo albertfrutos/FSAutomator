@@ -167,18 +167,10 @@ namespace FSAutomator.BackEnd.Validators
         private static bool ValidateExecuteCodeFromDLL(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
         {
 
-            //revisar
             bool actionIsValidated = true;
 
-            //var dllFilePath = (action.ActionObject as ExecuteCodeFromDLL).DLLPath;
-
-            //string JSONDirFullFilePath = Directory.GetParent(dllFilePath).FullName;
-            //"C:\\Users\\Albert\\source\\repos\\FSAutomator\\FSAutomator.UI\\bin\\Debug\\net6.0-windows\\Automations\\bb"
-
             var DLLName = (action.ActionObject as ExecuteCodeFromDLL).DLLName;
-            //"bbdll\\ExternalAutomationExample.dll"
 
-            // note fer coses perque els packs no fan bé el path ara mateix, falta la "pack folder"
             var realDLLPath = Path.Combine(action.AutomationFile.BasePath, DLLName);
 
             if (DLLName == String.Empty || !File.Exists(realDLLPath))
@@ -196,12 +188,6 @@ namespace FSAutomator.BackEnd.Validators
             bool actionIsValidated = true;
 
             var DLLPath = action.AutomationFile.FilePath;
-
-
-            //"C:\\Users\\Albert\\source\\repos\\FSAutomator\\FSAutomator.UI\\bin\\Debug\\net6.0-windows\\Automations"
-
-            //"Automations\\ExternalAutomationExample.dll"
-
 
             if (DLLPath == String.Empty || !File.Exists(DLLPath))
             {

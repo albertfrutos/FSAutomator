@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Configuration;
 using System.Diagnostics;
 using System.IO.Compression;
 
@@ -7,6 +8,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 {
     internal class Importers
     {
+        public ApplicationConfig Config = ApplicationConfig.GetInstance;
 
         internal void ImportAutomationFromFilePath(string filepath)
         {
@@ -29,7 +31,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
         private void ImportZipAutomation(string ZIPPath)
         {
             var tempDirName = Path.GetFileNameWithoutExtension(ZIPPath);
-            var tempDirPath = Path.Combine(@"Temp", tempDirName);
+            var tempDirPath = Path.Combine(Config.TempFolder, tempDirName);
 
             ZipFile.ExtractToDirectory(ZIPPath, tempDirPath);
 
@@ -59,7 +61,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
                 if (allDLLsExist)
                 {
-                    var automationsTargetDir = Path.Combine(@"Automations", tempDirName);
+                    var automationsTargetDir = Path.Combine(Config.AutomationsFolder, tempDirName);
                     Utils.CopyFullDirectory(tempDirPath, automationsTargetDir);
                 }
             }
@@ -88,7 +90,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
             var dllFileName = Path.GetFileName(filepath);
 
-            var destinationDLLPath = Path.Combine(@"Automations", dllFileName);
+            var destinationDLLPath = Path.Combine(Config.AutomationsFolder, dllFileName);
 
             if (!File.Exists(destinationDLLPath))
             {
@@ -122,13 +124,13 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
                 if (allDLLsExist)
                 {
-                    File.Copy(JSONPath, Path.Combine(@"Automations", JSONFileName));
+                    File.Copy(JSONPath, Path.Combine(Config.AutomationsFolder, JSONFileName));
 
                     foreach (string dllFilePath in dllFilesInAction)
                     {
                         var dllFileName = Path.GetFileName(dllFilePath);
 
-                        var destinationDLLPath = Path.Combine(@"Automations", dllFileName);
+                        var destinationDLLPath = Path.Combine(Config.AutomationsFolder, dllFileName);
 
                         if (!File.Exists(destinationDLLPath))
                         {
@@ -141,7 +143,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
             else  //Standalone JSON
             {
                 var fileName = Path.GetFileName(JSONPath);
-                File.Copy(JSONPath, Path.Combine(@"Automations", fileName));
+                File.Copy(JSONPath, Path.Combine(Config.AutomationsFolder, fileName));
 
             }
 

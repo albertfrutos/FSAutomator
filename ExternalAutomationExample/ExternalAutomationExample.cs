@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
+using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
@@ -34,24 +35,9 @@ namespace FSAutomator.ExternalAutomation
 
             AP.SendEvent("HEADING_BUG_SET", hdgReus);
 
-
-
-
-
-
-
-
-
-            //var isCd = FSAutomator.automatorInterfaceBaseActions.IsConnectedToSim();
-
-            //FSAutomator.automatorInterfaceBaseActions.ReportError(this, new InternalMessage("a", "b", true));
-
-            //var hdg = ap.GetHeading();
-
             FSAutomator.AutomationHasEnded();
-            return "finish exe.";
-
-            // var a = FSAutomator.TextTest("abcdV", "abcdC", true).VisibleResult;
+            
+            return "Finished execution";
         }
 
         private void ReportErrorReceiver(object? sender, InternalMessage e)
@@ -65,11 +51,7 @@ namespace FSAutomator.ExternalAutomation
         }
 
         public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
-        // note fer un objecte amb tot això per evitar tenir-ho que passar.
         {
-            // To get here, you need to execute the automation as dll.
-            //new SendEvent("HEADING_BUG_SET", "25").ExecuteAction(this, connection, MainReturnValueEvent, MainUnlockNextStep);
-
             Trace.WriteLine("test MyLonelyMethodTest");
             evento.Set();
             return "finish mlm.";

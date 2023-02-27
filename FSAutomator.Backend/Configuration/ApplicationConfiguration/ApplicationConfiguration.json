@@ -1,4 +1,5 @@
 ﻿{
   "AutomationsFolder": "Automations",
-  "ExportFolder": "Exports"
+  "ExportFolder": "Exports",
+  "TempFolder":  "Temp"
 }

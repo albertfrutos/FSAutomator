@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
+using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
@@ -12,6 +13,8 @@ namespace FSAutomator.Backend.Utilities
 
     public static class Utils
     {
+        public static ApplicationConfig Config = ApplicationConfig.GetInstance;
+
 
         public static bool IsNumericDouble(string previousVariableValue)
         {
@@ -154,12 +157,12 @@ namespace FSAutomator.Backend.Utilities
 
         public static List<AutomationFile> GetAutomationFilesList()
         {
-            var automationFiles = Directory.GetFiles(@"Automations", "*.json", SearchOption.TopDirectoryOnly).ToList();
+            var automationFiles = Directory.GetFiles(Config.AutomationsFolder, "*.json", SearchOption.TopDirectoryOnly).ToList();
             automationFiles.AddRange(Directory.GetFiles(@"Automations", "*.dll", SearchOption.TopDirectoryOnly).ToList());
 
             var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath, Directory.GetParent(automationFilePath).FullName, false)).ToList();
 
-            var automationPackPaths = Directory.GetDirectories(@"Automations");
+            var automationPackPaths = Directory.GetDirectories(Config.AutomationsFolder);
 
             foreach (string packPath in automationPackPaths)
             {
@@ -185,8 +188,8 @@ namespace FSAutomator.Backend.Utilities
                         (z.ActionObject as ExecuteCodeFromDLL).DLLName,
                         "",
                         String.Format("{0} [{1}{2}]", Path.GetFileNameWithoutExtension((z.ActionObject as ExecuteCodeFromDLL).DLLName), "dll, ", packageName),
-                        Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
-                        Directory.GetParent(Path.Combine("Automations", Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
+                        Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
+                        Directory.GetParent(Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
                         )).ToList();
 
                 automationsToLoad.Add(jsonAutomationFile);
