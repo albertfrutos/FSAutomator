@@ -25,6 +25,7 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="263"/>
         </Grid.ColumnDefinitions>
         <Button Command="{Binding ButtonAdd}" IsEnabled="true" HorizontalAlignment="Left" Margin="12,18,0,0" VerticalAlignment="Top"  Height="18" Width="18" Grid.Row="1" >
@@ -39,7 +40,7 @@
         <Button Command="{Binding ButtonDown}" IsEnabled="true" HorizontalAlignment="Left" Margin="12,87,0,0" VerticalAlignment="Top"  Height="18" Width="18" Grid.Row="1"  >
             <Image Source="icons\down.ico" />
         </Button>
-        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SelectedIndexActionListUI}" SelectedValue ="{Binding SelectedActionListUI, Mode=TwoWay}" Margin="49,10,12,10" RowHeaderWidth="0"  AutoGenerateColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}" GridLinesVisibility="None" AlternatingRowBackground="{StaticResource alternateRowColor}" AlternationCount="2">
+        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionListUI}" SelectedIndex="{Binding SelectedIndexActionListUI}" SelectedValue ="{Binding SelectedActionListUI, Mode=TwoWay}" Margin="49,10,12,10" RowHeaderWidth="0"  AutoGenerateColumns="False" CanUserResizeRows="False" CanUserAddRows="False" IsReadOnly="{Binding ElementName=chkEditMode, Path=IsChecked, Converter={StaticResource oppositeConverter}}" Grid.Row="1" Background="{x:Null}" GridLinesVisibility="None" AlternatingRowBackground="{StaticResource alternateRowColor}" AlternationCount="2" Grid.ColumnSpan="2">
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
@@ -88,7 +89,7 @@
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
         </DataGrid>
-        <DockPanel Margin="0,0,0,43" Grid.ColumnSpan="2">
+        <DockPanel Margin="0,0,0,43" Grid.ColumnSpan="3">
             <Menu DockPanel.Dock="Top" Height="22" Background="{x:Null}" VerticalAlignment="Top">
                 <MenuItem Header="_File">
                     <Separator />
@@ -107,7 +108,7 @@
                 </MenuItem>
             </Menu>
         </DockPanel>
-        <DataGrid  Margin="49,10,12,15" AutoGenerateColumns="False" ItemsSource="{Binding ValidationOutcomeCleaned, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Background="{x:Null}" GridLinesVisibility="None" AlternatingRowBackground="{StaticResource alternateRowColor}" AlternationCount="2" >
+        <DataGrid  Margin="49,10,12,15" AutoGenerateColumns="False" ItemsSource="{Binding ValidationOutcomeCleaned, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Background="{x:Null}" GridLinesVisibility="None" AlternatingRowBackground="{StaticResource alternateRowColor}" AlternationCount="2" Grid.ColumnSpan="2" >
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Style.Triggers>
@@ -123,7 +124,7 @@
                 <DataGridTextColumn Header="Validation Issues" Width="*" Binding="{Binding}" IsReadOnly="True"/>
             </DataGrid.Columns>
         </DataGrid>
-        <ToolBar x:Name="MyToolbar" Margin="0,24,0,0" Grid.ColumnSpan="2" Background="{x:Null}" VerticalAlignment="Top" Height="28" >
+        <ToolBar x:Name="MyToolbar" Margin="0,24,0,0" Grid.ColumnSpan="3" Background="{x:Null}" VerticalAlignment="Top" Height="28" >
             <Button x:Name="btnConnect" Command="{Binding ButtonConnect}" Height="23" Width="23" >
                 <Image Source="icons\connect.ico" />
             </Button>
@@ -153,7 +154,7 @@
                 <Image Source="icons\edit.ico" />
             </CheckBox>
         </ToolBar>
-        <Grid Grid.Column="1">
+        <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="272"/>
                 <RowDefinition Height="272"/>
@@ -162,7 +163,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
         </Grid>
-        <GroupBox Header="Action details" VerticalAlignment="Top" Margin="5,100,10,150" Width="248" Grid.RowSpan="2" Grid.Row="1" Grid.Column="1" BorderBrush="#FFA1A6A9" Height="280" >
+        <GroupBox Header="Action details" VerticalAlignment="Top" Margin="5,100,10,0" Width="248" Grid.Row="1" Grid.Column="2" BorderBrush="#FFA1A6A9" Height="280" >
             <WrapPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Height="261">
                 <Label Content="Action name" HorizontalAlignment="Center" VerticalAlignment="Top" Height="28" Width="139"/>
                 <TextBox HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay}" Text="{Binding Name, Mode=TwoWay}" VerticalAlignment="Top" Width="232" Background="White" IsReadOnly="{Binding IsChecked, Converter={StaticResource oppositeConverter}, ElementName=chkEditMode}"/>
@@ -172,7 +173,7 @@
                 <TextBox HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay}" Text="{Binding Result.VisibleResult, Mode=OneWay}" VerticalAlignment="Top" Width="232" Background="White" IsReadOnly="True" />
             </WrapPanel>
         </GroupBox>
-        <WrapPanel  Orientation="Vertical" Margin="9,7,73,340" Grid.Column="1" Grid.Row="1">
+        <WrapPanel  Orientation="Vertical" Margin="9,7,73,340" Grid.Column="2" Grid.Row="1">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Connection to Sim status:" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="150" />
                 <Ellipse Height="20" Stroke="Black" Width="20">
@@ -193,7 +194,7 @@
                 </Ellipse>
             </StackPanel>
         </WrapPanel>
-        <GroupBox Header="Automation name" VerticalAlignment="Top" Height ="55" Width="248" Grid.Row="1" Margin="5,40,10,0" Grid.Column="1" BorderBrush="#FFA1A6A9">
+        <GroupBox Header="Automation name" VerticalAlignment="Top" Height ="55" Width="248" Grid.Row="1" Margin="5,40,10,0" Grid.Column="2" BorderBrush="#FFA1A6A9">
             <WrapPanel   Margin="2,0,-2,0" Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Height="28">
                 <TextBox HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" Text="{Binding SelectedAutomationName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Width="230" Background="White" IsReadOnly="False"/>
             </WrapPanel>

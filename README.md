@@ -38,3 +38,9 @@ All JSON actions have some properties in common:
 | IsAuxiliary | boolean  | If true, and in case the action is ExecuteCodeFromDLL, the DLL will also be shown as a spare automation.      | false          |
 | StopOnError | boolean  | If true, the automation will stop running in case an error occurs.                                            | false          |
 | Parameters  | json obj | An ActionObject defining the action parameters					                                             | (none)         |
+
+Each action has its own particular properties/parameters;
+
+##DLLAutomation
+
+This automation does not rely on any Json files, but in a DLL file provided by the user, which contains the code to execute and is s

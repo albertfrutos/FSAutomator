@@ -5,6 +5,9 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>icons\appIcon.ico</ApplicationIcon>
+    <PackageIcon>appIconPNG.png</PackageIcon>
+    <AssemblyName>FSAutomator</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -37,6 +40,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="icons\appIconPNG.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
     <None Update="icons\import.ico.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -56,6 +63,7 @@
     <Content Include="icons\add.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="icons\appIcon.ico" />
     <Content Include="icons\connect.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
