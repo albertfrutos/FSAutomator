@@ -39,8 +39,35 @@ All JSON actions have some properties in common:
 | StopOnError | boolean  | If true, the automation will stop running in case an error occurs.                                            | false          |
 | Parameters  | json obj | An ActionObject defining the action parameters					                                             | (none)         |
 
-Each action has its own particular properties/parameters;
+All actions also return the same object type, which is an ActionResult object containing 3 properties:
 
-##DLLAutomation
+* **VisibleResult**: A message containing the result, which can be used for (example) a UI. Example: "Variable value is 143"
+* **ComputedResult**: The raw message received from FS, always as a string. Example: "143";
+* **Error**: Informs whether if the return is because of an error (true) or not (false). Example: True (if error happened), False (if no error happened)
 
-This automation does not rely on any Json files, but in a DLL file provided by the user, which contains the code to execute and is s
+Each action has its own particular properties/parameters.
+
+### GetVariable 
+
+This action recovers a variable value from the simulator.
+
+| Property    | Type     | Description                                                                                                   | Default value: |
+|-------------|----------|---------------------------------------------------------------------------------------------------------------|----------------|
+| VariableName| string   | Name of the variable to be retrieved from the simulator
+
+```
+    {
+        "Name": "GetVariable",
+        "Parameters": {
+        "VariableName": "ATC ID"
+        }
+    }
+```
+
+
+### DLLAutomation
+
+This automation action does not rely on any Json files, as it is automatically generated when the automation selected is  a DLL file provided by the user, which contains the code to execute. This DLL needs to comply with the following rules:
+
+// To be completed once automator and connection are singletons
+
