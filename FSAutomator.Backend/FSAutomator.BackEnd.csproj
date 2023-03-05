@@ -1,0 +1,70 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Automations\Automation.json" />
+    <None Remove="Automations\Automation_Test.json" />
+    <None Remove="Automations\Conditionals_Test.json" />
+    <None Remove="Automations\GetVariable.json" />
+    <None Remove="Configuration\ApplicationConfiguration\ApplicationConfiguration.json" />
+    <None Remove="Configuration\AvailableFixedBoolItems\FSAutomatorFixedBoolItems.json" />
+    <None Remove="Configuration\FSAutomatorAvailableActions.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Automations\GetVariable.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Automations\Automation.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Automations\Conditionals_Test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Automations\Automation_Test.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\ApplicationConfiguration\ApplicationConfiguration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\AvailableActions\FSAutomatorAvailableActions.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Configuration\AvailableFixedBoolItems\FSAutomatorFixedBoolItems.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Geolocation.NetStandard" Version="1.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.FlightSimulator.SimConnect">
+      <HintPath>Microsoft.FlightSimulator.SimConnect.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Automations\TestPack\TestPack.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Automations\TestPack\TestPack.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\Variables.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="xcopy &quot;$(SolutionDir)\ExternalAutomationExample\bin\Debug\net6.0\ExternalAutomationExample.dll&quot; &quot;$(SolutionDir)\FSAutomator.UI\bin\Debug\net6.0-windows\&quot; /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)\FSAutomator.Backend\Automations\*&quot; &quot;$(SolutionDir)\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\&quot; /Y" />
+  </Target>
+
+</Project>

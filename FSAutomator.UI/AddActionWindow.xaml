@@ -1,0 +1,64 @@
+﻿<Window x:Class="FSAutomator.UI.AddActionWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FSAutomator.UI" 
+        xmlns:local1="clr-namespace:FSAutomator.ViewModel"
+        mc:Ignorable="d"
+        Title="AddAction" Height="355" Width="549" ResizeMode="NoResize">
+    <Window.DataContext>
+        <local1:AddActionViewModel/>
+    </Window.DataContext>
+
+    <Grid  Margin="0,0,2,1" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="157*"/>
+            <RowDefinition Height="78*"/>
+            <RowDefinition Height="42*"/>
+        </Grid.RowDefinitions>
+        <Grid.RenderTransform>
+            <TransformGroup>
+                <ScaleTransform/>
+                <SkewTransform/>
+                <RotateTransform Angle="-0.147"/>
+                <TranslateTransform/>
+            </TransformGroup>
+        </Grid.RenderTransform>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="143*"/>
+            <ColumnDefinition Width="86*"/>
+        </Grid.ColumnDefinitions>
+
+        <ComboBox ItemsSource="{Binding AvailableActionsNames}" SelectedItem="{Binding SAvailableActionName}" BorderBrush="#FFCECECE" VerticalAlignment="Center" OpacityMask="Black" Margin="13,0,9,0" Height="22" Grid.ColumnSpan="2" />
+        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedValue ="{Binding SActionParameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15,48,7,18" AutoGenerateColumns="False" CanUserAddRows="false" CanUserResizeRows="False" Background="{x:Null}" IsReadOnly="False" Grid.RowSpan="2">
+            <DataGrid.CellStyle>
+                <Style TargetType="{x:Type DataGridCell}">
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Foreground" Value="Black" />
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Background" Value="#FFCEC9C9" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.CellStyle>
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+                <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding FixedBoolItems,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SFixedBoolItemName}" CanUserAddRows="false" Margin="14,152,7,7" Grid.RowSpan="2" Grid.Row="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Parameter" Width="*" Binding="{Binding Name,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+                <DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBox Name="txtJSON" HorizontalAlignment="Center" Height="238" TextWrapping="Wrap" Text="{Binding SerializedJSON, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ScrollViewer.CanContentScroll="True"  VerticalAlignment="Top" Width="191" Background="White" Grid.Column="1" IsReadOnly="False" Grid.RowSpan="3" Margin="0,48,0,0"/>
+        <Button Content="OK"  Margin="14,4,0,0" Grid.Row="3" VerticalAlignment="Top" Height="24" Width="62" Click="Button_Click" HorizontalAlignment="Left"/>
+    </Grid>
+
+
+</Window>
+    

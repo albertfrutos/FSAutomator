@@ -1,0 +1,137 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "true"
+      }
+    },
+    {
+      "Name": "MemoryRegisterWrite",
+      "Parameters": {
+        "Value": "01a-",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "Parameters": {
+        "RemoveAfterRead": "True",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": "true"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "ExternalAutomation",
+        "MethodName": "MyLonelyMethod"
+      }
+    },
+    {
+      "Name": "CalculateDistanceToCoordinates",
+      "Parameters": {
+        "FinalLatitude": "42.356457",
+        "FinalLongitude": "1.459801"
+      }
+    },
+    {
+      "Name": "GetVariable",
+      "Parameters": {
+        "VariableName": "ATC ID"
+      }
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "Parameters": {
+        "RemoveAfterRead": "True",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "MemoryRegisterWrite",
+      "Parameters": {
+        "Value": "01a-",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "MemoryRegisterWrite",
+      "Parameters": {
+        "Value": "02a-",
+        "Id": "Id_02"
+      }
+    },
+    {
+      "Name": "MemoryRegisterWrite",
+      "Parameters": {
+        "Value": "02a-",
+        "Id": "Id_02"
+      }
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "Parameters": {
+        "RemoveAfterRead": "True",
+        "Id": "Id_02"
+      }
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "Parameters": {
+        "RemoveAfterRead": "True",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "GetVariable",
+      "Parameters": {
+        "VariableName": "ATC ID"
+      }
+    },
+    {
+      "Name": "OperateValue",
+      "Parameters": {
+        "Operation": "*",
+        "Number": "2"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "HEADING_BUG_SET",
+        "EventValue": "%xFullFlapsStallSpeed%"
+      }
+    },
+    {
+      "Name": "ExpectVariableValue",
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "VariableExpectedValue": "80"
+      }
+    },
+    {
+      "Name": "WaitUntilVariableReachesNumericValue",
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "Comparison": ">",
+        "ThresholdValue": "270",
+        "CheckInterval": "200"
+      }
+    }
+  ]
+}
