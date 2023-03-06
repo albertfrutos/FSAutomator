@@ -348,7 +348,7 @@ Example: the following will wait until ground velocity is higher than 150 knots.
 
 
 
-All the code and work belongs to Albert Frutos (2023), albertfg89@gmail.com
+All the code and work (except the external NuGet packages included) belongs to Albert Frutos (2023), albertfg89@gmail.com
 
 
 
