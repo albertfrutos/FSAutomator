@@ -15,8 +15,6 @@ namespace FSAutomator.BackEnd.Validators
 
             foreach (var (action, index) in actionList.Select((value, i) => (value, i)))
             {
-
-                // note if coordinates are null, they are properly validated in grren --> ERROR! also all complexactions must be reviewe in regards of validation criteria (they are not inspected here).
                 bool actionIsValidated = true;
 
                 switch (action.Name)
@@ -56,8 +54,6 @@ namespace FSAutomator.BackEnd.Validators
                         break;
                 }
 
-
-
                 action.IsValidated = actionIsValidated;
             }
 
@@ -73,7 +69,6 @@ namespace FSAutomator.BackEnd.Validators
 
             var actionObject = (ConditionalAction)action.ActionObject;
 
-
             if ((!Utils.IsNumericDouble(actionObject.FirstMember)) || (!Utils.IsNumericDouble(actionObject.SecondMember)))
             {
                 if (!AllowedStringComparisonValues.Contains(actionObject.Comparison))
@@ -83,17 +78,17 @@ namespace FSAutomator.BackEnd.Validators
 
                 }
             }
+
             if (!AllowedNumberComparisonValues.Contains(actionObject.Comparison))
             {
                 var issue = String.Format("ConditionalAction [{0}]: Comparing 2 numbers ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
+
             if (string.IsNullOrEmpty(actionObject.ActionIfTrueUniqueID) && string.IsNullOrEmpty(actionObject.ActionIfFalseUniqueID))
             {
                 var issue = String.Format("ConditionalAction[{0}]: Both true and false UniqueID for execution are missing", index);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
-
-
             }
 
             return actionIsValidated;
@@ -110,7 +105,6 @@ namespace FSAutomator.BackEnd.Validators
             {
                 var issue = String.Format("GetVariable [{0}]: Variable {1} does not exist.", index, variableName);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
-
             }
 
             return actionIsValidated;

@@ -5,6 +5,15 @@
       "Parameters": {
         "VariableName": "ATC ID"
       }
+    },
+    {
+      "Name": "WaitUntilVariableReachesNumericValue",
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "Comparison": ">",
+        "ThresholdValue": "310",
+        "CheckInterval": "200"
+      }
     }
   ]
 }

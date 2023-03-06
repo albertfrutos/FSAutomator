@@ -1,7 +1,6 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
-using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -84,9 +83,10 @@ namespace FSAutomator.Backend.Utilities
 
                 var actionsNode = jsonObject["Actions"].ToArray();
 
-                if (actionsNode.Count() < 1)
+                if (!actionsNode.Any())
                 {
-                    var exMessage = String.Format("No actions defined in JSON file.");//handle
+                    var exMessage = String.Format("No actions defined in JSON file.");
+                    GeneralStatus.GetInstance.ReportError(new InternalMessage(exMessage, "Error", true));
                     return null;
                 }
 
@@ -295,16 +295,13 @@ namespace FSAutomator.Backend.Utilities
             {
                 var actionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
 
-                valueToOperateOn = actionList.Where(action => action.UniqueID == itemArg).Select(x => x.Result.ComputedResult).First().ToString();
-                //i si no existeis?
-
+                valueToOperateOn = actionList.Where(action => action.UniqueID == itemArg).Select(x => x.Result.ComputedResult).FirstOrDefault().ToString();
             }
             else if (itemId == "MemoryRegister")
             {
                 var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
 
-                valueToOperateOn = memoryRegisters.Where(r => r.Key == itemArg).Select(x => x.Value).First().ToString();
-                //i si no existeis?
+                valueToOperateOn = memoryRegisters.Where(r => r.Key == itemArg).Select(x => x.Value).FirstOrDefault().ToString();
             }
             else if (itemId == "Variable")
             {

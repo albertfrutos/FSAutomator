@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace FSAutomator.BackEnd.Entities
+namespace FSAutomator.Backend.Entities
 {
     public class ActionResult : INotifyPropertyChanged
     {

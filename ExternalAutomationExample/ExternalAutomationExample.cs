@@ -1,6 +1,5 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Entities;
-using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -33,7 +32,7 @@ namespace FSAutomator.ExternalAutomation
             AP.SendEvent("HEADING_BUG_SET", hdgReus);
 
             FSAutomator.AutomationHasEnded();
-            
+
             return "Finished execution";
         }
 

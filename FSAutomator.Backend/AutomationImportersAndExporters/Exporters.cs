@@ -1,7 +1,6 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
-using FSAutomator.BackEnd.Entities;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
 

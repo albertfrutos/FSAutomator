@@ -146,9 +146,11 @@ This action continously checks for a variable value and lets the automation cont
 | VariableName		| string   | Name of the variable to monitor
 | Comparison  		| string   | Comparison to run and check. Supported values: <, >, =
 | ThresholdValue  	| string   | Value to be reached/overpassed buy the variable
-| CheckInterval	  	| string   | Number of milliseconds between checks
+| CheckInterval	  	| string   | Number of milliseconds between checks. **This interval blocks the application**.
 
 NOTE: Take into account that when using the '=' comparison, a too low or too high value for CheckInterval could cause the variable value to overpass the value, causing a never-finishing wait. Use of > or < is recommended. 
+
+It must be taken into account that the CheckInterval parameter stops the thread for the specified millisecons, meaning that the application is blocked/frozen!
 
 Example: the following will wait until ground velocity is higher than 150 knots.
 
@@ -171,7 +173,7 @@ This action performs operations on a certaing value.
 
 | Property   	    | Type     | Description                                                                                                   | Default value: |
 |------------------|----------|---------------------------------------------------------------------------------------------------------------|----------------|
-| Operation			| string   | Operation to perform. Supported value: +, -, *, /, NOT (only for booleans as 0/1).
+| Operation			| string   | Operation to perform. Supported value: +, -, *, /, NOT (only for booleans as 0/1 - if operand is not a boolean, '0' is returned).
 | Number	  		| string   | Value to use as second operation member.
 | ItemToOperateOver	| string   | Value to operate on. Tags are used.
 

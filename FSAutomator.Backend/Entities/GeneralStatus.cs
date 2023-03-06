@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel;
 
-namespace FSAutomator.BackEnd.Entities
+namespace FSAutomator.Backend.Entities
 {
     public sealed class GeneralStatus : INotifyPropertyChanged
     {
         private bool b_IsConnectedToSim { get; set; } = false;
-        private bool b_IsAutomationFullyValidated { get; set; } //note fer i refactor
+        private bool b_IsAutomationFullyValidated { get; set; }
         private List<string> l_ValidationIssues { get; set; }
+        private bool b_GeneralErrorHasOcurred { get; set; } = false;
 
         private static GeneralStatus instance = null;
 
@@ -60,7 +61,14 @@ namespace FSAutomator.BackEnd.Entities
             }
         }
 
-        public void ReportError(InternalMessage msg)  // note add to public interface
+        public bool GeneralErrorHasOcurred
+        {
+            get { return this.b_GeneralErrorHasOcurred; }
+
+            set { this.b_GeneralErrorHasOcurred = value; }
+        }
+
+        public void ReportError(InternalMessage msg)
         {
             if (this.ReportErrorEvent != null)
             {

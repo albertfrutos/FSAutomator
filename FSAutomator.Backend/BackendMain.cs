@@ -4,7 +4,6 @@ using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.AutomationImportersAndExporters;
 using FSAutomator.BackEnd.Configuration;
-using FSAutomator.BackEnd.Entities;
 using FSAutomator.BackEnd.Validators;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
@@ -80,8 +79,6 @@ namespace FSAutomator.Backend
         {
             ClearAutomationList();
 
-            var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
-
             if (fileToLoad.FileName.EndsWith(".json"))
             {
                 LoadJSONActions(fileToLoad);
@@ -106,7 +103,7 @@ namespace FSAutomator.Backend
         public List<string> ValidateActions()
         {
             status.ValidationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
-            status.IsAutomationFullyValidated = status.ValidationIssues.Count == 0;
+            status.IsAutomationFullyValidated = status.ValidationIssues.Any();
             return status.ValidationIssues;
         }
 
@@ -121,7 +118,8 @@ namespace FSAutomator.Backend
 
             if (actionList is null)
             {
-                var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName); //handle
+                var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName);
+                status.ReportError(new InternalMessage(exMessage, "Error", true));
                 return;
             }
 
@@ -202,6 +200,20 @@ namespace FSAutomator.Backend
             automator.RebuildActionListIndices();
 
             return selectedIndex + 1;
+        }
+
+        public void Initialize()
+        {
+            status.ReportErrorEvent += ProcessErrorEvent;
+        }
+
+        private void ProcessErrorEvent(object sender, InternalMessage e)
+        {
+            if (e.IsCriticalError)
+            {
+                status.GeneralErrorHasOcurred = true;
+                Disconnect();
+            }
         }
 
         public int MoveActionUp(int selectedIndex)
@@ -308,16 +320,17 @@ namespace FSAutomator.Backend
         {
             this.automator.connection = this.m_SimConnect;
             status.IsConnectedToSim = true;
+            status.GeneralErrorHasOcurred = false;
         }
 
         private void Simconnect_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
         {
             Console.WriteLine("An exception occurred Simconnect_OnRecvException: {0}", data.dwException.ToString());
             SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
-            status.IsConnectedToSim = false;
             Disconnect();
 
-            //note llançar excepció amb event quan es faci el sistema d'estat principal
+            // This causes a trigger of a general (critical error). This means that the automation will be stopped.
+            status.ReportError(new InternalMessage("An exception ocurred with the connection to the sim and the automation will be stopped: " + eException.ToString(), "Error", true, true));
         }
 
         private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)

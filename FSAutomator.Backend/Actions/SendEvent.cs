@@ -1,5 +1,5 @@
-﻿using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.Backend.Entities;
+using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
 using static FSAutomator.Backend.Entities.CommonEntities;
 

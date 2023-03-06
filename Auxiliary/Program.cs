@@ -1,4 +1,4 @@
-﻿//Code to StackOverflow.com question: http://stackoverflow.com/questions/34302845/deserialize-json-into-object-c-sharp
+﻿/* THIS IS NOT PART OF FSAutomator, THIS IS AN AUXILIARY PROJECT TO HELP GENERATE METHODS FOR THE MANAGERS FOR THE DLLAUTOMATION ACTION*/
 
 using HtmlAgilityPack;
 using System.Text;

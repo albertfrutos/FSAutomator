@@ -1,14 +1,12 @@
 ﻿using FSAutomator.Backend;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Entities;
 using FSAutomator.UI;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -130,9 +128,10 @@ namespace FSAutomator.ViewModel
         {
             get
             {
-                return backEnd.GetValidationIssuesList(); 
+                return backEnd.GetValidationIssuesList();
             }
-            set {
+            set
+            {
                 RaisePropertyChanged("ValidationOutcomeCleaned");
             }
 
@@ -291,6 +290,7 @@ namespace FSAutomator.ViewModel
         public MainWindowViewModel()
         {
             backEnd = new BackendMain();
+            backEnd.Initialize();
             ActionListUI = backEnd.GetActionList();
 
             SubscribeToEvents();

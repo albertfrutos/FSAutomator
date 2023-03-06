@@ -1,5 +1,5 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
-using FSAutomator.BackEnd.Entities;
+using FSAutomator.Backend.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Diagnostics;
 using System.Reflection;
@@ -27,7 +27,6 @@ namespace FSAutomator.Backend.Automators
         {
             var externalAutomatorInterface = new FSAutomatorInterface(sender, connection, finishEvent);
 
-            //note mirar com treure el Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location .... File.Info....FullName
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPath);
             var DLL = Assembly.LoadFile(path);
 

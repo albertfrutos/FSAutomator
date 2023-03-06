@@ -1,4 +1,4 @@
-﻿using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.Backend.Entities;
 using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 

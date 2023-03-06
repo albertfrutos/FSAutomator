@@ -1,6 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
@@ -59,7 +58,7 @@ namespace FSAutomator.Backend.Actions
             {
                 var variableResult = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
                 CheckVariableRecovered(variableResult);
-                Thread.Sleep(CheckInterval); // NOTE : do it with a Timer
+                Thread.Sleep(CheckInterval);
             } while (!this.isValueReached);
 
             return new ActionResult($"Accomplished - {this.variableValue}", this.variableValue);

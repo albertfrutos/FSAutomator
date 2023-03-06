@@ -6,7 +6,7 @@ namespace FSAutomator.BackEnd.Configuration
     {
         private string s_AutomationsFolder { get; set; }
         private string s_ExportFolder { get; set; }
-        private string s_TempFolder{ get; set; }
+        private string s_TempFolder { get; set; }
 
         private static ApplicationConfig instance = null;
 
@@ -40,7 +40,7 @@ namespace FSAutomator.BackEnd.Configuration
             get { return this.s_ExportFolder; }
             set { this.s_ExportFolder = value; }
         }
-        
+
         public string TempFolder
         {
             get { return this.s_TempFolder; }

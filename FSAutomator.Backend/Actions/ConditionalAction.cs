@@ -1,6 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
@@ -39,11 +38,11 @@ namespace FSAutomator.Backend.Actions
 
             if ((!Utils.IsNumericDouble(this.FirstMember)) || (!Utils.IsNumericDouble(this.SecondMember)))
             {
-                // if one of the two members is not a number --> ir can still be compared as a string
+                // if one of the two members is not a number --> it can still be compared as a string
 
                 if (AllowedStringComparisonValues.Contains(this.Comparison))
                 {
-                    // only '=' comparisons are valid with strings
+                    // only '=' or '<>' comparisons are valid with strings
 
                     isConditionTrue = CheckCondition(this.FirstMember, this.SecondMember);
                 }
@@ -51,17 +50,15 @@ namespace FSAutomator.Backend.Actions
                 {
                     return new ActionResult("String comparison only allowed with = or <>", null, true);
                 }
-
             }
             else
             {
-                // both members are a number;
+                // both members are a number
 
                 isConditionTrue = CheckCondition(Convert.ToDouble(this.FirstMember), Convert.ToDouble(this.SecondMember));
             }
 
             ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
-
 
             if ((string.IsNullOrEmpty(ActionIfTrueUniqueID)) && (string.IsNullOrEmpty(ActionIfFalseUniqueID)))
             {
@@ -77,7 +74,6 @@ namespace FSAutomator.Backend.Actions
             }
 
             return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult);
-
         }
 
         private static ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
@@ -98,9 +94,6 @@ namespace FSAutomator.Backend.Actions
                 _ => false,
             };
             return result;
-
         }
-
-
     }
 }

@@ -1,5 +1,4 @@
 ﻿using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Entities;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -161,7 +160,7 @@ namespace FSAutomator.Backend.Entities
         {
             get
             {
-                return s_Result; // s_Result.VisibleResult.Replace("\r", "").Replace("\n", "");
+                return s_Result;
             }
 
             set
@@ -186,7 +185,6 @@ namespace FSAutomator.Backend.Entities
         public string MainFilePath
         {
             get { return s_mainFilePath; }
-            //note revisar si cal
             set
             {
                 s_mainFilePath = value;

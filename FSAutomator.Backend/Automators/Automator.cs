@@ -1,5 +1,4 @@
 ﻿using FSAutomator.Backend.Entities;
-using FSAutomator.BackEnd.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -27,12 +26,9 @@ namespace FSAutomator.Backend.Automators
 
         public void ExecuteActionList()
         {
-            //status.ReportEvent("prova reportevent"); // activar
-            //return;
-
             if (this.connection == null)
             {
-                var message = new InternalMessage("Connection not active", "Error", true); //handle
+                var message = new InternalMessage("Connection not active", "Error", true);
                 status.ReportError(message);
                 return;
             }
@@ -48,7 +44,12 @@ namespace FSAutomator.Backend.Automators
                 {
                     Trace.WriteLine("An error caused the automation to stop (as configured)");
                     break;
+                }
 
+                if (stopExecution || status.GeneralErrorHasOcurred)
+                {
+                    Trace.WriteLine("An general (critical) error caused the automation to stop");
+                    break;
                 }
             }
 

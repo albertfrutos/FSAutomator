@@ -1,5 +1,5 @@
-﻿using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Entities;
+﻿using FSAutomator.Backend.Entities;
+using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -32,8 +32,7 @@ namespace FSAutomator.Backend.Actions
                     "-" => numToOperate - Number,
                     "*" => numToOperate * Number,
                     "/" => numToOperate / Number,
-                    //only for booleans
-                    "NOT" => numToOperate == 0 ? 1 : 0,
+                    "NOT" => numToOperate == 0 ? 1 : 0,     //only for booleans
                     _ => numToOperate,
                 };
                 return new ActionResult(newVariableValue.ToString(), newVariableValue.ToString());
