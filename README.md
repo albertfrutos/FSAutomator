@@ -1,10 +1,21 @@
 # FSAutomator
 
+### **NOTICE: Feel free to modify the application or any component associated to it. Just let me know about your modifications so I can continue learning!**
+
 FSAutomator is a tool which allows you to automate part of your flight in MSFS (tested only under MSFS2020 on January 2023). 
 
 The application supports several actions and some "complex" actions (this means that the action gets some data for you, calculates/does something with it, and returns it to the main screen so it's available and usable by the user.
 
 Loading DLLs libraries as automation is also supported as long as you are compliant with some requirements.
+
+## Solution content
+
+The solution contains 4 projects:
+
+ * **FSAutomator.BackEnd** - This is the backend of the application, where al the interaction with the automations, actions and the simulator occurs.
+ * **FSAutomatior.UI** - The UI of the application in WPF.
+ * **ExternalAutomationExample** - An example on how you can use the DLLAutomation action
+ * **Auxiliary** - An auxiliary method I used to generate the methods used by the public interface that is used by DLLAutomation. It connects to the MSFS SDK web documentation to get some data and generate the code. Not necessary.
 
 ## Supported actions
 
@@ -336,6 +347,8 @@ Example: the following will wait until ground velocity is higher than 150 knots.
  * Regargins automation, the following json and c# code to use as DLLAutomation do the same:
 
 
+
+All the code and work belongs to Albert Frutos (2023), albertfg89@gmail.com
 
 
 
