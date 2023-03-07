@@ -1,6 +1,6 @@
 # FSAutomator
 
-### **NOTICE: Feel free to modify the application or any component associated to it. Just let me know about your modifications so I can continue learning!**
+### **NOTICE: Feel free to modify the application or any component associated to it. Just let me know about your modifications so I can continue learning!. All the code and work (except the external NuGet packages included) belongs to Albert Frutos (2023), albertfg89@gmail.com **
 
 FSAutomator is a tool which allows you to automate part of your flight in MSFS (tested only under MSFS2020 on January 2023). 
 
@@ -345,11 +345,4 @@ Example: the following will wait until ground velocity is higher than 150 knots.
  * There are example for json automation under the "Automations" folder
  * For DLLAutomations, there is a project in the solution called ExternalAutomationExample
  * Regargins automation, the following json and c# code to use as DLLAutomation do the same:
-
-
-
-All the code and work (except the external NuGet packages included) belongs to Albert Frutos (2023), albertfg89@gmail.com
-
-
-
 
