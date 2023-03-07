@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Entities.FlightModelEntities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Configuration;
 using Microsoft.FlightSimulator.SimConnect;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
@@ -21,8 +22,8 @@ namespace FSAutomator.Backend.Entities
 
         private void GetAirCraftCfgPath(SimConnect Connection, SIMCONNECT_RECV_SYSTEM_STATE data)
         {
-            var baseFSPathOfficial = @"C:\Users\Albert\AppData\Roaming\Microsoft Flight Simulator\Packages\Official";
-            var baseFSPathCommunity = @"C:\Users\Albert\AppData\Roaming\Microsoft Flight Simulator\Packages\Community";
+            var baseFSPathOfficial = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathOfficial;
+            var baseFSPathCommunity = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathCommunity;
 
             List<string> installedAircrafts = SearchFileInAllDirectories(baseFSPathOfficial, "aircraft.cfg");
             installedAircrafts.AddRange(SearchFileInAllDirectories(baseFSPathCommunity, "aircraft.cfg"));

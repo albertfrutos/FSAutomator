@@ -7,6 +7,7 @@ namespace FSAutomator.BackEnd.Configuration
         private string s_AutomationsFolder { get; set; }
         private string s_ExportFolder { get; set; }
         private string s_TempFolder { get; set; }
+        private FSPackagesPaths o_FSPackagesPaths { get; set; }
 
         private static ApplicationConfig instance = null;
 
@@ -45,6 +46,12 @@ namespace FSAutomator.BackEnd.Configuration
         {
             get { return this.s_TempFolder; }
             set { this.s_TempFolder = value; }
+        }
+        
+        public FSPackagesPaths FSPackagesPaths
+        {
+            get { return this.o_FSPackagesPaths; }
+            set { this.o_FSPackagesPaths = value; }
         }
     }
 }

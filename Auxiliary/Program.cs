@@ -1,5 +1,6 @@
 ﻿/* THIS IS NOT PART OF FSAutomator, THIS IS AN AUXILIARY PROJECT TO HELP GENERATE METHODS FOR THE MANAGERS FOR THE DLLAUTOMATION ACTION*/
 
+using FSAutomator.BackEnd.Configuration;
 using HtmlAgilityPack;
 using System.Text;
 
@@ -13,6 +14,7 @@ public class Program
 {
     public static void Main()
     {
+        var b = ApplicationConfig.GetInstance;
         var a = new Program();
         a.EventsUpdater();
 

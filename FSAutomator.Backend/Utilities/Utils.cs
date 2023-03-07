@@ -158,7 +158,7 @@ namespace FSAutomator.Backend.Utilities
         public static List<AutomationFile> GetAutomationFilesList()
         {
             var automationFiles = Directory.GetFiles(Config.AutomationsFolder, "*.json", SearchOption.TopDirectoryOnly).ToList();
-            automationFiles.AddRange(Directory.GetFiles(@"Automations", "*.dll", SearchOption.TopDirectoryOnly).ToList());
+            automationFiles.AddRange(Directory.GetFiles(Config.AutomationsFolder, "*.dll", SearchOption.TopDirectoryOnly).ToList());
 
             var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath, Directory.GetParent(automationFilePath).FullName, false)).ToList();
 
