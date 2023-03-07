@@ -63,7 +63,16 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                     var jsonFileName = Path.Combine(exportPath, Path.GetFileNameWithoutExtension(fileName) + ".json");
                     var json = Utils.GetJSONTextFromAutomationList(actionList);
                     List<string> dllFilesInAction = Utils.GetDLLFilesInJSONActionList(actionList);
-                    ExportJson(jsonFileName, json, dllFilesInAction, exportPath);
+                    var existingDLLFilesInAction = dllFilesInAction.Where(x => System.IO.File.Exists(x)).ToList();
+
+                    if (existingDLLFilesInAction.Count == dllFilesInAction.Count)
+                    {
+                        ExportJson(jsonFileName, json, dllFilesInAction, exportPath);
+                    }
+                    else
+                    {
+                        return new InternalMessage("The json file has missing DLL files", "Error", true);
+                    }
                 }
 
                 return new InternalMessage("Export finished", "", false);

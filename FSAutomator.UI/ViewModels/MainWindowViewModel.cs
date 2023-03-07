@@ -345,6 +345,8 @@ namespace FSAutomator.ViewModel
 
             var result = backEnd.ExportAutomation(filename, SelectedItemAutomationFilesList);
 
+            backEnd.status.ReportError(result);
+
             RefreshAutomationFilesList();
         }
         private void RefreshAutomationFilesList()
