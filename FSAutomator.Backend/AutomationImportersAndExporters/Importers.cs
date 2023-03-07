@@ -51,7 +51,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
                 if (actionList is null)
                 {
-                    GeneralStatus.GetInstance.ReportError(new InternalMessage("The automation file does not have contain actions", "Error", true));
+                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage("The automation file does not have contain actions", true));
                     return;
                 }
 

@@ -33,13 +33,11 @@ namespace FSAutomator.Backend.Automators
             var type = DLL.GetType("FSAutomator.ExternalAutomation.ExternalAutomation");
             object instance = Activator.CreateInstance(type);
 
-            string result = instance.GetType().GetMethod("Execute").Invoke(instance, new object[] { externalAutomatorInterface }).ToString();
+            var result = instance.GetType().GetMethod("Execute").Invoke(instance, new object[] { externalAutomatorInterface });
 
             finishEvent.Set();
 
-            Trace.WriteLine("fired!");
-
-            return new ActionResult(result.ToString(), result.ToString());
+            return (ActionResult)result;
         }
     }
 }

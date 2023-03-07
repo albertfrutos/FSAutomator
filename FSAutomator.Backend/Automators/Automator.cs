@@ -1,7 +1,7 @@
 ﻿using FSAutomator.Backend.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using static FSAutomator.Backend.Entities.FSAutomatorAction;
 
 namespace FSAutomator.Backend.Automators
 {
@@ -28,8 +28,8 @@ namespace FSAutomator.Backend.Automators
         {
             if (this.connection == null)
             {
-                var message = new InternalMessage("Connection not active", "Error", true);
-                status.ReportError(message);
+                var message = new InternalMessage("Connection not active", true, false);
+                status.ReportStatus(message);
                 return;
             }
 
@@ -38,34 +38,50 @@ namespace FSAutomator.Backend.Automators
             foreach (FSAutomatorAction action in ActionList)
             {
 
-                var stopExecution = RunAndProcessAction(action);
+                var stopExecutionByActionError = RunAndProcessAction(action);
 
-                if (stopExecution)
+                if (stopExecutionByActionError)
                 {
-                    Trace.WriteLine("An error caused the automation to stop (as configured)");
+                    var error = new InternalMessage()
+                    {
+                        Message = "An error caused the automation to stop (as configured)",
+                        Type = InternalMessage.MsgType.Error
+                    };
+
+                    status.ReportStatus(error);
                     break;
                 }
 
-                if (stopExecution || status.GeneralErrorHasOcurred)
+                if (status.GeneralErrorHasOcurred)
                 {
-                    Trace.WriteLine("An general (critical) error caused the automation to stop");
+                    var error = new InternalMessage()
+                    {
+                        Message = "A general critical error caused the automation to stop",
+                        Type = InternalMessage.MsgType.Error
+                    };
+
+                    status.ReportStatus(error);
                     break;
                 }
             }
+
+            status.ReportStatus(new InternalMessage("Automation finished", false, false));
 
         }
 
         private bool RunAndProcessAction(FSAutomatorAction action)
         {
-            action.Status = "Running";
+            action.Status = ActionStatus.Running;
+
             ActionResult result = ExecuteAction(action);
+            
+            action.Status = ActionStatus.Done;
             lastOperationValue = result.ComputedResult;
             action.Result = result;
-            action.Status = "Done";
 
-            var stopExecution = result.Error && action.StopOnError;
+            var stopExecutionByActionError = result.Error && action.StopOnError;
 
-            return stopExecution;
+            return stopExecutionByActionError;
         }
 
         internal ActionResult ExecuteAction(FSAutomatorAction action)

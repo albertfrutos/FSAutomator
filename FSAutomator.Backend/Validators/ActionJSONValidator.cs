@@ -75,7 +75,6 @@ namespace FSAutomator.BackEnd.Validators
                 {
                     var issue = String.Format("ConditionalAction [{0}]: Comparing 2 strings ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
-
                 }
             }
 

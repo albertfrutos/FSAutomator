@@ -313,7 +313,7 @@ namespace FSAutomator.ViewModel
 
         private void SubscribeToEvents()
         {
-            backEnd.status.ReportErrorEvent += ReportEventReceiver;
+            backEnd.status.ReportStatusEvent += ReportEventReceiver;
             backEnd.status.ConnectionStatusChangeEvent += ConnectionStatusReceiver;
         }
 
@@ -321,7 +321,7 @@ namespace FSAutomator.ViewModel
 
         public void ReportEventReceiver(object sender, InternalMessage msg)
         {
-            MessageBox.Show(msg.Message);
+            MessageBox.Show(msg.Message,msg.Type.ToString());
         }
 
         private void ConnectionStatusReceiver(object? sender, bool e)
@@ -336,7 +336,7 @@ namespace FSAutomator.ViewModel
             var result = backEnd.SaveAutomation(SelectedItemAutomationFilesList, SelectedAutomationName);
             RefreshAutomationFilesList();
 
-            backEnd.status.ReportError(result);
+            backEnd.status.ReportStatus(result);
         }
 
         private void ExportCurrentAutomationAs(object obj)
@@ -345,7 +345,7 @@ namespace FSAutomator.ViewModel
 
             var result = backEnd.ExportAutomation(filename, SelectedItemAutomationFilesList);
 
-            backEnd.status.ReportError(result);
+            backEnd.status.ReportStatus(result);
 
             RefreshAutomationFilesList();
         }
@@ -409,7 +409,6 @@ namespace FSAutomator.ViewModel
 
         private async void ExecuteTask(object commandParameter)
         {
-
             if (backEnd is not null)
             {
                 await Task.Run(() =>
@@ -417,7 +416,6 @@ namespace FSAutomator.ViewModel
                     backEnd.Execute();
                 });
             }
-
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -444,7 +442,6 @@ namespace FSAutomator.ViewModel
 
         public void LoadActions(object obj)
         {
-
             if (SelectedItemAutomationFilesList is null)
             {
                 return;
@@ -476,17 +473,12 @@ namespace FSAutomator.ViewModel
 
             RefreshAutomationFilesList();
         }
-
-
+        
         private void InitializeNewAutomation()
         {
             SelectedItemAutomationFilesList = new AutomationFile("");
         }
-
-
-
-
-
+        
         private void ValidateActions(object commandParameter)
         {
             if (backEnd != null)

@@ -26,6 +26,12 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
+
+            if (!Int32.TryParse(WaitTime, out _))
+            {
+                return new ActionResult($"{WaitTime} is not an integer.", null, false);
+            }
+
             totalSeconds = Convert.ToDouble(this.WaitTime);
 
             waitTimer = new System.Timers.Timer(1000);
@@ -36,7 +42,7 @@ namespace FSAutomator.Backend.Actions
 
             evento.WaitOne();
 
-            return new ActionResult($"Awaited for {WaitTime} seconds", WaitTime);
+            return new ActionResult($"Awaited for {WaitTime} seconds", WaitTime, false);
         }
 
         private void OnTick(object sender)
@@ -45,7 +51,7 @@ namespace FSAutomator.Backend.Actions
             var remainingTime = $"{t.Hours:D2}:{t.Minutes:D2}:{t.Seconds:D2}";
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
-            var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
+            var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).First();
 
             CurrentAction.Result.VisibleResult = remainingTime;
 

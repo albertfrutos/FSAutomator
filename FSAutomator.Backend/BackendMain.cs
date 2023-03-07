@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using static FSAutomator.Backend.Entities.FSAutomatorAction;
 
 namespace FSAutomator.Backend
 {
@@ -52,7 +53,7 @@ namespace FSAutomator.Backend
 
             if (!(newFileName.Length > 0))
             {
-                return new InternalMessage("Please enter an automation name.", "", false);
+                return new InternalMessage("Please enter an automation name.", false);
             }
 
             var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, newFileName + ".json");
@@ -60,19 +61,19 @@ namespace FSAutomator.Backend
 
             if (isDLLAutomation)
             {
-                return new InternalMessage("Saving DLL automations is not supported", "", false);
+                return new InternalMessage("Saving DLL automations is not supported", false);
             }
 
             if (!automator.ActionList.Any())
             {
-                return new InternalMessage("No actions to save", "", false);
+                return new InternalMessage("No actions to save", false);
             }
 
             var json = Utils.GetJSONTextFromAutomationList(automator.ActionList);
 
             File.WriteAllText(automationFilePath, json);
 
-            return new InternalMessage("Automation saved successfully", "", false);
+            return new InternalMessage("Automation saved successfully", false);
         }
 
         public void LoadActions(AutomationFile fileToLoad)
@@ -97,7 +98,7 @@ namespace FSAutomator.Backend
 
             var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath);
             var uniqueID = Guid.NewGuid().ToString();
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, "Pending", fileToLoadPath, externalAutomatorObject, false, true, fileToLoad));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, externalAutomatorObject, false, true, fileToLoad));
         }
 
         public List<string> ValidateActions()
@@ -119,7 +120,7 @@ namespace FSAutomator.Backend
             if (actionList is null)
             {
                 var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName);
-                status.ReportError(new InternalMessage(exMessage, "Error", true));
+                status.ReportStatus(new InternalMessage(exMessage, true));
                 return;
             }
 
@@ -170,8 +171,8 @@ namespace FSAutomator.Backend
 
             if (actionType == null)
             {
-                var message = new InternalMessage($"Action name ({actionName}) does not exist. Did you select an action?", "Error", true);
-                status.ReportError(message);
+                var message = new InternalMessage($"Action name ({actionName}) does not exist. Did you select an action?", true);
+                status.ReportStatus(message);
                 return;
             }
 
@@ -179,7 +180,7 @@ namespace FSAutomator.Backend
 
             var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, false, stopOnError, automationFile);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, actionObject, false, stopOnError, automationFile);
 
             automator.ActionList.Insert(position + 1, action);
 
@@ -204,12 +205,12 @@ namespace FSAutomator.Backend
 
         public void Initialize()
         {
-            status.ReportErrorEvent += ProcessErrorEvent;
+            status.ReportStatusEvent += ProcessErrorEvent;
         }
 
-        private void ProcessErrorEvent(object sender, InternalMessage e)
+        private void ProcessErrorEvent(object sender, InternalMessage internalMessage)
         {
-            if (e.IsCriticalError)
+            if (internalMessage.Type == InternalMessage.MsgType.Critical)
             {
                 status.GeneralErrorHasOcurred = true;
                 Disconnect();
@@ -245,7 +246,7 @@ namespace FSAutomator.Backend
         public InternalMessage ExportAutomation(string filename, AutomationFile l_SAutomationFilesList)
         {
             var exportStatus = new Exporters().ExportAutomation(filename, this.automator.ActionList, l_SAutomationFilesList);
-            if (exportStatus.IsError)
+            if (exportStatus.Type == InternalMessage.MsgType.Error)
             {
                 ClearAutomationList();
             }
@@ -330,7 +331,7 @@ namespace FSAutomator.Backend
             Disconnect();
 
             // This causes a trigger of a general (critical error). This means that the automation will be stopped.
-            status.ReportError(new InternalMessage("An exception ocurred with the connection to the sim and the automation will be stopped: " + eException.ToString(), "Error", true, true));
+            status.ReportStatus(new InternalMessage("An exception ocurred with the connection to the sim and the automation will be stopped: " + eException.ToString(), true, true));
         }
 
         private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)

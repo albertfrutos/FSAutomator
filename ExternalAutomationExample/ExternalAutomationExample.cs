@@ -8,7 +8,7 @@ namespace FSAutomator.ExternalAutomation
 {
     public class ExternalAutomation
     {
-        public string Execute(FSAutomatorInterface FSAutomator)
+        public ActionResult Execute(FSAutomatorInterface FSAutomator)
         {
             var AP = FSAutomator.APManager;
             var AA = FSAutomator.AAManager;
@@ -33,24 +33,24 @@ namespace FSAutomator.ExternalAutomation
 
             FSAutomator.AutomationHasEnded();
 
-            return "Finished execution";
+            return new ActionResult("Finished successfully.", null, false);
         }
 
-        public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
+        public ActionResult MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
         {
             Trace.WriteLine("test MyLonelyMethodTest");
             evento.Set();
-            return "finish mlm.";
+            return new ActionResult("finish mlm.", "OK", false);
         }
     }
 
     public class Lalala
     {
-        public string LalalaTest(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
+        public ActionResult LalalaTest(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
         {
             Trace.WriteLine("test lalalatest");
             evento.Set();
-            return "finish lalala.";
+            return new ActionResult("finish lalala.", "OK", false);
         }
     }
 }

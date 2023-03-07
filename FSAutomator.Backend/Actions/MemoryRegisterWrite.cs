@@ -17,15 +17,18 @@ namespace FSAutomator.Backend.Actions
         {
             this.Value = Utils.GetValueToOperateOnFromTag(this, connection, this.Value);
 
-            if (String.IsNullOrEmpty(Id))
+            var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
+
+            this.Id = String.IsNullOrEmpty(this.Id) ? Guid.NewGuid().ToString() : this.Id;
+
+            if (memoryRegisters.ContainsKey(this.Id))
             {
-                this.Id = Guid.NewGuid().ToString();
+                return new ActionResult($"A register with id {this.Id} already exists.", null, true);
             }
 
-            var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
             memoryRegisters.Add(this.Id, this.Value);
 
-            return new ActionResult($"Written data with id {this.Id}", this.Value);
+            return new ActionResult($"Written data with id {this.Id}", this.Value, false);
         }
     }
 }

@@ -3,20 +3,45 @@
     public class InternalMessage
     {
         public string Message = "";
-        public string Type = "";
-        public bool IsError = false;
-        public bool IsCriticalError = false;
+        public MsgType Type;
 
         public InternalMessage()
         {
 
         }
-        public InternalMessage(string message, string type, bool isError = false, bool isCriticalError = false)
+        public InternalMessage(string message, bool isError, bool isCriticalError = false)
         {
             this.Message = message;
-            this.Type = type;
-            this.IsError = isError;
-            this.IsCriticalError = isCriticalError;
+
+            MsgType errorType;
+
+            switch (isError, isCriticalError)
+            {
+                case (true, true):
+                    errorType = MsgType.Critical;
+                    break;
+                case (true, false):
+                    errorType = MsgType.Error;
+                    break;
+                default:
+                    errorType = MsgType.Info;
+                    break;
+            }
+
+            this.Type = errorType;
+        }
+
+        public InternalMessage(string message)
+        {
+            this.Message = message;
+            this.Type = MsgType.Info;
+        }
+
+        public enum MsgType
+        {
+            Info,
+            Error,
+            Critical
         }
     }
 }

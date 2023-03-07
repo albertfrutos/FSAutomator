@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace FSAutomator.BackEnd.Configuration
+﻿namespace FSAutomator.BackEnd.Configuration
 {
     public class FSPackagesPaths
     {
@@ -12,7 +10,7 @@ namespace FSAutomator.BackEnd.Configuration
             get { return this.s_FSPathOfficial; }
             set { this.s_FSPathOfficial = value; }
         }
-        
+
         public string FSPathCommunity
         {
             get { return this.s_FSPathCommunity; }

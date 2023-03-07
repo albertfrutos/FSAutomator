@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
+using static FSAutomator.Backend.Entities.FSAutomatorAction;
 
 namespace FSAutomator.Backend.Utilities
 {
@@ -86,7 +87,7 @@ namespace FSAutomator.Backend.Utilities
                 if (!actionsNode.Any())
                 {
                     var exMessage = String.Format("No actions defined in JSON file.");
-                    GeneralStatus.GetInstance.ReportError(new InternalMessage(exMessage, "Error", true));
+                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage(exMessage, true));
                     return null;
                 }
 
@@ -117,8 +118,8 @@ namespace FSAutomator.Backend.Utilities
 
                 if (!availableActions.Contains(actionName))
                 {
-                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", "Error", true);
-                    GeneralStatus.GetInstance.ReportError(exMessage);
+                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
+                    GeneralStatus.GetInstance.ReportStatus(exMessage);
                     return null;
                 }
 
@@ -148,7 +149,7 @@ namespace FSAutomator.Backend.Utilities
 
                 actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
-                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
+                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
 
                 actionsList.Add(action);
             }
@@ -271,7 +272,7 @@ namespace FSAutomator.Backend.Utilities
             var itemId = itemIdentificator.Split('%')[1];
             var itemArg = itemIdentificator.Split('%')[2];
 
-            var valueToOperateOn = itemId;
+            var valueToOperateOn = itemIdentificator;
 
             if (itemId == "PrevValue")
             {

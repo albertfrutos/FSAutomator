@@ -7,8 +7,6 @@ namespace FSAutomator.Backend.AutomatorInterface
 {
     public class FSAutomatorInterfaceBaseActions
     {
-
-
         internal Automator automator { get; set; }
         internal SimConnect Connection { get; set; }
         private GeneralStatus Status { get; set; }
@@ -27,7 +25,7 @@ namespace FSAutomator.Backend.AutomatorInterface
             this.ConnectionStatusChangeEvent.Invoke(this, connectionStatus);
         }
 
-        public void ReportError(object sender, InternalMessage msg)
+        public void ReportStatus(object sender, InternalMessage msg)
         {
             this.ReportErrorEvent.Invoke(this, msg);
         }

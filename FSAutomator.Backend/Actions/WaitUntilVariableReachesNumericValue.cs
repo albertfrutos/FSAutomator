@@ -40,11 +40,11 @@ namespace FSAutomator.Backend.Actions
                 return new ActionResult($"Comparison not supported - {this.Comparison}", null, true);
             }
 
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+            this.GetCurrentAction(sender);
 
-            if (actionsList != null)
+            if (this.CurrentAction == null)
             {
-                CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
+                return new ActionResult("No current action could be found", null, true);
             }
 
             this.ThresholdValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.ThresholdValue);
@@ -61,9 +61,19 @@ namespace FSAutomator.Backend.Actions
                 Thread.Sleep(CheckInterval);
             } while (!this.isValueReached);
 
-            return new ActionResult($"Accomplished - {this.variableValue}", this.variableValue);
+            return new ActionResult($"Value reached: {this.variableValue}", this.variableValue);
 
 
+        }
+
+        private void GetCurrentAction(object sender)
+        {
+            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+
+            if (actionsList != null)
+            {
+                CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).First();
+            }
         }
 
         private void CheckVariableRecovered(string variable)
@@ -73,7 +83,7 @@ namespace FSAutomator.Backend.Actions
             this.variableValue = variable;
             if (CurrentAction != null)
             {
-                CurrentAction.Result.VisibleResult = String.Format("Current value - {0}", this.variableValue);
+                CurrentAction.Result.VisibleResult = String.Format($"Value for {this.VariableName} : {this.variableValue}");
             }
 
             bool result = false;

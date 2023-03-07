@@ -47,7 +47,7 @@ namespace FSAutomator.BackEnd.Configuration
             get { return this.s_TempFolder; }
             set { this.s_TempFolder = value; }
         }
-        
+
         public FSPackagesPaths FSPackagesPaths
         {
             get { return this.o_FSPackagesPaths; }
