@@ -8,8 +8,11 @@ namespace FSAutomator.Backend.Entities
 {
     public class FlightModel
     {
-        private string flightModelPath;
         public ReferenceSpeeds ReferenceSpeeds { get; set; }
+
+        private const string aircraftCfgFileName = "aircraft.cfg";
+        private const string flightModelCfgFileName = "flight_model.cfg";
+        private string flightModelPath;
 
         public FlightModel(SimConnect Connection)
         {
@@ -25,14 +28,14 @@ namespace FSAutomator.Backend.Entities
             var baseFSPathOfficial = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathOfficial;
             var baseFSPathCommunity = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathCommunity;
 
-            List<string> installedAircrafts = SearchFileInAllDirectories(baseFSPathOfficial, "aircraft.cfg");
-            installedAircrafts.AddRange(SearchFileInAllDirectories(baseFSPathCommunity, "aircraft.cfg"));
+            List<string> installedAircrafts = SearchFileInAllDirectories(baseFSPathOfficial, aircraftCfgFileName);
+            installedAircrafts.AddRange(SearchFileInAllDirectories(baseFSPathCommunity, aircraftCfgFileName));
 
             var currentAircraftCfgPath = installedAircrafts.Where(z => z.EndsWith(data.szString, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().ToString();
 
             if (currentAircraftCfgPath != "")
             {
-                this.flightModelPath = Path.Combine(Path.GetDirectoryName(currentAircraftCfgPath), "flight_model.cfg");
+                this.flightModelPath = Path.Combine(Path.GetDirectoryName(currentAircraftCfgPath), flightModelCfgFileName);
 
                 IniFile ini = new IniFile(flightModelPath);
                 this.ReferenceSpeeds = new ReferenceSpeeds(ini);
