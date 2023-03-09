@@ -13,6 +13,10 @@ namespace FSAutomator.ExternalAutomation
             var Autopilot = FSAutomator.AutoPilotManager;
             var AdvancedActions = FSAutomator.AdvancedActionsManager;
 
+            AdvancedActions.FlightPositionLogger("10", "1");
+
+            
+
             var initialPlaneHeading = FSAutomator.GetVariable("PLANE HEADING DEGREES GYRO");
 
             var initialAltitude = Autopilot.GetVariable("PLANE ALTITUDE",true);

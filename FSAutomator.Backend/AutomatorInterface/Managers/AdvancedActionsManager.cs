@@ -22,6 +22,12 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
             var result = new CalculateDistanceToCoordinates(latitude, longitude).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
+        
+        public string FlightPositionLogger(string loggingTimeSeconds, string loggingPeriodSeconds)
+        {
+            var result = new FlightPositionLogger(loggingTimeSeconds, loggingPeriodSeconds).ExecuteAction(this, Connection);
+            return "aa";
+        }
 
 
     }
