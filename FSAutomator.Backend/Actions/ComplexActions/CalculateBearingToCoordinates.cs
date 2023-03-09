@@ -33,7 +33,7 @@ namespace FSAutomator.Backend.Actions
                 return new ActionResult("Coordinates are not a number", null, true);
             }
 
-            if (!GetCurrentCoordinates(sender, connection))
+            if (GetCurrentCoordinates(sender, connection))
             {
                 return new ActionResult("An error ocurred while getting current coordinates", null, true);
             }
@@ -60,7 +60,7 @@ namespace FSAutomator.Backend.Actions
             var currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection);
             this.currentLongitude = currentLongitude.ComputedResult;
 
-            return currentLatitude.Error && currentLongitude.Error;
+            return currentLatitude.Error || currentLongitude.Error;
         }
     }
 }

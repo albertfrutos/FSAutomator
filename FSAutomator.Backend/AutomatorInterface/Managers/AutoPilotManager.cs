@@ -1048,7 +1048,6 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
 
         public string SetEventApVsVarSetEnglish(string value)
         {
-            WaitSeconds("0.2");
             var result = SendEvent("AP_VS_VAR_SET_ENGLISH", value).ComputedResult;
             return result;
         }

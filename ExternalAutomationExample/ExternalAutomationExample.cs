@@ -8,15 +8,15 @@ namespace FSAutomator.ExternalAutomation
 {
     public class ExternalAutomation
     {
-        public string Execute(FSAutomatorInterface FSAutomator)
+        public ActionResult Execute(FSAutomatorInterface FSAutomator)
         {
             var Autopilot = FSAutomator.AutoPilotManager;
             var AdvancedActions = FSAutomator.AdvancedActionsManager;
 
             var initialPlaneHeading = FSAutomator.GetVariable("PLANE HEADING DEGREES GYRO");
 
-            var initialAltitude = Autopilot.GetVariable("PLANE ALTITUDE").ComputedResult;
-            var retractLandingGearAltitude = Convert.ToDouble(initialAltitude) + 1000;
+            var initialAltitude = Autopilot.GetVariable("PLANE ALTITUDE",true);
+            var retractLandingGearAltitude = initialAltitude + 1000;
 
             Autopilot.SetEventAutopilotOn("1");
             Autopilot.SetEventHeadingBugSet(initialPlaneHeading.ComputedResult);
@@ -25,7 +25,7 @@ namespace FSAutomator.ExternalAutomation
             Autopilot.SendEvent("THROTTLE_FULL", "0");
             Autopilot.WaitUntilVariableReachesNumericValue("GROUND VELOCITY", ">", "150", 200);
             Autopilot.SetEventApPanelVsOn("1");
-            Autopilot.SetEventApVsVarSetEnglish("1500");
+            Autopilot.SetEventApVsVarSetEnglish("2500");
             Autopilot.WaitUntilVariableReachesNumericValue("PLANE ALTITUDE", ">", retractLandingGearAltitude.ToString(), 200);
             Autopilot.SendEvent("GEAR_UP", "1");
             Autopilot.SetEventApVsVarSetEnglish("1500");
@@ -35,7 +35,7 @@ namespace FSAutomator.ExternalAutomation
 
             FSAutomator.AutomationHasEnded();
 
-            return "Finished execution";
+            return new ActionResult("Finished execution", "Finished execution", false);
         }
 
         public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent finishEvent, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)

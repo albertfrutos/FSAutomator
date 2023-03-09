@@ -35,11 +35,48 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         #region Interface Actions
 
-        public ActionResult GetVariable(string variableName)
+        public dynamic GetVariable(string variableName, bool typedMode = false)
         {
             var action = new GetVariable(variableName);
             var result = action.ExecuteAction(automator, Connection);
-            return result;
+
+            if (result.Error)
+            {
+                return result;
+            }
+
+            dynamic typedVariable = null;
+
+            typedVariable = typedMode ? GetTypeVariableResult(variableName, result) : result;
+
+            return typedVariable;
+        }
+
+        private static dynamic GetTypeVariableResult(string variableName, ActionResult result)
+        {
+            var variable = new Variable().GetVariableInformation(variableName);
+            dynamic typedVariable = null;
+
+            if (variable is not null && variable.Type is not null)
+            {
+                switch (variable.Type)
+                {
+                    case ("string"):
+                        typedVariable = result.ComputedResult;
+                        break;
+                    case ("num"):
+                        typedVariable = Convert.ToDouble(result.ComputedResult);
+                        break;
+                    case ("bool"):
+                        typedVariable = result.ComputedResult == "0" ? false : true;
+                        break;
+                    default:
+                        typedVariable = result.ComputedResult;
+                        break;
+                }
+            }
+
+            return typedVariable;
         }
 
         public ActionResult ExpectVariableValue(string variableName, string variableExpectedValue)

@@ -83,7 +83,7 @@ namespace FSAutomator.Backend.Actions
             this.variableValue = variable;
             if (CurrentAction != null)
             {
-                CurrentAction.Result.VisibleResult = String.Format($"Value for {this.VariableName} : {this.variableValue}");
+                CurrentAction.Result.VisibleResult = String.Format($"Value for {this.VariableName} : {this.variableValue} - Target: {this.Comparison}{this.ThresholdValue}");
             }
 
             bool result = false;
