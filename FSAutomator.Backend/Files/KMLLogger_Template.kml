@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+  <Document>
+    <name>{logging_project_title}</name>
+    <gx:CascadingStyle kml:id="__managed_style_2A134D5CDC28011D72BC">
+      <Style>
+        <IconStyle>
+          <scale>1.2</scale>
+          <Icon>
+            <href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+          </Icon>
+          <hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+        </IconStyle>
+        <LabelStyle>
+        </LabelStyle>
+        <LineStyle>
+          <!-- log line color -->
+          <color>ff{trace_color}</color>
+          <width>6</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>40ffffff</color>
+        </PolyStyle>
+        <BalloonStyle>
+          <displayMode>hide</displayMode>
+        </BalloonStyle>
+      </Style>
+    </gx:CascadingStyle>
+    <gx:CascadingStyle kml:id="__managed_style_129994D6DD28011D72BC">
+      <Style>
+        <IconStyle>
+          <Icon>
+            <href>https://earth.google.com/earth/rpc/cc/icon?color=1976d2&amp;id=2000&amp;scale=4</href>
+          </Icon>
+          <hotSpot x="64" y="128" xunits="pixels" yunits="insetPixels"/>
+        </IconStyle>
+        <LabelStyle>
+        </LabelStyle>
+        <LineStyle>
+          <!-- log line color -->
+          <color>ff{trace_color}</color>
+          <width>4</width>
+        </LineStyle>
+        <PolyStyle>
+          <color>40ffffff</color>
+        </PolyStyle>
+        <BalloonStyle>
+          <displayMode>hide</displayMode>
+        </BalloonStyle>
+      </Style>
+    </gx:CascadingStyle>
+    <StyleMap id="__managed_style_0709022FA428011D72BC">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#__managed_style_129994D6DD28011D72BC</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#__managed_style_2A134D5CDC28011D72BC</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Placemark id="024626F17D28011D72BB">
+      <!-- Logging project title -->
+      <name>{logging_project_title}</name>
+      <LookAt>
+        <!-- coordinates for the initial point of view coordinates -->
+        <longitude>{lookAt_longitude}</longitude>
+        <latitude>{lookAt_latitude}</latitude>
+        <altitude>{lookAt_altitude}</altitude>
+        <heading>{lookAt_heading}</heading>
+        <tilt>60</tilt>
+        <gx:fovy>30</gx:fovy>
+        <!-- distance to the initial point of view coordinates-->
+        <range>{lookAt_range}</range>
+        <altitudeMode>absolute</altitudeMode>
+      </LookAt>
+      <styleUrl>#__managed_style_0709022FA428011D72BC</styleUrl>
+      <LineString>
+        <altitudeMode>absolute</altitudeMode>
+        <coordinates>
+          <!-- latitude,longitude,altitude latitude,longitude,altitude (space between points) -->
+          {trace_coordinates_set}
+        </coordinates>
+      </LineString>
+    </Placemark>
+  </Document>
+</kml>

@@ -13,6 +13,8 @@ namespace FSAutomator.Backend.Automators
 
         internal AutoResetEvent finishEvent = new AutoResetEvent(false);
 
+        internal FSAutomatorInterface externalAutomatorInterface = null;
+
         public ExternalAutomator()
         {
 
@@ -25,7 +27,7 @@ namespace FSAutomator.Backend.Automators
 
         public ActionResult ExecuteAction(Automator sender, SimConnect connection)
         {
-            var externalAutomatorInterface = new FSAutomatorInterface(sender, connection, finishEvent);
+            this.externalAutomatorInterface = new FSAutomatorInterface(sender, connection, finishEvent);
 
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), this.DLLPath);
             var DLL = Assembly.LoadFile(path);
@@ -33,11 +35,17 @@ namespace FSAutomator.Backend.Automators
             var type = DLL.GetType("FSAutomator.ExternalAutomation.ExternalAutomation");
             object instance = Activator.CreateInstance(type);
 
-            var result = instance.GetType().GetMethod("Execute").Invoke(instance, new object[] { externalAutomatorInterface });
-
-            finishEvent.Set();
+            var result = instance.GetType().GetMethod("Execute").Invoke(instance, new object[] { this.externalAutomatorInterface });
+            
+            ExternalAutomationFinishActions();
 
             return (ActionResult)result;
+        }
+
+        private void ExternalAutomationFinishActions()
+        {
+            this.finishEvent.Set();
+            this.externalAutomatorInterface.AdvancedActionsManager.FlightPositionLoggerStop(false);
         }
     }
 }

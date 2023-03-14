@@ -1,6 +1,6 @@
 ﻿namespace FSAutomator.BackEnd.Configuration
 {
-    public class FSPackagesPaths
+    public class FSPackagesPathsConfig
     {
         private string s_FSPathCommunity { get; set; }
         private string s_FSPathOfficial { get; set; }

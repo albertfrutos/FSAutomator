@@ -311,6 +311,17 @@ namespace FSAutomator.Backend.Utilities
 
             return valueToOperateOn;
         }
+
+        public static string RecalculateColorForKML(string color)
+        {
+            var R = color.Substring(0, 2);
+            var G = color.Substring(2, 2);
+            var B = color.Substring(4, 2);
+
+            var kmlCodifiedColor = $"{B}{G}{R}";
+
+            return kmlCodifiedColor;
+        }
     }
 }
 

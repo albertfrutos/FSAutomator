@@ -2,8 +2,14 @@
   "AutomationsFolder": "Automations",
   "ExportFolder": "Exports",
   "TempFolder": "Temp",
+  "LoggerFolder": "Loggers",
+  "FilesFolder": "Files",
   "FSPackagesPaths": {
     "FSPathOfficial": "C:\\Users\\Albert\\AppData\\Roaming\\Microsoft Flight Simulator\\Packages\\Official",
     "FSPathCommunity": "C:\\Users\\Albert\\AppData\\Roaming\\Microsoft Flight Simulator\\Packages\\Community"
+  },
+  "KMLLoggerLog": {
+    "TraceTitle": "Test_Project",
+    "TraceColor": "fbc02d"
   }
 }

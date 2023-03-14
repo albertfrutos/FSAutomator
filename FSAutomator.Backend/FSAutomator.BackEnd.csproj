@@ -30,7 +30,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Configuration\ApplicationConfiguration\ApplicationConfiguration.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Configuration\AvailableActions\FSAutomatorAvailableActions.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -58,13 +58,16 @@
     <None Update="Automations\TestPack\TestPack.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Files\KMLLogger_Template.kml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Files\Variables.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="xcopy &quot;$(SolutionDir)\ExternalAutomationExample\bin\Debug\net6.0\ExternalAutomationExample.dll&quot; &quot;$(SolutionDir)\FSAutomator.UI\bin\Debug\net6.0-windows\&quot; /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)\FSAutomator.Backend\Automations\*&quot; &quot;$(SolutionDir)\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\&quot; /Y" />
+    <Exec Command="xcopy &quot;$(SolutionDir)\ExternalAutomationExample\bin\Debug\net6.0\ExternalAutomationExample.dll&quot; &quot;$(SolutionDir)\FSAutomator.UI\bin\Debug\net6.0-windows\&quot; /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)\FSAutomator.Backend\Automations\*&quot; &quot;$(SolutionDir)\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\&quot; /Y&#xD;&#xA;xcopy &quot;$(SolutionDir)\FSAutomator.Backend\Configuration\*&quot; &quot;$(SolutionDir)\FSAutomator.UI\bin\Debug\net6.0-windows\Configuration\&quot; /Y" />
   </Target>
 
 </Project>

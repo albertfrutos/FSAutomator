@@ -1,4 +1,4 @@
-﻿using FSAutomator.Backend.Entities.FlightModelEntities;
+﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
 using Microsoft.FlightSimulator.SimConnect;

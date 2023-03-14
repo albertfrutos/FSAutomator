@@ -1,6 +1,6 @@
 ﻿using FSAutomator.Backend.Utilities;
 
-namespace FSAutomator.Backend.Entities.FlightModelEntities
+namespace FSAutomator.Backend.Entities
 {
     public class ReferenceSpeeds
     {

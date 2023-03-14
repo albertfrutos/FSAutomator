@@ -52,12 +52,38 @@ namespace FSAutomator.BackEnd.Validators
                     case "DLLAutomation":
                         actionIsValidated = ValidateDLLAutomation(actionList, validationIssues, index, action);
                         break;
+                    case "FlightPositionLogger":
+                        actionIsValidated = ValidateFlightPositionLogger(actionList, validationIssues, index, action);
+                        break;
                 }
 
                 action.IsValidated = actionIsValidated;
             }
 
             return validationIssues;
+        }
+
+        private static bool ValidateFlightPositionLogger(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
+        {
+            bool actionIsValidated = true;
+
+            //var exists = actionList.TakeWhile(x => x != action).Where(y => y.Name == "FlightPositionLogger").Any();
+            var actionObject = (FlightPositionLogger)action.ActionObject;
+
+            if (!Int32.TryParse(actionObject.LoggingPeriodSeconds, out _))
+            {
+                var issue = String.Format("FlightPositionLogger [{0}]: LoggingPeriodSeconds is not an integer.", index);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+            else if (Convert.ToInt32(actionObject.LoggingPeriodSeconds) <= 0)
+            {
+                var issue = String.Format("FlightPositionLogger [{0}]: LoggingPeriodSeconds must be higher or equal to 0.", index);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+
+            // if no stop is after this action, validation fails
+
+            return actionIsValidated;
         }
 
         private static bool ValidateConditionalAction(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)

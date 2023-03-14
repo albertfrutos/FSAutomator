@@ -7,16 +7,18 @@ namespace FSAutomator.Backend.Entities
         private string s_VisibleResult = "";
         private string s_ComputedResult = "";
         private bool b_Error = false;
+        private dynamic o_ReturnObject = null;
 
         public ActionResult()
         {
 
         }
-        public ActionResult(string visibleResult, string computedResult, bool error = false)
+        public ActionResult(string visibleResult, string computedResult, bool error = false, dynamic returnObject = null)
         {
             this.VisibleResult = visibleResult;
             this.ComputedResult = computedResult;
             this.Error = error;
+            this.ReturnObject = returnObject;
         }
 
 
@@ -50,6 +52,17 @@ namespace FSAutomator.Backend.Entities
             {
                 b_Error = value;
                 RaisePropertyChanged("Error");
+            }
+        }
+        
+        public dynamic ReturnObject
+        {
+            get { return o_ReturnObject; }
+
+            set
+            {
+                o_ReturnObject = value;
+                RaisePropertyChanged("ReturnObject");
             }
         }
 

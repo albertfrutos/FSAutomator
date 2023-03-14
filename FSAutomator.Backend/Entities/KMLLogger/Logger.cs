@@ -9,14 +9,25 @@ namespace FSAutomator.BackEnd.Entities
 {
     public class Logger
     {
+        internal List<Point> Points = new List<Point>();
+
+        public void AddPoint(string latitude, string longitude, string altitude)
+        {
+            this.Points.Add(new Point(latitude, longitude, altitude));
+        }
+
+        /*
         public Kml kml = new Kml();
 
         public void AddPoint(string latitude, string longitude, string altitude)
         {
             this.kml.Document.Placemark.Add(new Placemark(latitude, longitude, altitude));
         }
+        */
+
     }
 
+    /*
     [XmlRoot(ElementName = "kml", Namespace = "http://www.opengis.net/kml/2.2")]
     public class Kml
     {
@@ -83,5 +94,6 @@ namespace FSAutomator.BackEnd.Entities
 
         }
     }
+    */
 
 }

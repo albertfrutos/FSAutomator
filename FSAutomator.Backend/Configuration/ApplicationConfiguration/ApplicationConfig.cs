@@ -7,7 +7,11 @@ namespace FSAutomator.BackEnd.Configuration
         private string s_AutomationsFolder { get; set; }
         private string s_ExportFolder { get; set; }
         private string s_TempFolder { get; set; }
-        private FSPackagesPaths o_FSPackagesPaths { get; set; }
+        private string s_LoggerFolder { get; set; }
+        private string s_FilesFolder { get; set; }
+        private FSPackagesPathsConfig o_FSPackagesPaths { get; set; }
+        private KMLLoggerLogConfig o_KMLLoggerLog { get; set; }
+
 
         private static ApplicationConfig instance = null;
 
@@ -48,10 +52,28 @@ namespace FSAutomator.BackEnd.Configuration
             set { this.s_TempFolder = value; }
         }
 
-        public FSPackagesPaths FSPackagesPaths
+        public string LoggerFolder
+        {
+            get { return this.s_LoggerFolder; }
+            set { this.s_LoggerFolder = value; }
+        }
+        
+        public string FilesFolder
+        {
+            get { return this.s_FilesFolder; }
+            set { this.s_FilesFolder = value; }
+        }
+
+        public FSPackagesPathsConfig FSPackagesPaths
         {
             get { return this.o_FSPackagesPaths; }
             set { this.o_FSPackagesPaths = value; }
+        }
+        
+        public KMLLoggerLogConfig KMLLoggerLog
+        {
+            get { return this.o_KMLLoggerLog; }
+            set { this.o_KMLLoggerLog = value; }
         }
     }
 }

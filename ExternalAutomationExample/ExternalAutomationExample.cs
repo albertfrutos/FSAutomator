@@ -13,7 +13,9 @@ namespace FSAutomator.ExternalAutomation
             var Autopilot = FSAutomator.AutoPilotManager;
             var AdvancedActions = FSAutomator.AdvancedActionsManager;
 
-            AdvancedActions.FlightPositionLogger("10", "1");
+            AdvancedActions.FlightPositionLogger("0", "1", "true");
+
+            return null;
 
             
 
@@ -21,6 +23,9 @@ namespace FSAutomator.ExternalAutomation
 
             var initialAltitude = Autopilot.GetVariable("PLANE ALTITUDE",true);
             var retractLandingGearAltitude = initialAltitude + 1000;
+
+            AdvancedActions.FlightPositionLoggerStop(true);
+
 
             Autopilot.SetEventAutopilotOn("1");
             Autopilot.SetEventHeadingBugSet(initialPlaneHeading.ComputedResult);
