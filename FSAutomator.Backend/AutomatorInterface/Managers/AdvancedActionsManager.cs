@@ -14,23 +14,23 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
         {
 
         }
-        public string CalculateBearingToCoordinates(string latitude, string longitude)
+        public string CalculateBearingToCoordinates(double latitude, double longitude)
         {
             var result = new CalculateBearingToCoordinates(latitude, longitude).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
 
-        public string CalculateDistanceToCoordinates(string latitude, string longitude)
+        public string CalculateDistanceToCoordinates(double latitude, double longitude)
         {
             var result = new CalculateDistanceToCoordinates(latitude, longitude).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
         
-        public ActionResult FlightPositionLogger(string loggingTimeSeconds, string loggingPeriodSeconds, string logInNoLockingBackgroundMode = "false")
+        public ActionResult FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, bool logInNoLockingBackgroundMode = false)
         {
             var result = new FlightPositionLogger(loggingTimeSeconds, loggingPeriodSeconds, logInNoLockingBackgroundMode).ExecuteAction(this, Connection);
             
-            if(logInNoLockingBackgroundMode == "true")
+            if(logInNoLockingBackgroundMode)
             {
                 finishFlightPositionLoggerEvent = result.ReturnObject;
                 return result;

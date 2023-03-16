@@ -75,12 +75,7 @@ namespace FSAutomator.BackEnd.Validators
             var actionObject = (FlightPositionLogger)action.ActionObject;
 
 
-            if (!TryParse<Int32>(actionObject.LoggingPeriodSeconds, out _))
-            {
-                var issue = String.Format("FlightPositionLogger [{0}]: LoggingPeriodSeconds is not an integer.", index);
-                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
-            }
-            else if (Convert.ToInt32(actionObject.LoggingPeriodSeconds) <= 0)
+           if (actionObject.LoggingPeriodSeconds <= 0)
             {
                 var issue = String.Format("FlightPositionLogger [{0}]: LoggingPeriodSeconds must be higher or equal to 0.", index);
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
@@ -88,17 +83,17 @@ namespace FSAutomator.BackEnd.Validators
 
             //aqui es pot comprobar si és bool el actionObject.LogInNoLockingBackgroundMode
 
-            if ((actionObject.LoggingTimeSeconds ?? "0") == "0")
+            if (actionObject.LoggingTimeSeconds == 0)
             {
                 var existsFlightPositionLoggerActionAfterStartLogging = actionList.Reverse().TakeWhile(x => x != action).Where(y => y.Name == "FlightPositionLoggerStop").Any();
 
-                if (actionObject.LogInNoLockingBackgroundMode == "false")
+                if (!actionObject.LogInNoLockingBackgroundMode)
                 {
                     var issue = String.Format("FlightPositionLogger [{0}]: The logger is configured to never end and not running in background mode. The logging will never end and will be never written to disk.", index);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
 
-                if (actionObject.LogInNoLockingBackgroundMode == "true" && !existsFlightPositionLoggerActionAfterStartLogging)
+                if (actionObject.LogInNoLockingBackgroundMode && !existsFlightPositionLoggerActionAfterStartLogging)
                 {
                     var issue = String.Format("FlightPositionLogger [{0}]: There is no FlightPositionLoggerStop action after FlightPositionLogger with no-ending time. Logging will never end and will never be written to disk.", index);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);

@@ -17,22 +17,6 @@ namespace FSAutomator.Backend.AutomatorInterface
             this.Connection = connection;
         }
 
-        /*
-        #region Interface Events
-
-        private void NotifyConnectionStatusChange(object sender, bool connectionStatus)
-        {
-            this.ConnectionStatusChangeEvent.Invoke(this, connectionStatus);
-        }
-
-        public void ReportStatus(object sender, InternalMessage msg)
-        {
-            this.ReportErrorEvent.Invoke(this, msg);
-        }
-
-        #endregion
-        */
-
         #region Interface Actions
 
         public dynamic GetVariable(string variableName, bool typedMode = false)

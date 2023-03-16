@@ -13,7 +13,7 @@ namespace FSAutomator.ExternalAutomation
             var Autopilot = FSAutomator.AutoPilotManager;
             var AdvancedActions = FSAutomator.AdvancedActionsManager;
 
-            AdvancedActions.FlightPositionLogger("0", "1", "true");
+            AdvancedActions.FlightPositionLogger(0, 1, true);
 
             return null;
 
@@ -39,7 +39,7 @@ namespace FSAutomator.ExternalAutomation
             Autopilot.SendEvent("GEAR_UP", "1");
             Autopilot.SetEventApVsVarSetEnglish("1500");
 
-            var headingToReusLERS = AdvancedActions.CalculateBearingToCoordinates("41.176307", "1.262329");
+            var headingToReusLERS = AdvancedActions.CalculateBearingToCoordinates(41.176307, 1.262329);
             Autopilot.SendEvent("HEADING_BUG_SET", headingToReusLERS);
 
             FSAutomator.AutomationHasEnded();

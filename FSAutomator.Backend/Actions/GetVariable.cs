@@ -13,7 +13,7 @@ namespace FSAutomator.Backend.Actions
         public string VariableValue = null;
 
         [JsonIgnore]
-        public AutoResetEvent evento = new AutoResetEvent(false);
+        public AutoResetEvent eventRetainUntilValueReady = new AutoResetEvent(false);
 
         private Variable variable;
 
@@ -68,7 +68,7 @@ namespace FSAutomator.Backend.Actions
                 connection.RequestDataOnSimObjectType(DATA_REQUESTS.REQUEST_1, defineID, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
                 connection.ClearDataDefinition(defineID);
 
-                evento.WaitOne();
+                eventRetainUntilValueReady.WaitOne();
                 semaphore.Release();
 
                 returnResult = $"Variable value is {this.VariableValue }";
@@ -109,7 +109,7 @@ namespace FSAutomator.Backend.Actions
                     this.VariableValue = result.boolVar.ToString();
                 }
 
-                evento.Set();
+                eventRetainUntilValueReady.Set();
 
             }
             catch (Exception ex)
