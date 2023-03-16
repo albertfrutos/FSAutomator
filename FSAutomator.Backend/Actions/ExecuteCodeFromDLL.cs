@@ -21,7 +21,7 @@ namespace FSAutomator.Backend.Actions
 
         public ApplicationConfig Config = ApplicationConfig.GetInstance;
 
-        AutoResetEvent evento = new AutoResetEvent(false);
+        AutoResetEvent finishEvent = new AutoResetEvent(false);
 
         public ExecuteCodeFromDLL()
         {
@@ -48,8 +48,8 @@ namespace FSAutomator.Backend.Actions
             string classPath = String.Format("FSAutomator.ExternalAutomation.{0}", this.ClassName);
             var type = DLL.GetType(classPath);
             object instance = Activator.CreateInstance(type);
-            var result = instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, evento, memoryRegisters, lastValue, actionsList });
-            evento.WaitOne();
+            var result = instance.GetType().GetMethod(this.MethodName).Invoke(instance, new object[] { this, connection, finishEvent, memoryRegisters, lastValue, actionsList });
+            finishEvent.WaitOne();
             return new ActionResult(result.ToString(), result.ToString());
         }
     }

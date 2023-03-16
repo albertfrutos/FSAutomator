@@ -23,13 +23,13 @@ namespace FSAutomator.Backend.Actions
         }
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
+            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection);
 
             this.VariableExpectedValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.VariableExpectedValue);
 
-            var isExpectedValue = (result == VariableExpectedValue).ToString();
+            var isExpectedValue = (result.ComputedResult == VariableExpectedValue).ToString();
 
-            return new ActionResult(isExpectedValue, isExpectedValue);
+            return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
         }
 
     }

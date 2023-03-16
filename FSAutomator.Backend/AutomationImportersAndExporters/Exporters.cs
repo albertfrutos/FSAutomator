@@ -44,7 +44,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                         {
                             if (!(fileName.Length > 0))
                             {
-                                return new InternalMessage("Please enter an automation name", "Error", true);
+                                return new InternalMessage("Please enter an automation name", true, true);
                             }
 
                             var json = Utils.GetJSONTextFromAutomationList(actionList, packageName);
@@ -57,7 +57,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                 {
                     if (!(fileName.Length > 0))
                     {
-                        return new InternalMessage("Please enter an automation name", "Error", true);
+                        return new InternalMessage("Please enter an automation name", true);
                     }
 
                     var jsonFileName = Path.Combine(exportPath, Path.GetFileNameWithoutExtension(fileName) + ".json");
@@ -71,15 +71,15 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                     }
                     else
                     {
-                        return new InternalMessage("The json file has missing DLL files", "Error", true);
+                        return new InternalMessage("The json file has missing DLL files", true);
                     }
                 }
 
-                return new InternalMessage("Export finished", "", false);
+                return new InternalMessage("Export finished", false);
 
             }
 
-            return new InternalMessage("There is nothing to save", "Error", true);
+            return new InternalMessage("There is nothing to save", true);
 
         }
 

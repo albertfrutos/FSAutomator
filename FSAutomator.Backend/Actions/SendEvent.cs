@@ -27,7 +27,6 @@ namespace FSAutomator.Backend.Actions
 
             this.EventValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.EventValue);
 
-
             if (CheckIfEventExists(EventName))
             {
                 EVENTS eventToSend = (EVENTS)Enum.Parse(typeof(EVENTS), EventName);
@@ -40,12 +39,11 @@ namespace FSAutomator.Backend.Actions
                 connection.TransmitClientEvent(0U, (Enum)eventToSend, (uint)Convert.ToDouble(EventValue), (Enum)NOTIFICATION_GROUPS.GROUP0, SIMCONNECT_EVENT_FLAG.GROUPID_IS_PRIORITY);
                 connection.ClearNotificationGroup(NOTIFICATION_GROUPS.GROUP0);
 
-                return new ActionResult($"{EventName} - {EventValue} has been sent", this.EventValue);
-
+                return new ActionResult($"{EventName} - {EventValue} has been sent", this.EventValue, false);
             }
             else
             {
-                return new ActionResult("Event does not exist", null);
+                return new ActionResult("Event does not exist", null, true);
             }
         }
 

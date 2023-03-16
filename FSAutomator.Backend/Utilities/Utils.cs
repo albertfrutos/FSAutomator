@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Text;
+using static FSAutomator.Backend.Entities.FSAutomatorAction;
 
 namespace FSAutomator.Backend.Utilities
 {
@@ -86,7 +87,7 @@ namespace FSAutomator.Backend.Utilities
                 if (!actionsNode.Any())
                 {
                     var exMessage = String.Format("No actions defined in JSON file.");
-                    GeneralStatus.GetInstance.ReportError(new InternalMessage(exMessage, "Error", true));
+                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage(exMessage, true));
                     return null;
                 }
 
@@ -117,8 +118,8 @@ namespace FSAutomator.Backend.Utilities
 
                 if (!availableActions.Contains(actionName))
                 {
-                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", "Error", true);
-                    GeneralStatus.GetInstance.ReportError(exMessage);
+                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
+                    GeneralStatus.GetInstance.ReportStatus(exMessage);
                     return null;
                 }
 
@@ -148,7 +149,7 @@ namespace FSAutomator.Backend.Utilities
 
                 actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
-                var action = new FSAutomatorAction(actionName, uniqueID, "Pending", actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
+                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
 
                 actionsList.Add(action);
             }
@@ -158,7 +159,7 @@ namespace FSAutomator.Backend.Utilities
         public static List<AutomationFile> GetAutomationFilesList()
         {
             var automationFiles = Directory.GetFiles(Config.AutomationsFolder, "*.json", SearchOption.TopDirectoryOnly).ToList();
-            automationFiles.AddRange(Directory.GetFiles(@"Automations", "*.dll", SearchOption.TopDirectoryOnly).ToList());
+            automationFiles.AddRange(Directory.GetFiles(Config.AutomationsFolder, "*.dll", SearchOption.TopDirectoryOnly).ToList());
 
             var automationsToLoad = automationFiles.Select(automationFilePath => new AutomationFile(Path.GetFileName(automationFilePath), "", String.Format("{0} [{1}]", Path.GetFileNameWithoutExtension(automationFilePath), Path.GetExtension(automationFilePath)), automationFilePath, Directory.GetParent(automationFilePath).FullName, false)).ToList();
 
@@ -271,7 +272,7 @@ namespace FSAutomator.Backend.Utilities
             var itemId = itemIdentificator.Split('%')[1];
             var itemArg = itemIdentificator.Split('%')[2];
 
-            var valueToOperateOn = itemId;
+            var valueToOperateOn = itemIdentificator;
 
             if (itemId == "PrevValue")
             {
@@ -309,6 +310,17 @@ namespace FSAutomator.Backend.Utilities
             }
 
             return valueToOperateOn;
+        }
+
+        public static string RecalculateColorForKML(string color)
+        {
+            var R = color.Substring(0, 2);
+            var G = color.Substring(2, 2);
+            var B = color.Substring(4, 2);
+
+            var kmlCodifiedColor = $"{B}{G}{R}";
+
+            return kmlCodifiedColor;
         }
     }
 }

@@ -163,7 +163,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
         </Grid>
-        <GroupBox Header="Action details" VerticalAlignment="Top" Margin="5,100,10,0" Width="248" Grid.Row="1" Grid.Column="2" BorderBrush="#FFA1A6A9" Height="280" >
+        <GroupBox Header="Action details" VerticalAlignment="Top" Margin="5,100,10,0" Width="248" Grid.Row="1" Grid.Column="2" BorderBrush="#FFA1A6A9" Height="285" Grid.RowSpan="2">
             <WrapPanel Grid.Column="1" Grid.Row="1" Grid.RowSpan="2" Height="261">
                 <Label Content="Action name" HorizontalAlignment="Center" VerticalAlignment="Top" Height="28" Width="139"/>
                 <TextBox HorizontalAlignment="Center" Height="23" TextWrapping="Wrap" DataContext="{Binding SelectedItem, ElementName=dataGridActions, Mode=TwoWay}" Text="{Binding Name, Mode=TwoWay}" VerticalAlignment="Top" Width="232" Background="White" IsReadOnly="{Binding IsChecked, Converter={StaticResource oppositeConverter}, ElementName=chkEditMode}"/>

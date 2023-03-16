@@ -8,48 +8,59 @@ namespace FSAutomator.ExternalAutomation
 {
     public class ExternalAutomation
     {
-        public string Execute(FSAutomatorInterface FSAutomator)
+        public ActionResult Execute(FSAutomatorInterface FSAutomator)
         {
-            var AP = FSAutomator.APManager;
-            var AA = FSAutomator.AAManager;
-            var hdgReus = AA.CalculateBearingToCoordinates("41.176307", "1.262329");
+            var Autopilot = FSAutomator.AutoPilotManager;
+            var AdvancedActions = FSAutomator.AdvancedActionsManager;
 
-            AP.SetEventAutopilotOn("1");
-            var hdg = FSAutomator.GetVariable("PLANE HEADING DEGREES GYRO");
-            AP.SetEventHeadingBugSet(hdg.ComputedResult);
-            AP.SetEventApHdgHoldOn("0");
-            AP.SendEvent("PARKING_BRAKE_SET", "0");
-            AP.SendEvent("THROTTLE_FULL", "0");
-            AP.WaitUntilVariableReachesNumericValue("GROUND VELOCITY", ">", "150", 200);
-            AP.SetEventApPanelVsOn("1");
-            AP.SetEventApVsVarSetEnglish("1500");
-            var alt = AP.GetVariable("PLANE ALTITUDE").ComputedResult;
-            var newAlt = Convert.ToDouble(alt) + 1000;
-            AP.WaitUntilVariableReachesNumericValue("PLANE ALTITUDE", ">", newAlt.ToString(), 200);
-            AP.SendEvent("GEAR_UP", "1");
-            AP.SetEventApVsVarSetEnglish("1500");
+            AdvancedActions.FlightPositionLogger("0", "1", "true");
 
-            AP.SendEvent("HEADING_BUG_SET", hdgReus);
+            return null;
+
+            
+
+            var initialPlaneHeading = FSAutomator.GetVariable("PLANE HEADING DEGREES GYRO");
+
+            var initialAltitude = Autopilot.GetVariable("PLANE ALTITUDE",true);
+            var retractLandingGearAltitude = initialAltitude + 1000;
+
+            AdvancedActions.FlightPositionLoggerStop(true);
+
+
+            Autopilot.SetEventAutopilotOn("1");
+            Autopilot.SetEventHeadingBugSet(initialPlaneHeading.ComputedResult);
+            Autopilot.SetEventApHdgHoldOn("0");
+            Autopilot.SendEvent("PARKING_BRAKE_SET", "0");
+            Autopilot.SendEvent("THROTTLE_FULL", "0");
+            Autopilot.WaitUntilVariableReachesNumericValue("GROUND VELOCITY", ">", "150", 200);
+            Autopilot.SetEventApPanelVsOn("1");
+            Autopilot.SetEventApVsVarSetEnglish("2500");
+            Autopilot.WaitUntilVariableReachesNumericValue("PLANE ALTITUDE", ">", retractLandingGearAltitude.ToString(), 200);
+            Autopilot.SendEvent("GEAR_UP", "1");
+            Autopilot.SetEventApVsVarSetEnglish("1500");
+
+            var headingToReusLERS = AdvancedActions.CalculateBearingToCoordinates("41.176307", "1.262329");
+            Autopilot.SendEvent("HEADING_BUG_SET", headingToReusLERS);
 
             FSAutomator.AutomationHasEnded();
 
-            return "Finished execution";
+            return new ActionResult("Finished execution", "Finished execution", false);
         }
 
-        public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
+        public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent finishEvent, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
         {
             Trace.WriteLine("test MyLonelyMethodTest");
-            evento.Set();
+            finishEvent.Set();
             return "finish mlm.";
         }
     }
 
     public class Lalala
     {
-        public string LalalaTest(object sender, SimConnect connection, AutoResetEvent evento, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
+        public string LalalaTest(object sender, SimConnect connection, AutoResetEvent finishEvent, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
         {
             Trace.WriteLine("test lalalatest");
-            evento.Set();
+            finishEvent.Set();
             return "finish lalala.";
         }
     }

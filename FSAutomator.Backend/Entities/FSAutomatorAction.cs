@@ -10,10 +10,11 @@ namespace FSAutomator.Backend.Entities
         private int i_Id;
         private string s_Name;
         private string s_UniqueID;
-        private string s_Status;
+        private ActionStatus e_Status;
         private string s_Parameters;
         private ActionResult s_Result;
         private object o_Object;
+        private bool b_isCurrent;
         private bool b_isValidated;
         private bool b_isAuxiliary;
         private bool b_stopOnError;
@@ -21,11 +22,11 @@ namespace FSAutomator.Backend.Entities
         private string s_mainFilePath;
         private AutomationFile o_AutomationFile;
 
-        public FSAutomatorAction(string name, string uniqueID, string status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
+        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
         {
             s_Name = name;
             s_UniqueID = uniqueID;
-            s_Status = status;
+            e_Status = status;
             s_Parameters = JsonConvert.SerializeObject(actionObject, Formatting.Indented);
             s_Result = new ActionResult("", null);
             o_Object = actionObject;
@@ -35,10 +36,10 @@ namespace FSAutomator.Backend.Entities
             o_AutomationFile = automationFile;
         }
 
-        public FSAutomatorAction(string name, string status)
+        public FSAutomatorAction(string name, ActionStatus status)
         {
             s_Name = name;
-            s_Status = status;
+            e_Status = status;
         }
 
         public FSAutomatorAction()
@@ -114,14 +115,26 @@ namespace FSAutomator.Backend.Entities
         }
 
         [JsonIgnore]
-        public string Status
+        public ActionStatus Status
         {
-            get { return s_Status; }
+            get { return e_Status; }
 
             set
             {
-                s_Status = value;
+                e_Status = value;
                 RaisePropertyChanged("Status");
+            }
+        }
+        
+        [JsonIgnore]
+        public bool IsCurrent
+        {
+            get { return b_isCurrent; }
+
+            set
+            {
+                b_isCurrent = value;
+                RaisePropertyChanged("IsCurrent");
             }
         }
 
@@ -225,6 +238,14 @@ namespace FSAutomator.Backend.Entities
                 Task.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName)));
             }
         }
+
+        public enum ActionStatus
+        {
+            Pending,
+            Running,
+            Done
+        }
+
 
 
     }

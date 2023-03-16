@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using FSAutomator.BackEnd.Configuration;
+using Newtonsoft.Json;
 
 namespace FSAutomator.Backend.Entities
 {
@@ -13,7 +14,7 @@ namespace FSAutomator.Backend.Entities
 
         internal List<Variable> LoadVariables()
         {
-            var variables = File.ReadAllText(@"Files\Variables.json");
+            var variables = File.ReadAllText(Path.Combine(ApplicationConfig.GetInstance.FilesFolder,"Variables.json"));
             return JsonConvert.DeserializeObject<List<Variable>>(variables);
         }
         public Variable GetVariableInformation(string variableName)

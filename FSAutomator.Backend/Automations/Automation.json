@@ -1,6 +1,25 @@
 ﻿{
   "Actions": [
     {
+      "Name": "FlightPositionLogger",
+      "Parameters": {
+        "LoggingTimeSeconds": "1",
+        "LoggingPeriodSeconds": "1"
+      }
+    },
+    {
+      "Name": "FlightPositionLoggerStop",
+      "Parameters": {}
+    }
+    /*
+    ,
+    {
+      "Name": "WaitSeconds",
+      "Parameters": {
+        "WaitTime": "10"
+      }
+    },
+    {
       "Name": "ExecuteCodeFromDLL",
       "UniqueID": "5h0t3o",
       "Parameters": {
@@ -133,5 +152,6 @@
         "CheckInterval": "200"
       }
     }
+  */
   ]
 }

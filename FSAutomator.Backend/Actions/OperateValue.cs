@@ -35,12 +35,12 @@ namespace FSAutomator.Backend.Actions
                     "NOT" => numToOperate == 0 ? 1 : 0,     //only for booleans
                     _ => numToOperate,
                 };
-                return new ActionResult(newVariableValue.ToString(), newVariableValue.ToString());
 
+                return new ActionResult(newVariableValue.ToString(), newVariableValue.ToString(), false);
             }
             else
             {
-                return new ActionResult("Previous value is not a number", null);
+                return new ActionResult("Previous value is not a number", null, true);
             }
 
         }

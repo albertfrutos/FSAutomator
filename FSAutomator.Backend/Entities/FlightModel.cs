@@ -1,5 +1,6 @@
-﻿using FSAutomator.Backend.Entities.FlightModelEntities;
+﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.BackEnd.Configuration;
 using Microsoft.FlightSimulator.SimConnect;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
@@ -7,8 +8,11 @@ namespace FSAutomator.Backend.Entities
 {
     public class FlightModel
     {
-        private string flightModelPath;
         public ReferenceSpeeds ReferenceSpeeds { get; set; }
+
+        private const string aircraftCfgFileName = "aircraft.cfg";
+        private const string flightModelCfgFileName = "flight_model.cfg";
+        private string flightModelPath;
 
         public FlightModel(SimConnect Connection)
         {
@@ -21,17 +25,17 @@ namespace FSAutomator.Backend.Entities
 
         private void GetAirCraftCfgPath(SimConnect Connection, SIMCONNECT_RECV_SYSTEM_STATE data)
         {
-            var baseFSPathOfficial = @"C:\Users\Albert\AppData\Roaming\Microsoft Flight Simulator\Packages\Official";
-            var baseFSPathCommunity = @"C:\Users\Albert\AppData\Roaming\Microsoft Flight Simulator\Packages\Community";
+            var baseFSPathOfficial = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathOfficial;
+            var baseFSPathCommunity = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathCommunity;
 
-            List<string> installedAircrafts = SearchFileInAllDirectories(baseFSPathOfficial, "aircraft.cfg");
-            installedAircrafts.AddRange(SearchFileInAllDirectories(baseFSPathCommunity, "aircraft.cfg"));
+            List<string> installedAircrafts = SearchFileInAllDirectories(baseFSPathOfficial, aircraftCfgFileName);
+            installedAircrafts.AddRange(SearchFileInAllDirectories(baseFSPathCommunity, aircraftCfgFileName));
 
             var currentAircraftCfgPath = installedAircrafts.Where(z => z.EndsWith(data.szString, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().ToString();
 
             if (currentAircraftCfgPath != "")
             {
-                this.flightModelPath = Path.Combine(Path.GetDirectoryName(currentAircraftCfgPath), "flight_model.cfg");
+                this.flightModelPath = Path.Combine(Path.GetDirectoryName(currentAircraftCfgPath), flightModelCfgFileName);
 
                 IniFile ini = new IniFile(flightModelPath);
                 this.ReferenceSpeeds = new ReferenceSpeeds(ini);

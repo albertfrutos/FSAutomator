@@ -36,7 +36,7 @@ namespace FSAutomator.Backend.Actions
                 memoryRegisters.Remove(selectedRegister.Key);
             }
 
-            return new ActionResult($"Read value is {selectedRegister.Value} with ID {this.Id}", selectedRegister.Value);
+            return new ActionResult($"Read value is {selectedRegister.Value} with ID {this.Id}", selectedRegister.Value, false);
         }
     }
 }

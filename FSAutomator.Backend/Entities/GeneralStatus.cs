@@ -5,13 +5,13 @@ namespace FSAutomator.Backend.Entities
     public sealed class GeneralStatus : INotifyPropertyChanged
     {
         private bool b_IsConnectedToSim { get; set; } = false;
-        private bool b_IsAutomationFullyValidated { get; set; }
+        private bool b_IsAutomationFullyValidated { get; set; } = false;
         private List<string> l_ValidationIssues { get; set; }
         private bool b_GeneralErrorHasOcurred { get; set; } = false;
 
         private static GeneralStatus instance = null;
 
-        public event EventHandler<InternalMessage> ReportErrorEvent;
+        public event EventHandler<InternalMessage> ReportStatusEvent;
 
         public event EventHandler<bool> ConnectionStatusChangeEvent;
 
@@ -57,6 +57,8 @@ namespace FSAutomator.Backend.Entities
             set
             {
                 this.l_ValidationIssues = value;
+                this.IsAutomationFullyValidated = value.Any();
+
                 RaisePropertyChanged("ValidationIssues");
             }
         }
@@ -68,13 +70,15 @@ namespace FSAutomator.Backend.Entities
             set { this.b_GeneralErrorHasOcurred = value; }
         }
 
-        public void ReportError(InternalMessage msg)
+        public void ReportStatus(InternalMessage internalMessage)
         {
-            if (this.ReportErrorEvent != null)
+
+            if (this.ReportStatusEvent != null)
             {
-                this.ReportErrorEvent.Invoke(this, msg);
+                this.ReportStatusEvent.Invoke(this, internalMessage);
             }
         }
+
 
         private void ConnectionChangeEvent()
         {

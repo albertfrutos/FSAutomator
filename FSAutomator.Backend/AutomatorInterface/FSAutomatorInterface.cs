@@ -11,8 +11,8 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         public GeneralStatus Status;
 
-        public AutoPilotManager APManager;
-        public AdvancedActionsManager AAManager;
+        public AutoPilotManager AutoPilotManager;
+        public AdvancedActionsManager AdvancedActionsManager;
 
         internal AutoResetEvent FinishEvent = new AutoResetEvent(false);
 
@@ -22,8 +22,8 @@ namespace FSAutomator.Backend.AutomatorInterface
             FinishEvent = finishEvent;
             Connection = connection;
 
-            APManager = new AutoPilotManager(automator, connection);
-            AAManager = new AdvancedActionsManager(automator, connection);
+            AutoPilotManager = new AutoPilotManager(automator, connection);
+            AdvancedActionsManager = new AdvancedActionsManager(automator, connection);
         }
 
         public void AutomationHasEnded()

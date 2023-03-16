@@ -52,12 +52,75 @@ namespace FSAutomator.BackEnd.Validators
                     case "DLLAutomation":
                         actionIsValidated = ValidateDLLAutomation(actionList, validationIssues, index, action);
                         break;
+                    case "FlightPositionLogger":
+                        actionIsValidated = ValidateFlightPositionLogger(actionList, validationIssues, index, action);
+                        break;
+                    case "FlightPositionLoggerStop":
+                        actionIsValidated = ValidateFlightPositionLoggerStop(actionList, validationIssues, index, action);
+                        break;
                 }
 
                 action.IsValidated = actionIsValidated;
             }
 
             return validationIssues;
+        }
+
+
+
+        private static bool ValidateFlightPositionLogger(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
+        {
+            bool actionIsValidated = true;
+
+            var actionObject = (FlightPositionLogger)action.ActionObject;
+
+
+            if (!TryParse<Int32>(actionObject.LoggingPeriodSeconds, out _))
+            {
+                var issue = String.Format("FlightPositionLogger [{0}]: LoggingPeriodSeconds is not an integer.", index);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+            else if (Convert.ToInt32(actionObject.LoggingPeriodSeconds) <= 0)
+            {
+                var issue = String.Format("FlightPositionLogger [{0}]: LoggingPeriodSeconds must be higher or equal to 0.", index);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+
+            //aqui es pot comprobar si és bool el actionObject.LogInNoLockingBackgroundMode
+
+            if ((actionObject.LoggingTimeSeconds ?? "0") == "0")
+            {
+                var existsFlightPositionLoggerActionAfterStartLogging = actionList.Reverse().TakeWhile(x => x != action).Where(y => y.Name == "FlightPositionLoggerStop").Any();
+
+                if (actionObject.LogInNoLockingBackgroundMode == "false")
+                {
+                    var issue = String.Format("FlightPositionLogger [{0}]: The logger is configured to never end and not running in background mode. The logging will never end and will be never written to disk.", index);
+                    actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+                }
+
+                if (actionObject.LogInNoLockingBackgroundMode == "true" && !existsFlightPositionLoggerActionAfterStartLogging)
+                {
+                    var issue = String.Format("FlightPositionLogger [{0}]: There is no FlightPositionLoggerStop action after FlightPositionLogger with no-ending time. Logging will never end and will never be written to disk.", index);
+                    actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+                }
+            }
+
+            return actionIsValidated;
+        }
+
+        private static bool ValidateFlightPositionLoggerStop(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
+        {
+            bool actionIsValidated = true;
+
+            var existsFlightPositionLoggingActionBeforeStopLogging = actionList.TakeWhile(x => x != action).Where(y => y.Name == "FlightPositionLogger").Any();
+
+            if (!existsFlightPositionLoggingActionBeforeStopLogging)
+            {
+                var issue = String.Format("FlightPositionLoggerStop [{0}]: There is no FlightPositionLogger action before FlightPositionLoggerStop (there is nothing to stop).", index);
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+            }
+
+            return actionIsValidated;
         }
 
         private static bool ValidateConditionalAction(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
@@ -75,7 +138,6 @@ namespace FSAutomator.BackEnd.Validators
                 {
                     var issue = String.Format("ConditionalAction [{0}]: Comparing 2 strings ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
-
                 }
             }
 
@@ -146,6 +208,7 @@ namespace FSAutomator.BackEnd.Validators
         {
             bool actionIsValidated = true;
 
+            /*
             var configuredWaitTime = (action.ActionObject as WaitSeconds).WaitTime;
 
             if (!(configuredWaitTime.Trim().Length > 0) || !Utils.IsNumericDouble(configuredWaitTime))
@@ -154,6 +217,7 @@ namespace FSAutomator.BackEnd.Validators
 
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
+            */
 
             return actionIsValidated;
         }
@@ -322,6 +386,20 @@ namespace FSAutomator.BackEnd.Validators
             action.ValidationOutcome = issue;
             validationIssues.Add(issue);
             return false;
+        }
+
+        private static bool TryParse<T>(string text, out T value)
+        {
+            value = default(T);
+            try
+            {
+                value = (T)Convert.ChangeType(text, typeof(T));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

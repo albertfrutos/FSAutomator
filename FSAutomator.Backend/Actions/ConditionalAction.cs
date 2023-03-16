@@ -31,7 +31,7 @@ namespace FSAutomator.Backend.Actions
             ActionResult result = null;
 
             var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
-            this.CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == "Running").First();
+            this.CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).First();
 
             this.FirstMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.FirstMember);
             this.SecondMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.SecondMember);
@@ -73,7 +73,7 @@ namespace FSAutomator.Backend.Actions
                 result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
             }
 
-            return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult);
+            return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult, result.Error);
         }
 
         private static ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)

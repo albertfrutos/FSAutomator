@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
+using System.Diagnostics;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
@@ -16,6 +17,7 @@ namespace FSAutomator.Backend.Actions
 
         private Variable variable;
 
+        static Semaphore semaphore = new Semaphore(1, 1);
         public GetVariable()
         {
 
@@ -42,6 +44,8 @@ namespace FSAutomator.Backend.Actions
                 var dataType = entities.VariableTypes[variable.Type];
                 var defineID = entities.DefineIDs[variable.Type];
                 var unit = variable.Unit;
+                
+                semaphore.WaitOne();
 
                 if (variable.Type == "string")
                 {
@@ -60,11 +64,12 @@ namespace FSAutomator.Backend.Actions
                 }
 
                 connection.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
-
+                Trace.WriteLine(this.VariableName);
                 connection.RequestDataOnSimObjectType(DATA_REQUESTS.REQUEST_1, defineID, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
                 connection.ClearDataDefinition(defineID);
 
                 evento.WaitOne();
+                semaphore.Release();
 
                 returnResult = $"Variable value is {this.VariableValue }";
 

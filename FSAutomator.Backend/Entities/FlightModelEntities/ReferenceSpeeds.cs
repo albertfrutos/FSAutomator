@@ -1,35 +1,9 @@
 ﻿using FSAutomator.Backend.Utilities;
 
-namespace FSAutomator.Backend.Entities.FlightModelEntities
+namespace FSAutomator.Backend.Entities
 {
     public class ReferenceSpeeds
     {
-
-        public ReferenceSpeeds(IniFile ini)
-        {
-
-            this.FullFlapsStallSpeed = ini.Read("full_flaps_stall_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.FlapsUpStallSpeed = ini.Read("flaps_up_stall_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.CruiseSpeed = ini.Read("cruise_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.MaxMach = ini.Read("max_mach", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.MaxIndicatedSpeed = ini.Read("max_indicated_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.MaxFlapsExtended = ini.Read("max_flaps_extended", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.NormalOperatingSpeed = ini.Read("normal_operating_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.AirspeedIndicatorMax = ini.Read("airspeed_indicator_max", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.RotationSpeedMin = ini.Read("rotation_speed_min", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.ClimbSpeed = ini.Read("climb_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.CruiseAlt = ini.Read("cruise_alt", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.TakeoffSpeed = ini.Read("takeoff_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.SpawnCruiseAltitude = ini.Read("spawn_cruise_altitude", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.SpawnDescentAltitude = ini.Read("spawn_descent_altitude", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.BestAngleClimbSpeed = ini.Read("best_angle_climb_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.ApproachSpeed = ini.Read("approach_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.BestGlide = ini.Read("best_glide", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.BestSingleEngineRateOfClimbSpeed = ini.Read("best_single_engine_rate_of_climb_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-            this.MinimumControlSpeed = ini.Read("minimum_control_speed", "REFERENCE SPEEDS").Split(';')[0].Trim();
-
-        }
-
         public string FullFlapsStallSpeed { get; set; }
         public string FlapsUpStallSpeed { get; set; }
         public string CruiseSpeed { get; set; }
@@ -49,5 +23,37 @@ namespace FSAutomator.Backend.Entities.FlightModelEntities
         public string BestGlide { get; set; }
         public string BestSingleEngineRateOfClimbSpeed { get; set; }
         public string MinimumControlSpeed { get; set; }
+
+        private readonly IniFile ini;
+
+        public ReferenceSpeeds(IniFile ini)
+        {
+            this.ini = ini;
+
+            this.FullFlapsStallSpeed = GetValue("full_flaps_stall_speed", "REFERENCE SPEEDS");
+            this.FlapsUpStallSpeed = GetValue("flaps_up_stall_speed", "REFERENCE SPEEDS");
+            this.CruiseSpeed = GetValue("cruise_speed", "REFERENCE SPEEDS");
+            this.MaxMach = GetValue("max_mach", "REFERENCE SPEEDS");
+            this.MaxIndicatedSpeed = GetValue("max_indicated_speed", "REFERENCE SPEEDS");
+            this.MaxFlapsExtended = GetValue("max_flaps_extended", "REFERENCE SPEEDS");
+            this.NormalOperatingSpeed = GetValue("normal_operating_speed", "REFERENCE SPEEDS");
+            this.AirspeedIndicatorMax = GetValue("airspeed_indicator_max", "REFERENCE SPEEDS");
+            this.RotationSpeedMin = GetValue("rotation_speed_min", "REFERENCE SPEEDS");
+            this.ClimbSpeed = GetValue("climb_speed", "REFERENCE SPEEDS");
+            this.CruiseAlt = GetValue("cruise_alt", "REFERENCE SPEEDS");
+            this.TakeoffSpeed = GetValue("takeoff_speed", "REFERENCE SPEEDS");
+            this.SpawnCruiseAltitude = GetValue("spawn_cruise_altitude", "REFERENCE SPEEDS");
+            this.SpawnDescentAltitude = GetValue("spawn_descent_altitude", "REFERENCE SPEEDS");
+            this.BestAngleClimbSpeed = GetValue("best_angle_climb_speed", "REFERENCE SPEEDS");
+            this.ApproachSpeed = GetValue("approach_speed", "REFERENCE SPEEDS");
+            this.BestGlide = GetValue("best_glide", "REFERENCE SPEEDS");
+            this.BestSingleEngineRateOfClimbSpeed = GetValue("best_single_engine_rate_of_climb_speed", "REFERENCE SPEEDS");
+            this.MinimumControlSpeed = GetValue("minimum_control_speed", "REFERENCE SPEEDS");
+        }
+
+        public string GetValue(string key, string section)
+        {
+            return ini.Read(key, section).Split(';')[0].Trim();
+        }
     }
 }
