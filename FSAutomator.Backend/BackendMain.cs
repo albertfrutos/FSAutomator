@@ -104,7 +104,6 @@ namespace FSAutomator.Backend
         public List<string> ValidateActions()
         {
             status.ValidationIssues = ActionJSONValidator.ValidateActions(automator.ActionList.ToArray());
-            status.IsAutomationFullyValidated = status.ValidationIssues.Any();
             return status.ValidationIssues;
         }
 

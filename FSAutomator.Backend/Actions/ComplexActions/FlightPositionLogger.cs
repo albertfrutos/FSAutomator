@@ -34,12 +34,24 @@ namespace FSAutomator.Backend.Actions
             this.LoggingTimeSeconds = loggingTimeSeconds;
             this.LoggingPeriodSeconds = loggingPeriodSeconds;
             this.LogInNoLockingBackgroundMode = logInNoLockingBackgroundMode;
-            //finishLoggingEvent += StopBackgroundLogging;
         }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            // check isBackgroundModeEnabled es bool
+            if(!bool.TryParse(this.LogInNoLockingBackgroundMode, out _))
+            {
+                return new ActionResult("LogInNoBlockingBackgroundMode is not a boolean", "LogInNoBlockingBackgroundMode is not a boolean", true);
+            }
+
+            if (!int.TryParse(this.LoggingPeriodSeconds, out _))
+            {
+                return new ActionResult("LoggingPeriodSeconds is not a boolean", "LoggingPeriodSeconds is not an integer", true);
+            }
+
+            if (!int.TryParse(this.LoggingTimeSeconds, out _))
+            {
+                return new ActionResult("LoggingTimeSeconds is not a boolean", "LoggingTimeSeconds is not a integer", true);
+            }
 
             bool isBackgroundModeEnabled = this.LogInNoLockingBackgroundMode == "false" ? false : true;
 
@@ -64,14 +76,9 @@ namespace FSAutomator.Backend.Actions
             finishLoggingEvent -= StopBackgroundLogging;
         }
 
-        private void StartLoggingFlight(object sender, SimConnect connection)
+        private ActionResult StartLoggingFlight(object sender, SimConnect connection)
         {
             Logger logger = new Logger();
-
-
-            // check loggingtimeseconds es int
-            // check LoggingPeriodSeconds es int
-
 
             int loggingTime = Convert.ToInt32(this.LoggingTimeSeconds);
             int loggingPeriod = 1000 * Convert.ToInt32(this.LoggingPeriodSeconds);
@@ -100,12 +107,18 @@ namespace FSAutomator.Backend.Actions
                 Thread.Sleep(loggingPeriod);
             }
 
-            // si no hi ha punts loguejats, error i return            
+            if(!logger.Points.Any())
+            {
+                return new ActionResult("No points were logged.", "No points were logged.", true);
+            }
+
             var xmlPoints = ConvertLogToXML(logger.Points, typeof(List<Point>));
             WriteLogToDisk(xmlPoints, "prova.xml");
 
             var kmlPoints = ConvertLogToKMLTrace(logger.Points);
             WriteLogToDisk(kmlPoints, "prova.kml");
+
+            return new ActionResult("Logging finished.", "Logging finished.", false);
 
         }
 
@@ -185,7 +198,7 @@ namespace FSAutomator.Backend.Actions
 
             // usar path.combine
 
-            File.WriteAllText(logsFolder+"\\" + filename, content);
+            File.WriteAllText(Path.Combine(logsFolder, filename), content);
         }
 
 

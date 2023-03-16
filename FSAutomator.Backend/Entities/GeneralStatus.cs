@@ -57,6 +57,8 @@ namespace FSAutomator.Backend.Entities
             set
             {
                 this.l_ValidationIssues = value;
+                this.IsAutomationFullyValidated = value.Any();
+
                 RaisePropertyChanged("ValidationIssues");
             }
         }
