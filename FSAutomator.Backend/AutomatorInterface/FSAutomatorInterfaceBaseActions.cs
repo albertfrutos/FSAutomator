@@ -93,9 +93,9 @@ namespace FSAutomator.Backend.AutomatorInterface
             return result;
         }
 
-        public ActionResult WaitSeconds(string time)
+        public ActionResult WaitSeconds(int time)
         {
-            var action = new WaitSeconds(time);
+            var action = new WaitSeconds(time); //eliminar
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }
