@@ -12,7 +12,7 @@ namespace FSAutomator.Backend.Actions
 {
     public class FlightPositionLogger
     {
-        public int LoggingTimeSeconds { get; set; } = 1;
+        public int LoggingTimeSeconds { get; set; } = 60;
         public int LoggingPeriodSeconds { get; set; } = 1;
         public bool LogInNoLockingBackgroundMode { get; set; } = false;
  

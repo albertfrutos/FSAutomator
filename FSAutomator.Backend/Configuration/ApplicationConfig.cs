@@ -9,6 +9,7 @@ namespace FSAutomator.BackEnd.Configuration
         private string s_TempFolder { get; set; }
         private string s_LoggerFolder { get; set; }
         private string s_FilesFolder { get; set; }
+        private string s_SchemaFile { get; set; }
         private FSPackagesPathsConfig o_FSPackagesPaths { get; set; }
         private KMLLoggerLogConfig o_KMLLoggerLog { get; set; }
 
@@ -29,7 +30,7 @@ namespace FSAutomator.BackEnd.Configuration
 
         private static ApplicationConfig Initialize()
         {
-            var json = File.ReadAllText(Path.Combine("Configuration", "ApplicationConfiguration", "ApplicationConfiguration.json"));
+            var json = File.ReadAllText(Path.Combine("Configuration", "ApplicationConfiguration.json"));
             var applicationConfig = JsonConvert.DeserializeObject<ApplicationConfig>(json);
             return applicationConfig;
         }
@@ -62,6 +63,12 @@ namespace FSAutomator.BackEnd.Configuration
         {
             get { return this.s_FilesFolder; }
             set { this.s_FilesFolder = value; }
+        }
+        
+        public string SchemaFile
+        {
+            get { return this.s_SchemaFile; }
+            set { this.s_SchemaFile = value; }
         }
 
         public FSPackagesPathsConfig FSPackagesPaths

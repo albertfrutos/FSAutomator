@@ -4,6 +4,7 @@ using FSAutomator.BackEnd.Configuration;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
 using System.Collections.ObjectModel;
 using System.Text;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
@@ -72,7 +73,7 @@ namespace FSAutomator.Backend.Utilities
             return allDLLsExist;
         }
 
-        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(AutomationFile fileToLoad)
+        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(AutomationFile fileToLoad, bool validateJSON = false)
         {
             try
             {
@@ -90,6 +91,20 @@ namespace FSAutomator.Backend.Utilities
                     GeneralStatus.GetInstance.ReportStatus(new InternalMessage(exMessage, true));
                     return null;
                 }
+
+                if (validateJSON)
+                {
+                    //aquiii
+                    var schemaTxt = File.ReadAllText(Config.SchemaFile);
+                    var schema = JsonSchema.Parse(schemaTxt);
+                    if(!jsonObject.IsValid(schema, out IList<string> jsonValidationErrors))
+                    {
+                        GeneralStatus.GetInstance.ValidationIssues.AddRange(jsonValidationErrors);
+                    }
+                }
+                
+
+                                
 
                 var actionsList = CreateActionList(fileToLoad, actionsNode);
 
@@ -141,7 +156,7 @@ namespace FSAutomator.Backend.Utilities
                 {
                     stopOnError = token["StopOnError"].ToString().ToLower() == "true" ? true : false;
                 }
-                var actionParameters = token["Parameters"].ToString();
+                var actionParameters = token["Parameters"] is null ? "" : token["Parameters"].ToString();
 
                 Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
 
@@ -234,23 +249,30 @@ namespace FSAutomator.Backend.Utilities
                     writer.WriteValue(action.Name);
                     writer.WritePropertyName("UniqueID");
                     writer.WriteValue(action.UniqueID);
+                    writer.WritePropertyName("StopOnError");
+                    writer.WriteValue(action.StopOnError);
 
-                    writer.WritePropertyName("Parameters");
-                    writer.WriteStartObject();
 
-                    var propertyNames = action.ActionObject.GetType().GetProperties().Select(x => x.Name).ToList();
-
-                    foreach (var name in propertyNames)
+                    if (action.ActionObject != null)
                     {
-                        var value = action.ActionObject.GetType().GetProperty(name).GetValue(action.ActionObject);
-                        if ((action.Name != "ExecuteCodeFromDLL") || ((action.Name == "ExecuteCodeFromDLL") && (name != "DLLPath")))
-                        {
-                            writer.WritePropertyName(name);
-                            writer.WriteValue(value);
-                        }
-                    }
+                        writer.WritePropertyName("Parameters");
+                        writer.WriteStartObject();
 
-                    writer.WriteEndObject();
+                        var propertyNames = action.ActionObject.GetType().GetProperties().Select(x => x.Name).ToList();
+
+                        foreach (var name in propertyNames)
+                        {
+                            var value = action.ActionObject.GetType().GetProperty(name).GetValue(action.ActionObject);
+                            if ((action.Name != "ExecuteCodeFromDLL") || ((action.Name == "ExecuteCodeFromDLL") && (name != "DLLPath")))
+                            {
+                                writer.WritePropertyName(name);
+                                writer.WriteValue(value);
+                            }
+                        }
+
+                        writer.WriteEndObject();
+                    }
+                                       
                     writer.WriteEndObject();
                 }
 

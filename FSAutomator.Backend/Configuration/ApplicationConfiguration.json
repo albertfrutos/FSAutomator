@@ -4,6 +4,7 @@
   "TempFolder": "Temp",
   "LoggerFolder": "Loggers",
   "FilesFolder": "Files",
+  "SchemaFile": "Validators\\JSONValidationSchema.jschema",
   "FSPackagesPaths": {
     "FSPathOfficial": "C:\\Users\\Albert\\AppData\\Roaming\\Microsoft Flight Simulator\\Packages\\Official",
     "FSPathCommunity": "C:\\Users\\Albert\\AppData\\Roaming\\Microsoft Flight Simulator\\Packages\\Community"

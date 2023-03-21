@@ -17,8 +17,8 @@
   </ItemGroup>
   
   <ItemGroup> 
-	<InternalsVisibleTo Include="FSAutomator.BackEnd.Tests" /> 
-  </ItemGroup>
+  <InternalsVisibleTo Include="TestProject1" /> 
+</ItemGroup>
 
   <ItemGroup>
     <Content Include="Automations\All_Actions_Example.json">

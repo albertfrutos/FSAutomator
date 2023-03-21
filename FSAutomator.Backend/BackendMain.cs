@@ -56,7 +56,9 @@ namespace FSAutomator.Backend
                 return new InternalMessage("Please enter an automation name.", false);
             }
 
-            var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, newFileName + ".json");
+            var fileNameWithoutExtension = Path.GetFileNameWithoutExtension(newFileName);
+
+            var automationFilePath = Path.Combine(config.AutomationsFolder, automation.PackageName, fileNameWithoutExtension + ".json");
             var isDLLAutomation = automator.ActionList.Where(x => x.Name == "DLLAutomation").Any();
 
             if (isDLLAutomation)
