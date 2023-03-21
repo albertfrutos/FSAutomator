@@ -12,9 +12,9 @@ namespace FSAutomator.Backend.Actions
 {
     public class FlightPositionLogger
     {
-        public string LoggingTimeSeconds { get; set; } = null;
-        public string LoggingPeriodSeconds { get; set; } = "1";
-        public string LogInNoLockingBackgroundMode { get; set; } = "false";
+        public int LoggingTimeSeconds { get; set; } = 60;
+        public int LoggingPeriodSeconds { get; set; } = 1;
+        public bool LogInNoLockingBackgroundMode { get; set; } = false;
  
         private System.Timers.Timer loggingTimeTimer;
 
@@ -29,7 +29,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        public FlightPositionLogger(string loggingTimeSeconds, string loggingPeriodSeconds, string logInNoLockingBackgroundMode = "false")
+        public FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, bool logInNoLockingBackgroundMode = false)
         {
             this.LoggingTimeSeconds = loggingTimeSeconds;
             this.LoggingPeriodSeconds = loggingPeriodSeconds;
@@ -38,24 +38,7 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            if(!bool.TryParse(this.LogInNoLockingBackgroundMode, out _))
-            {
-                return new ActionResult("LogInNoBlockingBackgroundMode is not a boolean", "LogInNoBlockingBackgroundMode is not a boolean", true);
-            }
-
-            if (!int.TryParse(this.LoggingPeriodSeconds, out _))
-            {
-                return new ActionResult("LoggingPeriodSeconds is not a boolean", "LoggingPeriodSeconds is not an integer", true);
-            }
-
-            if (!int.TryParse(this.LoggingTimeSeconds, out _))
-            {
-                return new ActionResult("LoggingTimeSeconds is not a boolean", "LoggingTimeSeconds is not a integer", true);
-            }
-
-            bool isBackgroundModeEnabled = this.LogInNoLockingBackgroundMode == "false" ? false : true;
-
-            if (isBackgroundModeEnabled)
+            if (this.LogInNoLockingBackgroundMode)
             {
                 finishLoggingEvent += StopBackgroundLogging;
                 var newThread = new Thread(() => StartLoggingFlight(sender, connection));
@@ -83,7 +66,7 @@ namespace FSAutomator.Backend.Actions
             int loggingTime = Convert.ToInt32(this.LoggingTimeSeconds);
             int loggingPeriod = 1000 * Convert.ToInt32(this.LoggingPeriodSeconds);
 
-            bool isLoggingTimeEnabled = !String.IsNullOrEmpty(this.LoggingTimeSeconds) && loggingTime > 0;
+            bool isLoggingTimeEnabled = loggingTime > 0;
 
             if (isLoggingTimeEnabled)
             {

@@ -6,7 +6,7 @@ namespace FSAutomator.Backend.Actions
 {
     public class WaitSeconds : IAction
     {
-        public string WaitTime { get; set; }
+        public int WaitTime { get; set; }
 
         private System.Timers.Timer waitTimer;
 
@@ -19,18 +19,13 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        internal WaitSeconds(string time)
+        internal WaitSeconds(int time)
         {
             WaitTime = time;
         }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-
-            if (!Int32.TryParse(WaitTime, out _))
-            {
-                return new ActionResult($"{WaitTime} is not an integer.", null, false);
-            }
 
             totalSeconds = Convert.ToDouble(this.WaitTime);
 
@@ -42,7 +37,7 @@ namespace FSAutomator.Backend.Actions
 
             evento.WaitOne();
 
-            return new ActionResult($"Awaited for {WaitTime} seconds", WaitTime, false);
+            return new ActionResult($"Awaited for {WaitTime} seconds", WaitTime.ToString(), false);
         }
 
         private void OnTick(object sender)

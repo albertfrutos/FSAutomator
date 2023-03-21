@@ -1,0 +1,133 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "ConditionalAction",
+      "UniqueID": "2vy54",
+      "StopOnError": true,
+      "Parameters": {
+        "FirstMember": "abcd",
+        "Comparison": "=",
+        "SecondMember": "350",
+        "ActionIfTrueUniqueID": "5h0t3o",
+        "ActionIfFalseUniqueID": "5h0t3oAA"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "StopOnError": false,
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": true
+      }
+    },
+    {
+      "Name": "ExpectVariableValue",
+      "UniqueID": "06f845bc-18cf-40f3-a6f1-bb9ecf1e9597",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "VariableExpectedValue": "80"
+      }
+    },
+    {
+      "Name": "GetVariable",
+      "UniqueID": "a55ae53b-da59-4899-a085-4d53f2e5bd42",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "ATC ID"
+      }
+    },
+    {
+      "Name": "MemoryRegisterWrite",
+      "UniqueID": "227ffc1c-522d-4c19-9975-2cfe3a4efc4e",
+      "StopOnError": false,
+      "Parameters": {
+        "Value": "%AutomationId%2vy54",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "UniqueID": "84c7f38d-879e-444d-8307-099ccaca0c43",
+      "StopOnError": false,
+      "Parameters": {
+        "RemoveAfterRead": true,
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "OperateValue",
+      "UniqueID": "ddc58253-a99c-4deb-b59c-7b007f043be0",
+      "StopOnError": false,
+      "Parameters": {
+        "Operation": "*",
+        "Number": 2.0,
+        "ItemToOperateOver": "%FM%xFullFlapsStallSpeed"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "UniqueID": "627278f4-6b3f-489c-a40f-5367e8d74dc5",
+      "StopOnError": false,
+      "Parameters": {
+        "EventName": "HEADING_BUG_SET",
+        "EventValue": "%PrevValue%"
+      }
+    },
+    {
+      "Name": "WaitSeconds",
+      "UniqueID": "fe99c616-57f4-44be-985d-e3ebcc9365e3",
+      "StopOnError": false,
+      "Parameters": {
+        "WaitTime": 10
+      }
+    },
+    {
+      "Name": "WaitUntilVariableReachesNumericValue",
+      "UniqueID": "7d9862e0-a53b-4ad3-b2aa-8a31b4d2d861",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "Comparison": ">",
+        "ThresholdValue": "270",
+        "CheckInterval": 200
+      }
+    },
+    {
+      "Name": "CalculateBearingToCoordinates",
+      "UniqueID": "4e5bcfd8-475e-46e3-8180-947545dbe297",
+      "StopOnError": false,
+      "Parameters": {
+        "FinalLatitude": 3.2568759,
+        "FinalLongitude": 26.592632
+      }
+    },
+    {
+      "Name": "CalculateDistanceToCoordinates",
+      "UniqueID": "df702cb0-3eb6-497b-9d64-db54eda327f7",
+      "StopOnError": false,
+      "Parameters": {
+        "FinalLatitude": 3.2568759,
+        "FinalLongitude": 26.592632
+      }
+    },
+    {
+      "Name": "FlightPositionLogger",
+      "UniqueID": "d1028915-6d09-40ca-8c24-408dd34d978b",
+      "StopOnError": false,
+      "Parameters": {
+        "LoggingTimeSeconds": 60,
+        "LoggingPeriodSeconds": 1,
+        "LogInNoLockingBackgroundMode": false
+      }
+    },
+    {
+      "Name": "FlightPositionLoggerStop",
+      "UniqueID": "1647eb07-1516-48a2-aad2-f025234043ea",
+      "StopOnError": false
+    }
+  ]
+}

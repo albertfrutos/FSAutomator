@@ -17,22 +17,6 @@ namespace FSAutomator.Backend.AutomatorInterface
             this.Connection = connection;
         }
 
-        /*
-        #region Interface Events
-
-        private void NotifyConnectionStatusChange(object sender, bool connectionStatus)
-        {
-            this.ConnectionStatusChangeEvent.Invoke(this, connectionStatus);
-        }
-
-        public void ReportStatus(object sender, InternalMessage msg)
-        {
-            this.ReportErrorEvent.Invoke(this, msg);
-        }
-
-        #endregion
-        */
-
         #region Interface Actions
 
         public dynamic GetVariable(string variableName, bool typedMode = false)
@@ -93,9 +77,9 @@ namespace FSAutomator.Backend.AutomatorInterface
             return result;
         }
 
-        public ActionResult WaitSeconds(string time)
+        public ActionResult WaitSeconds(int time)
         {
-            var action = new WaitSeconds(time);
+            var action = new WaitSeconds(time); //eliminar
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }

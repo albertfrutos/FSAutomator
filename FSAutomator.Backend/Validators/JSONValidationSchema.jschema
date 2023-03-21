@@ -1,0 +1,545 @@
+﻿{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "Actions": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          { "$ref": "#/definitions/ConditionalAction" },
+          { "$ref": "#/definitions/ExecuteCodeFromDLL" },
+          { "$ref": "#/definitions/ExpectVariableValue" },
+          { "$ref": "#/definitions/GetVariable" },
+          { "$ref": "#/definitions/MemoryRegisterWrite" },
+          { "$ref": "#/definitions/MemoryRegisterRead" },
+          { "$ref": "#/definitions/OperateValue" },
+          { "$ref": "#/definitions/SendEvent" },
+          { "$ref": "#/definitions/WaitSeconds" },
+          { "$ref": "#/definitions/WaitUntilVariableReachesNumericValue" },
+          { "$ref": "#/definitions/CalculateBearingToCoordinates" },
+          { "$ref": "#/definitions/CalculateDistanceToCoordinates" },
+          { "$ref": "#/definitions/FlightPositionLogger" },
+          { "$ref": "#/definitions/FlightPositionLoggerStop" }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "ConditionalAction": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "ConditionalAction"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "FirstMember": {
+              "type": "string"
+            },
+            "Comparison": {
+              "type": "string"
+            },
+            "SecondMember": {
+              "type": "string"
+            },
+            "ActionIfTrueUniqueID": {
+              "type": "string"
+            },
+            "ActionIfFalseUniqueID": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "FirstMember",
+            "Comparison",
+            "SecondMember",
+            "ActionIfTrueUniqueID",
+            "ActionIfFalseUniqueID"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "ExecuteCodeFromDLL": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "ExecuteCodeFromDLL"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "DLLName": {
+              "type": "string"
+            },
+            "ClassName": {
+              "type": "string"
+            },
+            "MethodName": {
+              "type": "string"
+            },
+            "IncludeAsExternalAutomator": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "DLLName",
+            "ClassName",
+            "MethodName",
+            "IncludeAsExternalAutomator"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "ExpectVariableValue": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "ExpectVariableValue"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "VariableName": {
+              "type": "string"
+            },
+            "VariableExpectedValue": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "VariableName",
+            "VariableExpectedValue"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "GetVariable": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "GetVariable"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "VariableName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "VariableName"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "MemoryRegisterWrite": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "MemoryRegisterWrite"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "Value": {
+              "type": "string"
+            },
+            "Id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Value",
+            "Id"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "MemoryRegisterRead": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "MemoryRegisterRead"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "RemoveAfterRead": {
+              "type": "boolean"
+            },
+            "Id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "RemoveAfterRead",
+            "Id"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "OperateValue": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "OperateValue"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "Operation": {
+              "type": "string"
+            },
+            "Number": {
+              "type": "number"
+            },
+            "ItemToOperateOver": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "Operation",
+            "Number",
+            "ItemToOperateOver"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "SendEvent": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "SendEvent"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "EventName": {
+              "type": "string"
+            },
+            "EventValue": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "EventName",
+            "EventValue"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "WaitSeconds": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "WaitSeconds"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "WaitTime": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "WaitTime"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "WaitUntilVariableReachesNumericValue": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "WaitUntilVariableReachesNumericValue"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "VariableName": {
+              "type": "string"
+            },
+            "Comparison": {
+              "type": "string"
+            },
+            "ThresholdValue": {
+              "type": "string"
+            },
+            "CheckInterval": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "VariableName",
+            "Comparison",
+            "ThresholdValue",
+            "CheckInterval"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "CalculateBearingToCoordinates": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "CalculateBearingToCoordinates"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "FinalLatitude": {
+              "type": "number"
+            },
+            "FinalLongitude": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "FinalLatitude",
+            "FinalLongitude"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "CalculateDistanceToCoordinates": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "CalculateDistanceToCoordinates"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "FinalLatitude": {
+              "type": "number"
+            },
+            "FinalLongitude": {
+              "type": "number"
+            }
+          },
+          "required": [
+            "FinalLatitude",
+            "FinalLongitude"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "FlightPositionLogger": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "FlightPositionLogger"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        },
+        "Parameters": {
+          "type": "object",
+          "properties": {
+            "LoggingTimeSeconds": {
+              "type": "integer"
+            },
+            "LoggingPeriodSeconds": {
+              "type": "integer"
+            },
+            "LogInNoLockingBackgroundMode": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "LoggingTimeSeconds",
+            "LoggingPeriodSeconds",
+            "LogInNoLockingBackgroundMode"
+          ]
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError",
+        "Parameters"
+      ]
+    },
+    "FlightPositionLoggerStop": {
+      "type": "object",
+      "properties": {
+        "Name": {
+          "type": "string",
+          "pattern": "FlightPositionLoggerStop"
+        },
+        "UniqueID": {
+          "type": "string"
+        },
+        "StopOnError": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "Name",
+        "UniqueID",
+        "StopOnError"
+      ]
+    }
+  }
+}
