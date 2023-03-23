@@ -26,7 +26,6 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-
             totalSeconds = Convert.ToDouble(this.WaitTime);
 
             waitTimer = new System.Timers.Timer(1000);
