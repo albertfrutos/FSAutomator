@@ -5,7 +5,7 @@ using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class SendEvent : IAction
+    public class SendEvent : ActionBase, IAction
     {
 
         public string EventName { get; set; }

@@ -6,7 +6,7 @@ using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class GetVariable : IAction
+    public class GetVariable : IGetVariable
     {
         public string VariableName { get; set; }
 
@@ -29,7 +29,7 @@ namespace FSAutomator.Backend.Actions
             VariableName = variableName;
             VariableValue = null;
         }
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public virtual ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             bool error = false;
             this.VariableValue = null;

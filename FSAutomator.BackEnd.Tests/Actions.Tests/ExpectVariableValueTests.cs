@@ -13,14 +13,20 @@ namespace FSAutomator.BackEnd.Tests
     public class ExpectVariableValueTests
     {
         ExpectVariableValue expectedVariableValue;
+        
+        Mock<IGetVariable> getVariableMock;
 
         [TestMethod]
         public void NumericValue_VariableHasTargetValue_TrueIsReturned()
         {
-            this.expectedVariableValue = new ExpectVariableValue("ATC ID", "MyATCID");
-            var result = this.expectedVariableValue.CheckIfVariableHasExpectedValue(null, null, "MyATCID");
+            getVariableMock = new Mock<IGetVariable>();
+            getVariableMock.Setup(x => x.ExecuteAction(It.IsAny<object>(), It.IsAny<SimConnect>())).Returns(new ActionResult(null, "MyATCID", false));
 
-            result.Should().Be("true");
+            this.expectedVariableValue = new ExpectVariableValue("ATC ID", "MyATCID", getVariableMock.Object);
+
+            var result = this.expectedVariableValue.ExecuteAction(null, null);
+
+            result.ComputedResult.Should().Be("True");
         }
     }
 }

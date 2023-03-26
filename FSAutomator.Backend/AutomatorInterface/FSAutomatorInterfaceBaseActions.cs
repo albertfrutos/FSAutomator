@@ -11,6 +11,9 @@ namespace FSAutomator.Backend.AutomatorInterface
         internal SimConnect Connection { get; set; }
         private GeneralStatus Status { get; set; }
 
+        IGetVariable getVariable;
+
+        ISendEvent sendEvent;
         public FSAutomatorInterfaceBaseActions(Automator automator, SimConnect connection)
         {
             this.automator = automator;
@@ -65,7 +68,7 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         public ActionResult ExpectVariableValue(string variableName, string variableExpectedValue)
         {
-            var action = new ExpectVariableValue(variableName, variableExpectedValue);
+            var action = new ExpectVariableValue(variableName, variableExpectedValue, getVariable);
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }

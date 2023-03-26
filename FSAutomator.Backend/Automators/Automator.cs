@@ -1,4 +1,5 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions;
+using FSAutomator.Backend.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
@@ -26,12 +27,14 @@ namespace FSAutomator.Backend.Automators
 
         public void ExecuteActionList()
         {
+            /*
             if (this.connection == null)
             {
                 var message = new InternalMessage("Connection not active", true, false);
                 status.ReportStatus(message);
                 return;
             }
+            */
 
             this.flightModel = new FlightModel(this.connection);
 
@@ -86,7 +89,7 @@ namespace FSAutomator.Backend.Automators
 
         internal ActionResult ExecuteAction(FSAutomatorAction action)
         {
-            var result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
+            var result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection});
             return result;
         }
 

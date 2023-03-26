@@ -98,9 +98,9 @@ namespace FSAutomator.Backend
         {
             var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
 
-            var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath);
+            //var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath);
             var uniqueID = Guid.NewGuid().ToString();
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, externalAutomatorObject, false, true, fileToLoad));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, false, true, fileToLoad, new GetVariable()));
         }
 
         public List<string> ValidateActions()
@@ -141,6 +141,14 @@ namespace FSAutomator.Backend
             {
                 (action.ActionObject as ExecuteCodeFromDLL).PackFolder = fileToLoad.PackageName;
             }
+            
+
+            
+            if (action.Name == "ExpectVariableValue")
+            {
+                (action.ActionObject as ExpectVariableValue).getVariable = new GetVariable();
+            }
+
 
             return action;
         }
@@ -168,20 +176,14 @@ namespace FSAutomator.Backend
             var uniqueID = Guid.NewGuid().ToString();
             var stopOnError = (bool)jsonObject["StopOnError"];
 
-            Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
-
-            if (actionType == null)
+            if (Utils.CheckIfActionExists(actionName))
             {
                 var message = new InternalMessage($"Action name ({actionName}) does not exist. Did you select an action?", true);
                 status.ReportStatus(message);
                 return;
             }
 
-            Activator.CreateInstance(actionType);
-
-            var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, actionObject, false, stopOnError, automationFile);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, false, stopOnError, automationFile, new GetVariable());
 
             automator.ActionList.Insert(position + 1, action);
 

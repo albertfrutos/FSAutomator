@@ -1,18 +1,16 @@
 ﻿{
   "Actions": [
     {
-      "Name": "GetVariable",
+      "Name": "ExpectVariableValue",
       "Parameters": {
-        "VariableName": "ATC ID"
+        "VariableName": "ATC ID",
+        "VariableExpectedValue": "80"
       }
     },
     {
-      "Name": "WaitUntilVariableReachesNumericValue",
+      "Name": "GetVariable",
       "Parameters": {
-        "VariableName": "AUTOPILOT HEADING LOCK DIR",
-        "Comparison": ">",
-        "ThresholdValue": "310",
-        "CheckInterval": "200"
+        "VariableName": "ATC ID"
       }
     }
   ]

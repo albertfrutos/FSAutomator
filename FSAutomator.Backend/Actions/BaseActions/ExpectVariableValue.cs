@@ -4,30 +4,32 @@ using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ExpectVariableValue : IAction
+    public class ExpectVariableValue : ActionBase, IAction
     {
 
         public string VariableName { get; set; }
         public string VariableExpectedValue { get; set; }
 
 
-        internal ExpectVariableValue(string variableName, string variableExpectedValue)
+
+
+        internal ExpectVariableValue(string variableName, string variableExpectedValue, IGetVariable getVariable) : base(getVariable, variableName)
         {
             VariableName = variableName;
             VariableExpectedValue = variableExpectedValue;
         }
 
-        public ExpectVariableValue()
+        public ExpectVariableValue():base()
         {
 
         }
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection);
+            var result = this.getVariable.ExecuteAction(sender, connection);
 
             string isExpectedValue = CheckIfVariableHasExpectedValue(sender, connection, result.ComputedResult);
 
-            return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
+             return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
         }
 
         internal string CheckIfVariableHasExpectedValue(object sender, SimConnect connection, string variableRealValue)

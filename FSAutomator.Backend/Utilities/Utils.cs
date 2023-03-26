@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.Text;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
 
@@ -94,7 +95,7 @@ namespace FSAutomator.Backend.Utilities
 
                 if (validateJSON)
                 {
-                    //aquiii
+                    //aquiii acabar comentari - s'ha d'acabar la validació
                     var schemaTxt = File.ReadAllText(Config.SchemaFile);
                     var schema = JsonSchema.Parse(schemaTxt);
                     if(!jsonObject.IsValid(schema, out IList<string> jsonValidationErrors))
@@ -102,9 +103,11 @@ namespace FSAutomator.Backend.Utilities
                         GeneralStatus.GetInstance.ValidationIssues.AddRange(jsonValidationErrors);
                     }
                 }
-                
 
-                                
+
+                //var a = JsonConvert.DeserializeObject<ExpandoObject>();
+
+
 
                 var actionsList = CreateActionList(fileToLoad, actionsNode);
 
@@ -117,21 +120,34 @@ namespace FSAutomator.Backend.Utilities
 
         }
 
+        public static bool CheckIfActionExists(string actionName)
+        {
+            var availableActions = GetExistingActions();
+
+            return availableActions.Contains(actionName);
+        }
+
+        private static List<string> GetExistingActions()
+        {
+            var actions = AppDomain.CurrentDomain.GetAssemblies()
+               .SelectMany(t => t.GetTypes())
+               .Where(t => t.IsClass && t.IsNested == false && t.Namespace == "FSAutomator.Backend.Actions")
+               .Select(T => T.Name)
+               .ToList();
+
+            return actions;
+        }
+
         private static ObservableCollection<FSAutomatorAction> CreateActionList(AutomationFile fileToLoad, JToken[] actions)
         {
             ObservableCollection<FSAutomatorAction> actionsList = new ObservableCollection<FSAutomatorAction>();
 
-            var availableActions = AppDomain.CurrentDomain.GetAssemblies()
-                       .SelectMany(t => t.GetTypes())
-                       .Where(t => t.IsClass && t.IsNested == false && t.Namespace == "FSAutomator.Backend.Actions")
-                       .Select(T => T.Name)
-                       .ToList();
 
             foreach (JToken token in actions)
             {
                 var actionName = token["Name"].ToString();
 
-                if (!availableActions.Contains(actionName))
+                if (!CheckIfActionExists(actionName))
                 {
                     var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
                     GeneralStatus.GetInstance.ReportStatus(exMessage);
@@ -158,13 +174,7 @@ namespace FSAutomator.Backend.Utilities
                 }
                 var actionParameters = token["Parameters"] is null ? "" : token["Parameters"].ToString();
 
-                Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
-
-                var actionObject = Activator.CreateInstance(actionType);
-
-                actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-
-                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
+                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, isAuxiliary, stopOnError, fileToLoad, new GetVariable());
 
                 actionsList.Add(action);
             }

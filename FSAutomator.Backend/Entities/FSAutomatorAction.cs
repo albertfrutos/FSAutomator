@@ -1,4 +1,6 @@
-﻿using FSAutomator.Backend.Utilities;
+﻿using FSAutomator.Backend.Actions;
+using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Utilities;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -22,8 +24,22 @@ namespace FSAutomator.Backend.Entities
         private string s_mainFilePath;
         private AutomationFile o_AutomationFile;
 
-        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
+        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, bool isAuxiliary, bool stopOnError, AutomationFile automationFile, IGetVariable getVariable)
         {
+
+            dynamic actionObject = null;
+
+            if (name == "DLLAutomation")
+            {
+                actionObject = new ExternalAutomator(automationFile.FileName, parameters);
+            }
+            else
+            {
+                Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", name));
+                //var actionObject = Activator.CreateInstance(actionType);
+                actionObject = JsonConvert.DeserializeObject(parameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            }
+
             s_Name = name;
             s_UniqueID = uniqueID;
             e_Status = status;
