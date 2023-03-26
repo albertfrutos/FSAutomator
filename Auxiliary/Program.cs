@@ -1,5 +1,6 @@
 ﻿/* THIS IS NOT PART OF FSAutomator, THIS IS AN AUXILIARY PROJECT TO HELP GENERATE METHODS FOR THE MANAGERS FOR THE DLLAUTOMATION ACTION*/
 
+using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
@@ -18,6 +19,19 @@ public class Program
         var json = File.ReadAllText(@"C:\Users\Albert\source\repos\albertfrutos\FSAutomator\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\atc id.json");
 
         Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(json);
+
+        List<FSAutomatorAction> list = new List<FSAutomatorAction>();
+
+        foreach (Action action in myDeserializedClass.Actions)
+        {
+            Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", action.Name));
+
+            list.Add(new FSAutomatorAction()
+            {
+                Name = action.Name,
+                ActionObject = Convert.ChangeType(action.Parameters, Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", action.Name)))
+            });
+        }
 
         return;
 
@@ -122,13 +136,7 @@ public class Program
 public class Action
 {
     public string Name { get; set; }
-    public Parameters Parameters { get; set; }
-}
-
-public class Parameters
-{
-    public string VariableName { get; set; }
-    public string VariableExpectedValue { get; set; }
+    public object Parameters { get; set; }
 }
 
 public class Root
