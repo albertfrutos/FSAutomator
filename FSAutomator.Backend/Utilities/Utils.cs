@@ -82,6 +82,9 @@ namespace FSAutomator.Backend.Utilities
 
                 var json = File.ReadAllText(filePath);
 
+                var actionObject = JsonConvert.DeserializeObject<List<object>>(json);
+
+
                 var jsonObject = JObject.Parse(json);
 
                 var actionsNode = jsonObject["Actions"].ToArray();

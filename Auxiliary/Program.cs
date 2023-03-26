@@ -2,6 +2,7 @@
 
 using FSAutomator.BackEnd.Configuration;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using System.Text;
 
 public class MyObject
@@ -14,6 +15,12 @@ public class Program
 {
     public static void Main()
     {
+        var json = File.ReadAllText(@"C:\Users\Albert\source\repos\albertfrutos\FSAutomator\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\atc id.json");
+
+        Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(json);
+
+        return;
+
         var b = ApplicationConfig.GetInstance;
         var a = new Program();
         a.EventsUpdater();
@@ -109,4 +116,22 @@ public class Program
 
     # endregion
 
+}
+
+// 
+public class Action
+{
+    public string Name { get; set; }
+    public Parameters Parameters { get; set; }
+}
+
+public class Parameters
+{
+    public string VariableName { get; set; }
+    public string VariableExpectedValue { get; set; }
+}
+
+public class Root
+{
+    public List<Action> Actions { get; set; }
 }
