@@ -16,7 +16,8 @@ public class Program
 {
     public static void Main()
     {
-        var json = File.ReadAllText(@"C:\Users\Albert\source\repos\albertfrutos\FSAutomator\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\atc id.json");
+        //var json = File.ReadAllText(@"C:\Users\Albert\source\repos\albertfrutos\FSAutomator\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\atc id.json");
+        var json = File.ReadAllText(@"C:\Users\frutosga\source\repos\albertfrutos\FSAutomator\FSAutomator.UI\bin\Debug\net6.0-windows\Automations\atc id.json");
 
         Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(json);
 
@@ -32,7 +33,7 @@ public class Program
                 ActionObject = Convert.ChangeType(action.Parameters, Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", action.Name)))
             });
         }
-
+        //https://stackoverflow.com/questions/72340940/how-to-cast-newtonsoft-json-linq-jobject-to-complex-type
         return;
 
         var b = ApplicationConfig.GetInstance;
