@@ -19,6 +19,7 @@ namespace FSAutomator.Backend.Actions
 
         public string PackFolder = "";
 
+        [JsonIgnore]
         public ApplicationConfig Config = ApplicationConfig.GetInstance;
 
         AutoResetEvent finishEvent = new AutoResetEvent(false);
