@@ -48,6 +48,7 @@ namespace FSAutomator.Backend.Entities
                         break;
                     case "ExecuteCodeFromDLL":
                         actionObject = new ExecuteCodeFromDLL(dParameters.DLLName, dParameters.DLLPath, dParameters.ClassName, dParameters.MethodName, dParameters.IncludeAsExternalAutomator);
+                        actionObject.PackFolder = automationFile.PackageName;
                         break;
                     case "ExpectVariableValue":
                         actionObject = new ExpectVariableValue(dParameters.VariableName, dParameters.VariableExpectedValue, new GetVariable());
