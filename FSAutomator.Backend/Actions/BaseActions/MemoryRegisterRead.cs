@@ -13,6 +13,12 @@ namespace FSAutomator.Backend.Actions
 
         }
 
+        public MemoryRegisterRead(bool removeAfterRead, string id)
+        {
+            RemoveAfterRead = removeAfterRead;
+            Id = id;
+        }
+
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);

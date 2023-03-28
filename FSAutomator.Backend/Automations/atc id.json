@@ -2,8 +2,6 @@
   "Actions": [
     {
       "Name": "ExpectVariableValue",
-      "UniqueID": "5h0t3oAA",
-      "IsAuxiliary": "true",
       "Parameters": {
         "VariableName": "ATC ID",
         "VariableExpectedValue": "80"
@@ -11,8 +9,6 @@
     },
     {
       "Name": "GetVariable",
-      "UniqueID": "5h0t3oAA",
-      "IsAuxiliary": "true",
       "Parameters": {
         "VariableName": "ATC ID"
       }

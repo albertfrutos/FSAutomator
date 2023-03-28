@@ -383,18 +383,6 @@ namespace FSAutomator.BackEnd.Validators
             return false;
         }
 
-        private static bool TryParse<T>(string text, out T value)
-        {
-            value = default(T);
-            try
-            {
-                value = (T)Convert.ChangeType(text, typeof(T));
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+
     }
 }

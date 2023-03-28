@@ -15,6 +15,13 @@ namespace FSAutomator.Backend.Actions
         {
 
         }
+        
+        public OperateValue(string operation, double number, string itemToOperateOver)
+        {
+            this.Operation = operation;
+            this.Number = number;
+            this.ItemToOperateOver = itemToOperateOver;
+        }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {

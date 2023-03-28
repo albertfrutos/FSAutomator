@@ -13,7 +13,7 @@ namespace FSAutomator.Backend.Actions
 
 
 
-        internal ExpectVariableValue(string variableName, string variableExpectedValue, IGetVariable getVariable) : base(getVariable, variableName)
+        internal ExpectVariableValue(string variableName, string variableExpectedValue, IGetVariable getVariable) : base(getVariable)
         {
             VariableName = variableName;
             VariableExpectedValue = variableExpectedValue;

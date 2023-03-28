@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ConditionalAction : IAction
+    public class ConditionalAction : ActionBase, IAction
     {
 
         public string FirstMember { get; set; }
@@ -19,9 +19,18 @@ namespace FSAutomator.Backend.Actions
 
         internal FSAutomatorAction CurrentAction = null;
 
-        public ConditionalAction()
+        public ConditionalAction() :base()
         {
 
+        }
+
+        public ConditionalAction(string firstMember, string comparison, string secondMember, string actionIfTrueUniqueID, string actionIfFalseUniqueID, IGetVariable getVariable, ISendEvent sendEvent) : base(getVariable, sendEvent)
+        {
+            FirstMember = firstMember;
+            Comparison = comparison;
+            SecondMember = secondMember;
+            ActionIfTrueUniqueID = actionIfTrueUniqueID;
+            ActionIfFalseUniqueID = actionIfFalseUniqueID;
         }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)

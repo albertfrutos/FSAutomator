@@ -16,19 +16,19 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
         }
         public string CalculateBearingToCoordinates(double latitude, double longitude)
         {
-            var result = new CalculateBearingToCoordinates(latitude, longitude).ExecuteAction(this, Connection).ComputedResult;
+            var result = new CalculateBearingToCoordinates(latitude, longitude, new GetVariable()).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
 
         public string CalculateDistanceToCoordinates(double latitude, double longitude)
         {
-            var result = new CalculateDistanceToCoordinates(latitude, longitude).ExecuteAction(this, Connection).ComputedResult;
+            var result = new CalculateDistanceToCoordinates(latitude, longitude, new GetVariable()).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
         
         public ActionResult FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, bool logInNoLockingBackgroundMode = false)
         {
-            var result = new FlightPositionLogger(loggingTimeSeconds, loggingPeriodSeconds, logInNoLockingBackgroundMode).ExecuteAction(this, Connection);
+            var result = new FlightPositionLogger(loggingTimeSeconds, loggingPeriodSeconds, new GetVariable(), logInNoLockingBackgroundMode).ExecuteAction(this, Connection);
             
             if(logInNoLockingBackgroundMode)
             {
