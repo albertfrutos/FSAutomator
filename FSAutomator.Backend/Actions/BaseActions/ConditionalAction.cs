@@ -24,7 +24,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        public ConditionalAction(string firstMember, string comparison, string secondMember, string actionIfTrueUniqueID, string actionIfFalseUniqueID, IGetVariable getVariable, ISendEvent sendEvent) : base(getVariable, sendEvent)
+        public ConditionalAction(string firstMember, string comparison, string secondMember, string actionIfTrueUniqueID, string actionIfFalseUniqueID)
         {
             FirstMember = firstMember;
             Comparison = comparison;

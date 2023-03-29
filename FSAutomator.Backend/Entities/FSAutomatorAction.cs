@@ -44,7 +44,7 @@ namespace FSAutomator.Backend.Entities
                 switch (actionType.Name)
                 {
                     case "ConditionalAction":
-                        actionObject = new ConditionalAction(dParameters.FirstMember, dParameters.Comparison, dParameters.SecondMember, dParameters.ActionIfTrueUniqueID, dParameters.ActionIfFalseUniqueID, new GetVariable(), new SendEvent());
+                        actionObject = new ConditionalAction(dParameters.FirstMember, dParameters.Comparison, dParameters.SecondMember, dParameters.ActionIfTrueUniqueID, dParameters.ActionIfFalseUniqueID);
                         break;
                     case "ExecuteCodeFromDLL":
                         actionObject = new ExecuteCodeFromDLL(dParameters.DLLName, dParameters.DLLPath, dParameters.ClassName, dParameters.MethodName, dParameters.IncludeAsExternalAutomator);
