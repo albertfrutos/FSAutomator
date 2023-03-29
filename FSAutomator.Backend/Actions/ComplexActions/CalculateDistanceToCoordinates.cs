@@ -14,15 +14,18 @@ namespace FSAutomator.Backend.Actions
 
         public double currentLongitude;
 
+        IGetVariable getVariable;
+
         public CalculateDistanceToCoordinates()
         {
 
         }
 
-        public CalculateDistanceToCoordinates(double lat, double lon)
+        public CalculateDistanceToCoordinates(double lat, double lon, IGetVariable getVariable)
         {
             this.FinalLatitude = lat;
             this.FinalLongitude = lon;
+            this.getVariable = getVariable;
         }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
@@ -51,10 +54,13 @@ namespace FSAutomator.Backend.Actions
 
         private bool GetCurrentCoordinates(object sender, SimConnect connection)
         {
-            var currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection);
+
+            getVariable.VariableName = "PLANE LATITUDE";
+            var currentLatitude = getVariable.ExecuteAction(sender, connection);
             this.currentLatitude = Convert.ToDouble(currentLatitude.ComputedResult);
 
-            var currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection);
+            getVariable.VariableName = "PLANE LONGITUDE";
+            var currentLongitude = getVariable.ExecuteAction(sender, connection);
             this.currentLongitude = Convert.ToDouble(currentLongitude.ComputedResult);
 
             return currentLatitude.Error && currentLongitude.Error;

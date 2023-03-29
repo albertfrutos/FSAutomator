@@ -89,7 +89,7 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         public ActionResult WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
         {
-            var action = new WaitUntilVariableReachesNumericValue(variableName, comparison, thresholdValue, checkInterval);
+            var action = new WaitUntilVariableReachesNumericValue(variableName, comparison, thresholdValue, new GetVariable(), checkInterval);
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }

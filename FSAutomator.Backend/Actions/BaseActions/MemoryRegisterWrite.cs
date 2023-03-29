@@ -13,6 +13,13 @@ namespace FSAutomator.Backend.Actions
         {
 
         }
+
+        public MemoryRegisterWrite(string value, string id)
+        {
+            Value = value;
+            Id = id;
+        }
+
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
             this.Value = Utils.GetValueToOperateOnFromTag(this, connection, this.Value);

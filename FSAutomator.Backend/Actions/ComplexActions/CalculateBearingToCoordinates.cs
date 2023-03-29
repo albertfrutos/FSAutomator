@@ -4,7 +4,7 @@ using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class CalculateBearingToCoordinates : IAction
+    public class CalculateBearingToCoordinates : ActionBase, IAction
     {
 
         public double FinalLatitude { get; set; }
@@ -14,11 +14,14 @@ namespace FSAutomator.Backend.Actions
 
         public double currentLongitude;
 
+        IGetVariable getVariable;
 
-        public CalculateBearingToCoordinates(double lat, double lon)
+        public CalculateBearingToCoordinates(double lat, double lon, IGetVariable getVariable)
         {
             this.FinalLatitude = lat;
             this.FinalLongitude = lon;
+            this.getVariable = getVariable;
+
         }
 
         public CalculateBearingToCoordinates()
@@ -50,10 +53,12 @@ namespace FSAutomator.Backend.Actions
 
         private bool GetCurrentCoordinates(object sender, SimConnect connection)
         {
-            var currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection);
+            getVariable.VariableName = "PLANE LATITUDE";
+            var currentLatitude = getVariable.ExecuteAction(sender, connection);
             this.currentLatitude = Convert.ToDouble(currentLatitude.ComputedResult);
 
-            var currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection);
+            getVariable.VariableName = "PLANE LONGITUDE";
+            var currentLongitude = getVariable.ExecuteAction(sender, connection);
             this.currentLongitude = Convert.ToDouble(currentLongitude.ComputedResult);
 
             return currentLatitude.Error || currentLongitude.Error;

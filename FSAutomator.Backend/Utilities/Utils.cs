@@ -82,7 +82,6 @@ namespace FSAutomator.Backend.Utilities
 
                 var json = File.ReadAllText(filePath);
 
-                var actionObject = JsonConvert.DeserializeObject<List<object>>(json);
 
 
                 var jsonObject = JObject.Parse(json);
@@ -177,7 +176,7 @@ namespace FSAutomator.Backend.Utilities
                 }
                 var actionParameters = token["Parameters"] is null ? "" : token["Parameters"].ToString();
 
-                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, isAuxiliary, stopOnError, fileToLoad, new GetVariable());
+                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, isAuxiliary, stopOnError, fileToLoad);
 
                 actionsList.Add(action);
             }
@@ -210,7 +209,7 @@ namespace FSAutomator.Backend.Utilities
                 {
                     continue;
                 }
-
+                
                 var dllFilesAsExternalAutomatorAutomationFileList = actionList.Where(x => x.Name == "ExecuteCodeFromDLL")
                     .Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true)
                     .Select(z => new AutomationFile(
@@ -220,9 +219,10 @@ namespace FSAutomator.Backend.Utilities
                         Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
                         Directory.GetParent(Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
                         )).ToList();
+                
 
                 automationsToLoad.Add(jsonAutomationFile);
-                automationsToLoad.AddRange(dllFilesAsExternalAutomatorAutomationFileList);
+                //automationsToLoad.AddRange(dllFilesAsExternalAutomatorAutomationFileList);
 
             }
             return automationsToLoad;
@@ -356,6 +356,20 @@ namespace FSAutomator.Backend.Utilities
             var kmlCodifiedColor = $"{B}{G}{R}";
 
             return kmlCodifiedColor;
+        }
+
+        internal static bool TryParse<T>(string text, out T value)
+        {
+            value = default(T);
+            try
+            {
+                value = (T)Convert.ChangeType(text, typeof(T));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿/* THIS IS NOT PART OF FSAutomator, THIS IS AN AUXILIARY PROJECT TO HELP GENERATE METHODS FOR THE MANAGERS FOR THE DLLAUTOMATION ACTION*/
 
+using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
 using HtmlAgilityPack;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Text;
 
 public class MyObject
@@ -27,10 +29,18 @@ public class Program
         {
             Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", action.Name));
 
+            var jobj = action.Parameters as JObject;
+            var type = typeof(ExpectVariableValue);
+
+
+            var o = jobj.ToObject(type);
+            object aa = o as object;
+            dynamic bb = o as dynamic;
+            Console.WriteLine(bb.VariableName);
             list.Add(new FSAutomatorAction()
             {
                 Name = action.Name,
-                ActionObject = Convert.ChangeType(action.Parameters, Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", action.Name)))
+                ActionObject = o
             });
         }
         //https://stackoverflow.com/questions/72340940/how-to-cast-newtonsoft-json-linq-jobject-to-complex-type

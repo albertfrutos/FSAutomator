@@ -7,8 +7,9 @@ using System.Diagnostics;
 
 namespace FSAutomator.Backend.Entities
 {
-    public class FSAutomatorAction : INotifyPropertyChanged
+    public class FSAutomatorActions : INotifyPropertyChanged
     {
+        /*
         private int i_Id;
         private string s_Name;
         private string s_UniqueID;
@@ -24,9 +25,8 @@ namespace FSAutomator.Backend.Entities
         private string s_mainFilePath;
         private AutomationFile o_AutomationFile;
 
-        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
+        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, bool isAuxiliary, bool stopOnError, AutomationFile automationFile, IGetVariable getVariable)
         {
-
 
             dynamic actionObject = null;
 
@@ -38,67 +38,7 @@ namespace FSAutomator.Backend.Entities
             {
                 Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", name));
                 //var actionObject = Activator.CreateInstance(actionType);
-
-                dynamic dParameters = parameters == null ? "" : JsonConvert.DeserializeObject(parameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-
-                switch (actionType.Name)
-                {
-                    case "ConditionalAction":
-                        actionObject = new ConditionalAction(dParameters.FirstMember, dParameters.Comparison, dParameters.SecondMember, dParameters.ActionIfTrueUniqueID, dParameters.ActionIfFalseUniqueID, new GetVariable(), new SendEvent());
-                        break;
-                    case "ExecuteCodeFromDLL":
-                        actionObject = new ExecuteCodeFromDLL(dParameters.DLLName, dParameters.DLLPath, dParameters.ClassName, dParameters.MethodName, dParameters.IncludeAsExternalAutomator);
-                        actionObject.PackFolder = automationFile.PackageName;
-                        break;
-                    case "ExpectVariableValue":
-                        actionObject = new ExpectVariableValue(dParameters.VariableName, dParameters.VariableExpectedValue, new GetVariable());
-                        break;
-                    case "GetVariable":
-                        actionObject = new GetVariable(dParameters.VariableName);
-                        break;
-                    case "MemoryRegisterRead":
-                        actionObject = new MemoryRegisterRead(Convert.ToBoolean(dParameters.RemoveAfterRead), dParameters.Id);
-                        break;
-                    case "MemoryRegisterWrite":
-                        actionObject = new MemoryRegisterWrite(dParameters.Value, dParameters.Id);
-                        break;
-                    case "OperateValue":
-                        actionObject = new OperateValue(dParameters.Operation, dParameters.Number, dParameters.ItemToOperateOver);
-                        break;
-                    case "SendEvent":
-                        actionObject = new SendEvent(dParameters.EventName, dParameters.EventValue);
-                        break;
-                    case "WaitSeconds":
-                        actionObject = new WaitSeconds(Convert.ToInt32(dParameters.WaitTime));
-                        break;
-                    case "WaitUntilVariableReachesNumericValue":
-                        actionObject = new WaitUntilVariableReachesNumericValue(dParameters.VariableName, dParameters.Comparison, dParameters.ThresholdValue, new GetVariable(), Convert.ToInt32(dParameters.CheckInterval));
-                        break;
-                    case "CalculateBearingToCoordinates":
-                        actionObject = new CalculateBearingToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
-                        break;
-                    case "CalculateDistanceToCoordinates":
-                        actionObject = new CalculateDistanceToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
-                        break;
-                    case "FlightPositionLogger":
-                        actionObject = new FlightPositionLogger(dParameters.LoggingTimeSeconds, dParameters.LoggingPeriodSeconds, new GetVariable(), dParameters.LogInNoLockingBackgroundMode);
-                        break;
-                    case "FlightPositionLoggerStop":
-                        actionObject = new FlightPositionLoggerStop();
-                        break;
-                    default:
-                        break;
-
-                }
-
-
-
-
-
-                /*
                 actionObject = JsonConvert.DeserializeObject(parameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-                actionObject.getVariable = new GetVariable();
-                */
             }
 
             s_Name = name;
@@ -124,7 +64,6 @@ namespace FSAutomator.Backend.Entities
 
         }
 
-        [JsonProperty(Required = Required.Default)]
         public string Name
         {
             get { return s_Name; }
@@ -136,7 +75,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public int Id
         {
@@ -149,7 +87,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         public bool IsAuxiliary
         {
             get { return b_isAuxiliary; }
@@ -161,7 +98,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         public bool StopOnError
         {
             get { return b_stopOnError; }
@@ -173,7 +109,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         public AutomationFile AutomationFile
         {
             get { return o_AutomationFile; }
@@ -185,7 +120,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         public string UniqueID
         {
             get { return s_UniqueID; }
@@ -197,7 +131,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public ActionStatus Status
         {
@@ -209,8 +142,7 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("Status");
             }
         }
-
-        [JsonProperty(Required = Required.Default)]
+        
         [JsonIgnore]
         public bool IsCurrent
         {
@@ -223,8 +155,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-
-        [JsonProperty(Required = Required.Default)]
         public string Parameters
         {
             get { return s_Parameters.Replace("\r", "").Replace("\n", ""); }
@@ -245,7 +175,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public string ParametersBeautified
         {
@@ -256,7 +185,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public ActionResult Result
         {
@@ -272,7 +200,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         public object ActionObject
         {
             get { return o_Object; }
@@ -284,7 +211,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public string MainFilePath
         {
@@ -296,7 +222,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public bool IsValidated
         {
@@ -308,7 +233,6 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("IsValidated");
             }
         }
-
 
         [JsonIgnore]
         public string ValidationOutcome
@@ -322,15 +246,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
 
-        public void RaisePropertyChanged(string propName)
-        {
-            if (PropertyChanged != null)
-            {
-                Task.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName)));
-            }
-        }
 
         public enum ActionStatus
         {
@@ -340,6 +256,15 @@ namespace FSAutomator.Backend.Entities
         }
 
 
+*/
+        public event PropertyChangedEventHandler PropertyChanged;
 
+        public void RaisePropertyChanged(string propName)
+        {
+            if (PropertyChanged != null)
+            {
+                Task.Run(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propName)));
+            }
+        }
     }
 }

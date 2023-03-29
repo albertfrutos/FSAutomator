@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class FlightPositionLogger
+    public class FlightPositionLogger: ActionBase, IAction
     {
         public int LoggingTimeSeconds { get; set; } = 60;
         public int LoggingPeriodSeconds { get; set; } = 1;
@@ -24,16 +24,19 @@ namespace FSAutomator.Backend.Actions
 
         private string KmlContent = "";
 
+        IGetVariable getVariable;
+
         public FlightPositionLogger()
         {
 
         }
 
-        public FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, bool logInNoLockingBackgroundMode = false)
+        public FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, IGetVariable getVariable, bool logInNoLockingBackgroundMode = false) : base(getVariable)
         {
             this.LoggingTimeSeconds = loggingTimeSeconds;
             this.LoggingPeriodSeconds = loggingPeriodSeconds;
             this.LogInNoLockingBackgroundMode = logInNoLockingBackgroundMode;
+            this.getVariable = getVariable;
         }
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
@@ -79,8 +82,13 @@ namespace FSAutomator.Backend.Actions
 
             while (continueLogging)
             {
+                getVariable.VariableName = "PLANE LATITUDE";
                 latitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection).ComputedResult;
+
+                getVariable.VariableName = "PLANE LONGITUDE";
                 longitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection).ComputedResult;
+
+                getVariable.VariableName = "PLANE ALTITUDE";
                 altitude = new GetVariable("PLANE ALTITUDE").ExecuteAction(sender, connection).ComputedResult;
 
                 var altitudeMetric = (Convert.ToDouble(altitude) * 0.3048).ToString();
@@ -178,8 +186,6 @@ namespace FSAutomator.Backend.Actions
             {
                 Directory.CreateDirectory(logsFolder);
             }
-
-            // usar path.combine
 
             File.WriteAllText(Path.Combine(logsFolder, filename), content);
         }

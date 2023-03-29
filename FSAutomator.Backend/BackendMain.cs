@@ -100,7 +100,7 @@ namespace FSAutomator.Backend
 
             //var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath);
             var uniqueID = Guid.NewGuid().ToString();
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, false, true, fileToLoad, new GetVariable()));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, false, true, fileToLoad));
         }
 
         public List<string> ValidateActions()
@@ -116,7 +116,45 @@ namespace FSAutomator.Backend
 
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
-            var actionList = Utils.GetAutomationsObjectList(fileToLoad);
+            var json = File.ReadAllText(fileToLoad.FilePath);
+
+            //Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(json);
+
+            var actionList = new ObservableCollection<FSAutomatorAction>();
+
+            var jsonObject = JObject.Parse(json);
+
+            var actionsNode = jsonObject["Actions"].ToArray();
+
+            foreach (JToken action in actionsNode)
+            {
+                var actionName = action["Name"]?.ToString();
+
+                if (!Utils.CheckIfActionExists(actionName))
+                {
+                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
+                    GeneralStatus.GetInstance.ReportStatus(exMessage);
+                    return;
+                }
+
+                var actionUniqueID = String.IsNullOrEmpty(action["UniqueID"]?.ToString().Trim()) ? Guid.NewGuid().ToString() : action["UniqueID"]?.ToString();
+                var actionParameters = action["Parameters"]?.ToString();
+                var actionIsAuxiliary = Convert.ToBoolean(action["IsAuxiliary"]?.ToString());
+                var actionStopOnError = Convert.ToBoolean(action["StopOnError"]?.ToString());
+
+                actionList.Add(new FSAutomatorAction(
+                    actionName,
+                    actionUniqueID,
+                    ActionStatus.Pending,
+                    actionParameters,
+                    actionIsAuxiliary,
+                    actionStopOnError,
+                    fileToLoad
+                    ));
+
+            }
+
+            //var actionList = Utils.GetAutomationsObjectList(fileToLoad);
 
             if (actionList is null)
             {
@@ -183,7 +221,7 @@ namespace FSAutomator.Backend
                 return;
             }
 
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, false, stopOnError, automationFile, new GetVariable());
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, false, stopOnError, automationFile);
 
             automator.ActionList.Insert(position + 1, action);
 
@@ -353,5 +391,16 @@ namespace FSAutomator.Backend
         {
             return automator.ActionList;
         }
+    }
+
+    public class Root
+    {
+        public List<FSAutomatorAction> Actions { get; set; }
+    }
+
+    public class Action
+    {
+        public string Name { get; set; }
+        public object Parameters { get; set; }
     }
 }

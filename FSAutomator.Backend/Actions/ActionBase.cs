@@ -9,16 +9,21 @@ namespace FSAutomator.Backend.Actions
     public class ActionBase
     {
         internal IGetVariable getVariable;
+        internal ISendEvent sendEvent;
 
         public ActionBase()
         {
         }
 
-        public ActionBase(IGetVariable getVariable, string variableName)
+        public ActionBase(IGetVariable getVariable, ISendEvent sendEvent)
         {
             this.getVariable = getVariable;
-            this.getVariable.VariableName = variableName;
-
+            this.sendEvent = sendEvent;
+        }
+        
+        public ActionBase(IGetVariable getVariable)
+        {
+            this.getVariable = getVariable;
         }
     }
 }
