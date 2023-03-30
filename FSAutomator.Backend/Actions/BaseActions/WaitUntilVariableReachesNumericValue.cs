@@ -21,8 +21,6 @@ namespace FSAutomator.Backend.Actions
 
         bool isValueReached = false;
 
-        IGetVariable getVariable;
-
         public WaitUntilVariableReachesNumericValue()
         {
 

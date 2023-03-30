@@ -14,9 +14,7 @@ namespace FSAutomator.Backend.Actions
 
         public double currentLongitude;
 
-        IGetVariable getVariable;
-
-        public CalculateBearingToCoordinates(double lat, double lon, IGetVariable getVariable)
+        public CalculateBearingToCoordinates(double lat, double lon, IGetVariable getVariable):base(getVariable)
         {
             this.FinalLatitude = lat;
             this.FinalLongitude = lon;
@@ -31,7 +29,7 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            if (GetCurrentCoordinates(sender, connection))
+            if (!GetCurrentCoordinates(sender, connection))
             {
                 return new ActionResult("An error ocurred while getting current coordinates", null, true);
             }
@@ -61,7 +59,7 @@ namespace FSAutomator.Backend.Actions
             var currentLongitude = getVariable.ExecuteAction(sender, connection);
             this.currentLongitude = Convert.ToDouble(currentLongitude.ComputedResult);
 
-            return currentLatitude.Error || currentLongitude.Error;
+            return !(currentLatitude.Error || currentLongitude.Error);
         }
     }
 }

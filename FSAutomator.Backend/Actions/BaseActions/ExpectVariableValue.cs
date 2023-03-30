@@ -17,6 +17,7 @@ namespace FSAutomator.Backend.Actions
         {
             VariableName = variableName;
             VariableExpectedValue = variableExpectedValue;
+            this.getVariable = getVariable;
         }
 
         public ExpectVariableValue():base()

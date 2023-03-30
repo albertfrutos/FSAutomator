@@ -234,7 +234,7 @@ namespace FSAutomator.Backend.Entities
                 s_Parameters = value;
                 Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", Name));
                 try
-                {
+                {       //mirar, perquè al deserialitzar no s'injecta interfaç
                     ActionObject = JsonConvert.DeserializeObject(value, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 }
                 catch

@@ -60,6 +60,7 @@ namespace FSAutomator.Backend.Utilities
 
         public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction, string packDirName = "")
         {
+            //comentari eliminar packDirName a la signatura i a les referencies
             var allDLLsExist = true;
 
             foreach (string fullDLLPath in dllFilesInAction)
@@ -130,7 +131,7 @@ namespace FSAutomator.Backend.Utilities
             return availableActions.Contains(actionName);
         }
 
-        private static List<string> GetExistingActions()
+        public static List<string> GetExistingActions()
         {
             var actions = AppDomain.CurrentDomain.GetAssemblies()
                .SelectMany(t => t.GetTypes())
@@ -348,7 +349,9 @@ namespace FSAutomator.Backend.Utilities
 
         public static string GetValueToOperateOnFromTag(object sender, SimConnect connection, string itemIdentificator)
         {
-            if (!(itemIdentificator.Contains("%") || itemIdentificator.StartsWith("%")))
+            //passar a actionresult - comentari
+
+            if (!itemIdentificator.StartsWith("%"))
             {
                 return itemIdentificator;
             }

@@ -16,8 +16,6 @@ namespace FSAutomator.Backend.Actions.Tests
 
         Automator automator;
 
-        Mock<IGetVariable> getVariableMock;
-
         [TestInitialize()]
         public void TestInitialize()
         {

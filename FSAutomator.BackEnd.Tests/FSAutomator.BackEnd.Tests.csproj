@@ -34,6 +34,16 @@
     <None Update="SimConnect.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="TestAuxiliaries\TestFiles\Actions_Example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="TestAuxiliaries\TestFiles\randomDLL.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="TestAuxiliaries\TestFiles\" />
   </ItemGroup>
 
 </Project>

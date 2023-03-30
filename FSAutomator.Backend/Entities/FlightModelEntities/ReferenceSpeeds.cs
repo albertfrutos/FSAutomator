@@ -4,6 +4,8 @@ namespace FSAutomator.Backend.Entities
 {
     public class ReferenceSpeeds
     {
+        private readonly IniFile ini;
+
         public string FullFlapsStallSpeed { get; set; }
         public string FlapsUpStallSpeed { get; set; }
         public string CruiseSpeed { get; set; }
@@ -24,7 +26,6 @@ namespace FSAutomator.Backend.Entities
         public string BestSingleEngineRateOfClimbSpeed { get; set; }
         public string MinimumControlSpeed { get; set; }
 
-        private readonly IniFile ini;
 
         public ReferenceSpeeds(IniFile ini)
         {
@@ -49,6 +50,10 @@ namespace FSAutomator.Backend.Entities
             this.BestGlide = GetValue("best_glide", "REFERENCE SPEEDS");
             this.BestSingleEngineRateOfClimbSpeed = GetValue("best_single_engine_rate_of_climb_speed", "REFERENCE SPEEDS");
             this.MinimumControlSpeed = GetValue("minimum_control_speed", "REFERENCE SPEEDS");
+        }
+
+        public ReferenceSpeeds()
+        {
         }
 
         public string GetValue(string key, string section)

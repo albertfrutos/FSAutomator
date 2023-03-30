@@ -4,7 +4,7 @@ using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class CalculateDistanceToCoordinates : IAction
+    public class CalculateDistanceToCoordinates : ActionBase, IAction
     {
 
         public double FinalLatitude { get; set; }
@@ -21,7 +21,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        public CalculateDistanceToCoordinates(double lat, double lon, IGetVariable getVariable)
+        public CalculateDistanceToCoordinates(double lat, double lon, IGetVariable getVariable) : base(getVariable)
         {
             this.FinalLatitude = lat;
             this.FinalLongitude = lon;
@@ -63,7 +63,7 @@ namespace FSAutomator.Backend.Actions
             var currentLongitude = getVariable.ExecuteAction(sender, connection);
             this.currentLongitude = Convert.ToDouble(currentLongitude.ComputedResult);
 
-            return currentLatitude.Error && currentLongitude.Error;
+            return !(currentLatitude.Error || currentLongitude.Error);
         }
     }
 }
