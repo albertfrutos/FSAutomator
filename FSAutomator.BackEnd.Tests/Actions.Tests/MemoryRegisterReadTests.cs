@@ -5,7 +5,7 @@ using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace FSAutomator.BackEnd.Tests
+namespace FSAutomator.Backend.Actions.Tests
 {
     [TestClass]
     public class MemoryRegisterReadTests

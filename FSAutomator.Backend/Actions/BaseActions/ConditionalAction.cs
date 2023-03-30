@@ -19,7 +19,7 @@ namespace FSAutomator.Backend.Actions
 
         internal FSAutomatorAction CurrentAction = null;
 
-        public ConditionalAction() :base()
+        public ConditionalAction() : base()
         {
 
         }
@@ -77,9 +77,14 @@ namespace FSAutomator.Backend.Actions
             {
                 result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfTrueUniqueID);
             }
-            else if (!string.IsNullOrEmpty(ActionIfFalseUniqueID))
+            else if (!isConditionTrue && !string.IsNullOrEmpty(ActionIfFalseUniqueID))
             {
                 result = ExecuteConditionalAction(sender, connection, auxiliaryActionList, ActionIfFalseUniqueID);
+            }
+            else
+            {
+                return new ActionResult(String.Format("Comparison is {0} but the UniqueID associated is null or empty", isConditionTrue.ToString()), null, true);
+
             }
 
             return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult, result.Error);
@@ -102,6 +107,7 @@ namespace FSAutomator.Backend.Actions
                 "<>" => firstMember != secondMember,
                 _ => false,
             };
+
             return result;
         }
     }

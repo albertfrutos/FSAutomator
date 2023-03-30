@@ -9,7 +9,7 @@ using Moq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
-namespace FSAutomator.BackEnd.Tests
+namespace FSAutomator.Backend.Actions.Tests
 {
     [TestClass]
     public class WaitSecondsTests

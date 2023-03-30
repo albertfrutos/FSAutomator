@@ -64,7 +64,6 @@ namespace FSAutomator.Backend.Utilities
 
             foreach (string fullDLLPath in dllFilesInAction)
             {
-
                 if (!File.Exists(Path.Combine(fullDLLPath)))
                 {
                     allDLLsExist = false;
@@ -74,6 +73,7 @@ namespace FSAutomator.Backend.Utilities
             return allDLLsExist;
         }
 
+        /*
         public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(AutomationFile fileToLoad, bool validateJSON = false)
         {
             try
@@ -121,6 +121,7 @@ namespace FSAutomator.Backend.Utilities
             }
 
         }
+        */
 
         public static bool CheckIfActionExists(string actionName)
         {
@@ -140,6 +141,7 @@ namespace FSAutomator.Backend.Utilities
             return actions;
         }
 
+        /*
         private static ObservableCollection<FSAutomatorAction> CreateActionList(AutomationFile fileToLoad, JToken[] actions)
         {
             ObservableCollection<FSAutomatorAction> actionsList = new ObservableCollection<FSAutomatorAction>();
@@ -182,6 +184,56 @@ namespace FSAutomator.Backend.Utilities
             }
             return actionsList;
         }
+        */
+
+        public static ObservableCollection<FSAutomatorAction> GetActionsList(AutomationFile fileToLoad)
+        {
+            var json = File.ReadAllText(fileToLoad.FilePath);
+
+            var actionList = new ObservableCollection<FSAutomatorAction>();
+
+            var jsonObject = JObject.Parse(json);
+
+            var actionsNode = jsonObject["Actions"].ToArray();
+
+            if (!actionsNode.Any())
+            {
+                var exMessage = String.Format("No actions defined in JSON file {0}", fileToLoad.FileName);
+                GeneralStatus.GetInstance.ReportStatus(new InternalMessage(exMessage, true));
+                return null;
+            }
+
+            foreach (JToken action in actionsNode)
+            {
+                var actionName = action["Name"]?.ToString();
+
+                if (!Utils.CheckIfActionExists(actionName))
+                {
+                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
+                    GeneralStatus.GetInstance.ReportStatus(exMessage);
+                    return null;
+                }
+
+                var actionUniqueID = String.IsNullOrEmpty(action["UniqueID"]?.ToString().Trim()) ? Guid.NewGuid().ToString() : action["UniqueID"]?.ToString();
+                var actionParameters = action["Parameters"]?.ToString();
+                var actionIsAuxiliary = Convert.ToBoolean(action["IsAuxiliary"]?.ToString());
+                var actionStopOnError = Convert.ToBoolean(action["StopOnError"]?.ToString());
+
+                actionList.Add(new FSAutomatorAction(
+                    actionName,
+                    actionUniqueID,
+                    ActionStatus.Pending,
+                    actionParameters,
+                    actionIsAuxiliary,
+                    actionStopOnError,
+                    fileToLoad
+                    ));
+
+            }
+
+            return actionList;
+
+        }
 
         public static List<AutomationFile> GetAutomationFilesList()
         {
@@ -203,7 +255,7 @@ namespace FSAutomator.Backend.Utilities
 
                 var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath, basePath, true);
 
-                var actionList = Utils.GetAutomationsObjectList(jsonAutomationFile);
+                var actionList = Utils.GetActionsList(jsonAutomationFile);
 
                 if (actionList is null)
                 {
@@ -220,10 +272,7 @@ namespace FSAutomator.Backend.Utilities
                         Directory.GetParent(Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
                         )).ToList();
                 
-
                 automationsToLoad.Add(jsonAutomationFile);
-                //automationsToLoad.AddRange(dllFilesAsExternalAutomatorAutomationFileList);
-
             }
             return automationsToLoad;
         }

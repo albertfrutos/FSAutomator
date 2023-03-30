@@ -116,63 +116,38 @@ namespace FSAutomator.Backend
 
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
-            var json = File.ReadAllText(fileToLoad.FilePath);
 
+            var actionList = Utils.GetActionsList(fileToLoad);
+
+            AddActions(actionList);
             //Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(json);
 
-            var actionList = new ObservableCollection<FSAutomatorAction>();
-
-            var jsonObject = JObject.Parse(json);
-
-            var actionsNode = jsonObject["Actions"].ToArray();
-
-            foreach (JToken action in actionsNode)
-            {
-                var actionName = action["Name"]?.ToString();
-
-                if (!Utils.CheckIfActionExists(actionName))
-                {
-                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
-                    GeneralStatus.GetInstance.ReportStatus(exMessage);
-                    return;
-                }
-
-                var actionUniqueID = String.IsNullOrEmpty(action["UniqueID"]?.ToString().Trim()) ? Guid.NewGuid().ToString() : action["UniqueID"]?.ToString();
-                var actionParameters = action["Parameters"]?.ToString();
-                var actionIsAuxiliary = Convert.ToBoolean(action["IsAuxiliary"]?.ToString());
-                var actionStopOnError = Convert.ToBoolean(action["StopOnError"]?.ToString());
-
-                actionList.Add(new FSAutomatorAction(
-                    actionName,
-                    actionUniqueID,
-                    ActionStatus.Pending,
-                    actionParameters,
-                    actionIsAuxiliary,
-                    actionStopOnError,
-                    fileToLoad
-                    ));
-
-            }
 
             //var actionList = Utils.GetAutomationsObjectList(fileToLoad);
-
+            /*
             if (actionList is null)
             {
                 var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName);
                 status.ReportStatus(new InternalMessage(exMessage, true));
                 return;
             }
-
+            
+            
             foreach (FSAutomatorAction action in actionList)
             {
                 var finalAction = ApplyActionModifications(fileToLoad, action);
 
                 AddAction(finalAction);
             }
+            */
 
             return;
         }
 
+
+
+        
+        /*
         private static FSAutomatorAction ApplyActionModifications(AutomationFile fileToLoad, FSAutomatorAction action)
         {
             if (action.Name == "ExecuteCodeFromDLL")
@@ -189,6 +164,15 @@ namespace FSAutomator.Backend
 
 
             return action;
+        }
+        */
+
+        private void AddActions(ObservableCollection<FSAutomatorAction> actionList)
+        {
+            foreach (FSAutomatorAction action in actionList)
+            {
+                AddAction(action);
+            }
         }
 
         public void AddAction(FSAutomatorAction action)

@@ -1,13 +1,6 @@
 ﻿{
   "Actions": [
     {
-      "Name": "ExpectVariableValue",
-      "Parameters": {
-        "VariableName": "ATC ID",
-        "VariableExpectedValue": "80"
-      }
-    },
-    {
       "Name": "GetVariable",
       "Parameters": {
         "VariableName": "ATC ID"
