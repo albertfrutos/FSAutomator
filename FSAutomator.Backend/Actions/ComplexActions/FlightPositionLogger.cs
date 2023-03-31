@@ -18,13 +18,10 @@ namespace FSAutomator.Backend.Actions
  
         private System.Timers.Timer loggingTimeTimer;
 
-        private bool continueLogging = true;
+        internal bool continueLogging = true;
 
         private EventHandler<bool> finishLoggingEvent;
 
-        private string KmlContent = "";
-
-        IGetVariable getVariable;
 
         public FlightPositionLogger()
         {
@@ -50,13 +47,12 @@ namespace FSAutomator.Backend.Actions
             }
             else
             {
-                StartLoggingFlight(sender, connection);
+                var result = StartLoggingFlight(sender, connection);
+                return result;
             }
-            
-            return new ActionResult(KmlContent, KmlContent, false);
         }
 
-        private void StopBackgroundLogging(object sender, bool isManualStop)
+        internal void StopBackgroundLogging(object sender, bool isManualStop)
         {
             StopLogging(this, isManualStop);
             finishLoggingEvent -= StopBackgroundLogging;
@@ -71,7 +67,7 @@ namespace FSAutomator.Backend.Actions
 
             bool isLoggingTimeEnabled = loggingTime > 0;
 
-            if (isLoggingTimeEnabled)
+            if (isLoggingTimeEnabled && !LogInNoLockingBackgroundMode)
             {
                 loggingTimeTimer = new System.Timers.Timer(loggingTime * 1000);
                 loggingTimeTimer.Elapsed += delegate { StopLoggingTimeIsOver(); };
@@ -82,14 +78,14 @@ namespace FSAutomator.Backend.Actions
 
             while (continueLogging)
             {
-                getVariable.VariableName = "PLANE LATITUDE";
-                latitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection).ComputedResult;
+                this.getVariable.VariableName = "PLANE LATITUDE";
+                latitude = this.getVariable.ExecuteAction(sender, connection).ComputedResult;
 
-                getVariable.VariableName = "PLANE LONGITUDE";
-                longitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection).ComputedResult;
+                this.getVariable.VariableName = "PLANE LONGITUDE";
+                longitude = this.getVariable.ExecuteAction(sender, connection).ComputedResult;
 
-                getVariable.VariableName = "PLANE ALTITUDE";
-                altitude = new GetVariable("PLANE ALTITUDE").ExecuteAction(sender, connection).ComputedResult;
+                this.getVariable.VariableName = "PLANE ALTITUDE";
+                altitude = this.getVariable.ExecuteAction(sender, connection).ComputedResult;
 
                 var altitudeMetric = (Convert.ToDouble(altitude) * 0.3048).ToString();
 
@@ -103,13 +99,17 @@ namespace FSAutomator.Backend.Actions
                 return new ActionResult("No points were logged.", "No points were logged.", true);
             }
 
+            //comentari fer que es pugui triar el nom
+
+            var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
             var xmlPoints = ConvertLogToXML(logger.Points, typeof(List<Point>));
-            WriteLogToDisk(xmlPoints, "prova.xml");
+            WriteLogToDisk(xmlPoints, $"{fileName}.xml");
 
             var kmlPoints = ConvertLogToKMLTrace(logger.Points);
-            WriteLogToDisk(kmlPoints, "prova.kml");
+            WriteLogToDisk(kmlPoints, $"{fileName}.kml");
 
-            return new ActionResult("Logging finished.", "Logging finished.", false);
+            return new ActionResult("Logging finished.", fileName, false);
 
         }
 
@@ -131,7 +131,6 @@ namespace FSAutomator.Backend.Actions
             var indentedKmlFileContent = XDocument.Parse(template).ToString();
 
             return indentedKmlFileContent;
-
         }
 
         private static string ConvertPointsToKMLCompatibleCoordinates(List<Point> points)
@@ -145,7 +144,6 @@ namespace FSAutomator.Backend.Actions
 
             return coordinatesString.ToString();
         }
-
 
         private static string ConvertLogToXML(object ObjectToSerialize, Type typeOfPoints)
         {
@@ -189,7 +187,5 @@ namespace FSAutomator.Backend.Actions
 
             File.WriteAllText(Path.Combine(logsFolder, filename), content);
         }
-
-
     }
 }
