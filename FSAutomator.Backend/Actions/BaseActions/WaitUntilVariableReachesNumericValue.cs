@@ -1,4 +1,6 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions.Base;
+using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
@@ -70,11 +72,11 @@ namespace FSAutomator.Backend.Actions
 
         private void GetCurrentAction(object sender)
         {
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+            var actionsList = (sender as Automator).ActionList;
 
             if (actionsList != null)
             {
-                CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).FirstOrDefault();
+                CurrentAction = actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).FirstOrDefault();
             }
         }
 

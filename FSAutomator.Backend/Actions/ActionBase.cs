@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FSAutomator.Backend.Actions
+namespace FSAutomator.Backend.Actions.Base
 {
     public class ActionBase
     {

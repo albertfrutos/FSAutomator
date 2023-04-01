@@ -1,4 +1,6 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions.Base;
+using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
@@ -39,7 +41,7 @@ namespace FSAutomator.Backend.Actions
 
             ActionResult result = null;
 
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+            var actionsList = (sender as Automator).ActionList;
             this.CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).First();
 
             this.FirstMember = Utils.GetValueToOperateOnFromTag(sender, connection, this.FirstMember);
@@ -67,7 +69,7 @@ namespace FSAutomator.Backend.Actions
                 isConditionTrue = CheckCondition(Convert.ToDouble(this.FirstMember), Convert.ToDouble(this.SecondMember));
             }
 
-            ObservableCollection<FSAutomatorAction> auxiliaryActionList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("AuxiliaryActionList").GetValue(sender);
+            ObservableCollection<FSAutomatorAction> auxiliaryActionList = (sender as Automator).AuxiliaryActionList;
 
             if ((string.IsNullOrEmpty(ActionIfTrueUniqueID)) && (string.IsNullOrEmpty(ActionIfFalseUniqueID)))
             {

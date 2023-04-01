@@ -32,7 +32,7 @@
         </Grid.ColumnDefinitions>
 
         <ComboBox ItemsSource="{Binding AvailableActionsNames}" SelectedItem="{Binding SAvailableActionName}" BorderBrush="#FFCECECE" VerticalAlignment="Center" OpacityMask="Black" Margin="13,0,9,0" Height="22" Grid.ColumnSpan="2" />
-        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedValue ="{Binding SActionParameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15,48,7,18" AutoGenerateColumns="False" CanUserAddRows="false" CanUserResizeRows="False" Background="{x:Null}" IsReadOnly="False" Grid.RowSpan="2">
+        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedValue ="{Binding SActionParameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15,48,7,18" AutoGenerateColumns="False" CanUserAddRows="false" CanUserResizeRows="False" GridLinesVisibility="None" RowHeaderWidth="0" Background="{x:Null}" IsReadOnly="False" Grid.RowSpan="2">
             <DataGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
                     <Style.Triggers>
@@ -49,13 +49,13 @@
                 <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding FixedBoolItems,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SFixedBoolItemName}" CanUserAddRows="false" Margin="14,152,7,7" Grid.RowSpan="2" Grid.Row="1">
+        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding FixedBoolItems,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedItem="{Binding SFixedBoolItemName}" CanUserAddRows="false" GridLinesVisibility="None" RowHeaderWidth="0" Margin="14,152,7,7" Grid.RowSpan="2" Grid.Row="1">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Parameter" Width="*" Binding="{Binding Name,Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
                 <DataGridCheckBoxColumn Header="Enabled" Width="*" Binding="{Binding Value,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
             </DataGrid.Columns>
         </DataGrid>
-        <TextBox Name="txtJSON" HorizontalAlignment="Center" Height="238" TextWrapping="Wrap" Text="{Binding SerializedJSON, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ScrollViewer.CanContentScroll="True"  VerticalAlignment="Top" Width="191" Background="White" Grid.Column="1" IsReadOnly="False" Grid.RowSpan="3" Margin="0,48,0,0"/>
+        <TextBox Name="txtJSON" HorizontalAlignment="Center" Height="238" TextWrapping="Wrap" Text="{Binding SerializedJSON, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" ScrollViewer.CanContentScroll="True" VerticalAlignment="Top" Width="191" Background="White" Grid.Column="1" IsReadOnly="False" Grid.RowSpan="3" Margin="0,48,0,0"/>
         <Button Content="OK"  Margin="14,4,0,0" Grid.Row="3" VerticalAlignment="Top" Height="24" Width="62" Click="Button_Click" HorizontalAlignment="Left"/>
     </Grid>
 

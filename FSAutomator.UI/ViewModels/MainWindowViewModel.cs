@@ -121,6 +121,7 @@ namespace FSAutomator.ViewModel
             {
                 b_EditMode = value;
                 RaisePropertyChanged("EditMode");
+                ValidateActions(null);
             }
         }
 

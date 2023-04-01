@@ -88,7 +88,6 @@ namespace FSAutomator.Backend.Entities
                         break;
                     default:
                         break;
-
                 }
 
 
@@ -231,15 +230,18 @@ namespace FSAutomator.Backend.Entities
 
             set
             {
+                var parametersBackup = s_Parameters;
                 s_Parameters = value;
                 Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", Name));
                 try
                 {       //mirar, perquè al deserialitzar no s'injecta interfaç
                     ActionObject = JsonConvert.DeserializeObject(value, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 }
-                catch
+                catch(Exception ex)
                 {
                     Trace.WriteLine("Malformed JSON");
+                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage(ex.Message, true, true));
+                    s_Parameters = parametersBackup;
                 }
                 RaisePropertyChanged("Parameters");
             }

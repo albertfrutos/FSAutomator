@@ -22,6 +22,8 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestInitialize]
         public void TestInitialize()
         {
+            getVariableMock = new Mock<IGetVariable>();
+
             this.getVariableMock.SetupSequence(x => x.ExecuteAction(It.IsAny<object>(), It.IsAny<SimConnect>()))
                 .Returns(new ActionResult("1", "1", false))
                 .Returns(new ActionResult("1", "1", false))
@@ -42,8 +44,8 @@ namespace FSAutomator.Backend.Actions.Tests
         {
             const int logDuration = 3;
             const int loggingPeriod = 1;
+            
             //Arrange
-            getVariableMock = new Mock<IGetVariable>();
 
             var stopWatch = new Stopwatch();
 
@@ -67,9 +69,8 @@ namespace FSAutomator.Backend.Actions.Tests
         {
             const int logDuration = 3;
             const int loggingPeriod = 1;
+            
             //Arrange
-            getVariableMock = new Mock<IGetVariable>();
-
             var stopWatch = new Stopwatch();
 
             this.flightPositionLogger = new FlightPositionLogger(logDuration, loggingPeriod, getVariableMock.Object, true);

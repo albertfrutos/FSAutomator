@@ -1,4 +1,5 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions.Base;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
@@ -98,8 +99,6 @@ namespace FSAutomator.Backend.Actions
             {
                 return new ActionResult("No points were logged.", "No points were logged.", true);
             }
-
-            //comentari fer que es pugui triar el nom
 
             var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
 

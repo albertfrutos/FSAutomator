@@ -89,7 +89,7 @@ namespace FSAutomator.Backend.Automators
 
         internal ActionResult ExecuteAction(FSAutomatorAction action)
         {
-            var result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection});
+            var result = (ActionResult)(action.ActionObject as dynamic).ExecuteAction(this, connection);
             return result;
         }
 

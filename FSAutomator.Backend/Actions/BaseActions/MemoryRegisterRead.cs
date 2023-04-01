@@ -1,4 +1,5 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -21,7 +22,7 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
+            var memoryRegisters = (sender as Automator).MemoryRegisters;
 
             if (memoryRegisters.Count == 0)
             {

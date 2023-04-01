@@ -1,4 +1,5 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using Microsoft.FlightSimulator.SimConnect;
 
@@ -22,9 +23,9 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            this.Value = Utils.GetValueToOperateOnFromTag(this, connection, this.Value);
+            this.Value = Utils.GetValueToOperateOnFromTag(sender, connection, this.Value);
 
-            var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
+            var memoryRegisters = (sender as Automator).MemoryRegisters;
 
             this.Id = String.IsNullOrEmpty(this.Id) ? Guid.NewGuid().ToString() : this.Id;
 

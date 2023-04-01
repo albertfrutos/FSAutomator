@@ -193,12 +193,11 @@ namespace FSAutomator.Backend
         {
             var jsonObject = JObject.Parse(actionJSON);
             var actionName = jsonObject["Name"].ToString();
-
-            var actionParameters = jsonObject["Parameters"].ToString();
-            var uniqueID = Guid.NewGuid().ToString();
+            var uniqueID = jsonObject["UniqueID"].ToString();
             var stopOnError = (bool)jsonObject["StopOnError"];
+            var actionParameters = jsonObject["Parameters"].ToString();
 
-            if (Utils.CheckIfActionExists(actionName))
+            if (!Utils.CheckIfActionExists(actionName))
             {
                 var message = new InternalMessage($"Action name ({actionName}) does not exist. Did you select an action?", true);
                 status.ReportStatus(message);
