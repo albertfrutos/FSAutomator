@@ -185,7 +185,7 @@ namespace FSAutomator.Backend.Entities
                     ActionObject = JsonConvert.DeserializeObject(value, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 }
                 catch(Exception ex)
-                {
+                {   // comentari que si esta malformat sigui actionobject = null i no es pugui iniciar la automatització.
                     // malformed json is checked in the validation
                 }
                 RaisePropertyChanged("Parameters");
@@ -200,6 +200,7 @@ namespace FSAutomator.Backend.Entities
             set
             {
                 Parameters = value;
+                RaisePropertyChanged("ParametersBeautified"); //afegit
             }
         }
 
