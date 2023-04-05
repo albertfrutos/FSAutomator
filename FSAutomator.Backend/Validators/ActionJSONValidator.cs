@@ -61,7 +61,7 @@ namespace FSAutomator.BackEnd.Validators
                         break;
                 }
                 
-                var jsonValidationResult = ValidateJSON(action, validationIssues, index, Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", action.Name))); ;
+                var jsonValidationResult = ValidateJSON(action, validationIssues, index, Type.GetType($"FSAutomator.Backend.Actions.{action.Name}"));
                 actionIsValidated = actionIsValidated && jsonValidationResult;
 
                 action.IsValidated = actionIsValidated;
@@ -99,7 +99,7 @@ namespace FSAutomator.BackEnd.Validators
 
            if (actionObject.LoggingPeriodSeconds <= 0)
             {
-                var issue = String.Format("FlightPositionLogger [{0}]: LoggingPeriodSeconds must be higher or equal to 0.", index);
+                var issue = $"FlightPositionLogger [{index}]: LoggingPeriodSeconds must be higher or equal to 0.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -111,13 +111,13 @@ namespace FSAutomator.BackEnd.Validators
 
                 if (!actionObject.LogInNoLockingBackgroundMode)
                 {
-                    var issue = String.Format("FlightPositionLogger [{0}]: The logger is configured to never end and not running in background mode. The logging will never end and will be never written to disk.", index);
+                    var issue = $"FlightPositionLogger [{index}]: The logger is configured to never end and not running in background mode. The logging will never end and will be never written to disk.";
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
 
                 if (actionObject.LogInNoLockingBackgroundMode && !existsFlightPositionLoggerActionAfterStartLogging)
                 {
-                    var issue = String.Format("FlightPositionLogger [{0}]: There is no FlightPositionLoggerStop action after FlightPositionLogger with no-ending time. Logging will never end and will never be written to disk.", index);
+                    var issue = $"FlightPositionLogger [{index}]: There is no FlightPositionLoggerStop action after FlightPositionLogger with no-ending time. Logging will never end and will never be written to disk.";
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
             }
@@ -133,7 +133,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (!existsFlightPositionLoggingActionBeforeStopLogging)
             {
-                var issue = String.Format("FlightPositionLoggerStop [{0}]: There is no FlightPositionLogger action before FlightPositionLoggerStop (there is nothing to stop).", index);
+                var issue = $"FlightPositionLoggerStop [{index}]: There is no FlightPositionLogger action before FlightPositionLoggerStop (there is nothing to stop).";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -153,20 +153,20 @@ namespace FSAutomator.BackEnd.Validators
             {
                 if (!AllowedStringComparisonValues.Contains(actionObject.Comparison))
                 {
-                    var issue = String.Format("ConditionalAction [{0}]: Comparing 2 strings ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
+                    var issue = $"ConditionalAction [{index}]: Comparing 2 strings ({actionObject.FirstMember}, {actionObject.SecondMember}) not supported by operator {actionObject.Comparison}.";
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
             }
 
             if (!AllowedNumberComparisonValues.Contains(actionObject.Comparison))
             {
-                var issue = String.Format("ConditionalAction [{0}]: Comparing 2 numbers ({1}, {2}) not supported by operator {3}.", index, actionObject.FirstMember, actionObject.SecondMember, actionObject.Comparison);
+                var issue = $"ConditionalAction [{index}]: Comparing 2 numbers ({actionObject.FirstMember}, {actionObject.SecondMember}) not supported by operator {actionObject.Comparison}.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
             if (string.IsNullOrEmpty(actionObject.ActionIfTrueUniqueID) && string.IsNullOrEmpty(actionObject.ActionIfFalseUniqueID))
             {
-                var issue = String.Format("ConditionalAction[{0}]: Both true and false UniqueID for execution are missing", index);
+                var issue = $"ConditionalAction[{index}]: Both true and false UniqueID for execution are missing";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -182,7 +182,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (!VariableExists(variableName))
             {
-                var issue = String.Format("GetVariable [{0}]: Variable {1} does not exist.", index, variableName);
+                var issue = $"GetVariable [{index}]: Variable {variableName} does not exist.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -199,7 +199,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (!eventExists)
             {
-                var issue = String.Format("SendEvent [{0}]: Event {1} does not exist.", index, eventName);
+                var issue = $"SendEvent [{index}]: Event {eventName} does not exist.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -214,7 +214,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (!VariableExists(variableName))
             {
-                var issue = String.Format("GetVariable [{0}]: Variable {1} does not exist.", index, variableName);
+                var issue = $"GetVariable [{index}]: Variable {variableName} does not exist.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -230,7 +230,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (!(configuredWaitTime > 0))
             {
-                var issue = String.Format("WaitSeconds [{0}]: Specified WaitTime '{1}' value not valid. Must be grater than 0.", index, configuredWaitTime);
+                var issue = $"WaitSeconds [{index}]: Specified WaitTime '{configuredWaitTime}' value not valid. Must be grater than 0.";
 
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
@@ -250,7 +250,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (DLLName == String.Empty || !File.Exists(realDLLPath))
             {
-                var issue = String.Format("DLLAutomation [{0}]: Referenced DLL ({1}) does not exist", index, realDLLPath);
+                var issue = $"DLLAutomation [{index}]: Referenced DLL ({realDLLPath}) does not exist";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -266,7 +266,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (DLLPath == String.Empty || !File.Exists(DLLPath))
             {
-                var issue = String.Format("DLLAutomation [{0}]: Referenced DLL ({1}) does not exist", index, DLLPath);
+                var issue = $"DLLAutomation [{index}]: Referenced DLL ({DLLPath}) does not exist";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -284,7 +284,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (listActionsUsingSameWriteID)
             {
-                var issue = String.Format("MemoryRegisterWrite [{0}]: Id already used by another MemoryRegisterWrite operation.", index);
+                var issue = $"MemoryRegisterWrite [{index}]: Id already used by another MemoryRegisterWrite operation.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -298,7 +298,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (index == 0)
             {
-                var issue = String.Format("OperateValue [{0}]: trying to operate on previous value but this is the first action in the automation.", index);
+                var issue = $"OperateValue [{index}]: trying to operate on previous value but this is the first action in the automation.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
             else if (actionList[index - 1].Name == "GetVariable")
@@ -309,18 +309,19 @@ namespace FSAutomator.BackEnd.Validators
 
                 if ((variableType != CommonEntities.DEFINITIONS.NumType) && (variableType != CommonEntities.DEFINITIONS.BoolType))
                 {
-                    var issue = String.Format("OperateValue [{0}]: trying to operate on previous value but previous GetValue does neither return a numeric value nor a boolean value.", index); action.ValidationOutcome = issue;
+                    var issue = $"OperateValue [{index}]: trying to operate on previous value but previous GetValue does neither return a numeric value nor a boolean value."; 
+                    action.ValidationOutcome = issue;
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
                 else if ((variableType == CommonEntities.DEFINITIONS.NumType) && operation == "NOT")
                 {
-                    var issue = String.Format("OperateValue [{0}]: trying to operate on numeric value using an operator for boolean values.", index);
+                    var issue = $"OperateValue [{index}]: trying to operate on numeric value using an operator for boolean values.";
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
 
                 }
                 else if ((variableType == CommonEntities.DEFINITIONS.BoolType) && operation != "NOT")
                 {
-                    var issue = String.Format("OperateValue [{0}]: tryig to operate on boolean value using an operator for numeric values.", index);
+                    var issue = $"OperateValue [{index}]: tryig to operate on boolean value using an operator for numeric values.";
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
             }
@@ -338,13 +339,13 @@ namespace FSAutomator.BackEnd.Validators
 
             if (!(actionObject.AllowedComparisonValues.Contains(actionObject.Comparison)))
             {
-                var issue = String.Format("WaitUntilVariableReachesNumericValue [{0}]: Comparison {1} is not supported ", index, actionObject.Comparison);
+                var issue = $"WaitUntilVariableReachesNumericValue [{index}]: Comparison {actionObject.Comparison} is not supported ";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
             if (variableType != CommonEntities.DEFINITIONS.NumType)
             {
-                var issue = String.Format("WaitUntilVariableReachesNumericValue [{0}]: trying monitor a value which is not numeric. Monitored varaible type is {1} ", index, variableType.ToString());
+                var issue = $"WaitUntilVariableReachesNumericValue [{index}]: trying monitor a value which is not numeric. Monitored varaible type is {variableType.ToString()} ";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
@@ -364,7 +365,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (!writtenIDsUpToNow.Any())
             {
-                var issue = String.Format("MemoryRegisterRead [{0}]: trying to read a register but any register has previously been written.", index);
+                var issue = $"MemoryRegisterRead [{index}]: trying to read a register but any register has previously been written.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
             else
@@ -376,7 +377,7 @@ namespace FSAutomator.BackEnd.Validators
 
                 if (!remainingIDsToRead.Contains(idToRead))
                 {
-                    var issue = String.Format("MemoryRegisterRead [{0}]: trying to read a register with ID not available. Maybe removed during previous read?", index);
+                    var issue = $"MemoryRegisterRead [{index}]: trying to read a register with ID not available. Maybe removed during previous read?";
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }
             }
