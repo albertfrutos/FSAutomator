@@ -37,7 +37,6 @@ namespace FSAutomator.Backend.Entities
             else
             {
                 Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", name));
-                //var actionObject = Activator.CreateInstance(actionType);
 
                 dynamic dParameters = parameters == null ? "" : JsonConvert.DeserializeObject(parameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
@@ -181,12 +180,12 @@ namespace FSAutomator.Backend.Entities
                 s_Parameters = value;
                 Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", Name));
                 try
-                {       //mirar, perquè al deserialitzar no s'injecta interfaç
+                {
                     ActionObject = JsonConvert.DeserializeObject(value, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 }
                 catch(Exception ex)
-                {   // comentari que si esta malformat sigui actionobject = null i no es pugui iniciar la automatització.
-                    // malformed json is checked in the validation
+                {
+                    ActionObject = null;
                 }
                 RaisePropertyChanged("Parameters");
             }
@@ -200,7 +199,7 @@ namespace FSAutomator.Backend.Entities
             set
             {
                 Parameters = value;
-                RaisePropertyChanged("ParametersBeautified"); //afegit
+                RaisePropertyChanged("ParametersBeautified");
             }
         }
 

@@ -38,6 +38,14 @@ namespace FSAutomator.Backend.Automators
 
             this.flightModel = new FlightModel(this.connection);
 
+            var isThereAnyInvalidJSON = ActionList.Where(x => x.ActionObject == null).Any();
+
+            if (isThereAnyInvalidJSON)
+            {
+                status.ReportStatus(new InternalMessage("There are some actions with an invalid JSON", true, true));
+                return;
+            }
+
             foreach (FSAutomatorAction action in ActionList)
             {
 

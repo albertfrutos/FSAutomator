@@ -38,7 +38,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
                         var packageName = automationFile.PackageName;
                         var automationFileName = automationFile.FileName;
 
-                        bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction, Path.Combine(Config.AutomationsFolder, packageName));
+                        bool allDLLsExist = Utils.CheckIfAllDLLsInActionFileExist(dllFilesInAction);
 
                         if (allDLLsExist)
                         {

@@ -58,9 +58,8 @@ namespace FSAutomator.Backend.Utilities
             return a;
         }
 
-        public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction, string packDirName = "")
+        public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction)
         {
-            //comentari eliminar packDirName a la signatura i a les referencies
             var allDLLsExist = true;
 
             foreach (string fullDLLPath in dllFilesInAction)
@@ -73,56 +72,6 @@ namespace FSAutomator.Backend.Utilities
 
             return allDLLsExist;
         }
-
-        /*
-        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(AutomationFile fileToLoad, bool validateJSON = false)
-        {
-            try
-            {
-                var filePath = fileToLoad.FilePath;
-
-                var json = File.ReadAllText(filePath);
-
-
-
-                var jsonObject = JObject.Parse(json);
-
-                var actionsNode = jsonObject["Actions"].ToArray();
-
-                if (!actionsNode.Any())
-                {
-                    var exMessage = String.Format("No actions defined in JSON file.");
-                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage(exMessage, true));
-                    return null;
-                }
-
-                if (validateJSON)
-                {
-                    //aquiii acabar comentari - s'ha d'acabar la validació
-                    var schemaTxt = File.ReadAllText(Config.SchemaFile);
-                    var schema = JsonSchema.Parse(schemaTxt);
-                    if(!jsonObject.IsValid(schema, out IList<string> jsonValidationErrors))
-                    {
-                        GeneralStatus.GetInstance.ValidationIssues.AddRange(jsonValidationErrors);
-                    }
-                }
-
-
-                //var a = JsonConvert.DeserializeObject<ExpandoObject>();
-
-
-
-                var actionsList = CreateActionList(fileToLoad, actionsNode);
-
-                return actionsList;
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-
-        }
-        */
 
         public static bool CheckIfActionExists(string actionName)
         {

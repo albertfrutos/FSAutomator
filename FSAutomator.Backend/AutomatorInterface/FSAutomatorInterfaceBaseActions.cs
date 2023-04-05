@@ -82,7 +82,7 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         public ActionResult WaitSeconds(int time)
         {
-            var action = new WaitSeconds(time); //eliminar
+            var action = new WaitSeconds(time);
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }

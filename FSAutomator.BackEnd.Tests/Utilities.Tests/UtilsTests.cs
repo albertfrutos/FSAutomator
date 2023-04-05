@@ -116,7 +116,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             };
 
             //Act
-            var result = Utils.CheckIfAllDLLsInActionFileExist(dllFiles, "");
+            var result = Utils.CheckIfAllDLLsInActionFileExist(dllFiles);
 
             //Assert
             result.Should().BeTrue();
@@ -135,7 +135,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             };
 
             //Act
-            var result = Utils.CheckIfAllDLLsInActionFileExist(dllFiles, "");
+            var result = Utils.CheckIfAllDLLsInActionFileExist(dllFiles);
 
             //Assert
             result.Should().BeFalse();

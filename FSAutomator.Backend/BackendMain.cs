@@ -97,9 +97,8 @@ namespace FSAutomator.Backend
         private void LoadDLLActions(AutomationFile fileToLoad)
         {
             var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
-
-            //var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath);
             var uniqueID = Guid.NewGuid().ToString();
+
             AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, false, true, fileToLoad));
         }
 
@@ -116,56 +115,12 @@ namespace FSAutomator.Backend
 
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
-
-            var actionList = Utils.GetActionsList(fileToLoad);
+                        var actionList = Utils.GetActionsList(fileToLoad);
 
             AddActions(actionList);
-            //Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(json);
-
-
-            //var actionList = Utils.GetAutomationsObjectList(fileToLoad);
-            /*
-            if (actionList is null)
-            {
-                var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName);
-                status.ReportStatus(new InternalMessage(exMessage, true));
-                return;
-            }
-            
-            
-            foreach (FSAutomatorAction action in actionList)
-            {
-                var finalAction = ApplyActionModifications(fileToLoad, action);
-
-                AddAction(finalAction);
-            }
-            */
-
+           
             return;
         }
-
-
-
-        
-        /*
-        private static FSAutomatorAction ApplyActionModifications(AutomationFile fileToLoad, FSAutomatorAction action)
-        {
-            if (action.Name == "ExecuteCodeFromDLL")
-            {
-                (action.ActionObject as ExecuteCodeFromDLL).PackFolder = fileToLoad.PackageName;
-            }
-            
-
-            
-            if (action.Name == "ExpectVariableValue")
-            {
-                (action.ActionObject as ExpectVariableValue).getVariable = new GetVariable();
-            }
-
-
-            return action;
-        }
-        */
 
         private void AddActions(ObservableCollection<FSAutomatorAction> actionList)
         {

@@ -13,15 +13,15 @@ namespace FSAutomator.UI
             InitializeComponent();
         }
 
-        private void dataGridActions_SelectionChanged()
-        {
-
-        }
-
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             finalJSON = txtJSON.Text;
             this.Close();
+        }
+
+        private void dataGridActions_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+
         }
     }
 }

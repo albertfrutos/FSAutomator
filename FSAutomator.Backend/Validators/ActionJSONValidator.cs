@@ -18,53 +18,55 @@ namespace FSAutomator.BackEnd.Validators
             {
                 bool actionIsValidated = true;
 
-                switch (action.Name)
-                {
-                    case "ConditionalAction":
-                        actionIsValidated = ValidateConditionalAction(actionList, validationIssues, index, action);
-                        break;
-                    case "ExecuteCodeFromDLL":
-                        actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action);
-                        break;
-                    case "ExpectVariableValue":
-                        actionIsValidated = ValidateExpectVariableValue(actionList, validationIssues, index, action);
-                        break;
-                    case "GetVariable":
-                        actionIsValidated = ValidateGetVariable(actionList, validationIssues, index, action);
-                        break;
-                    case "MemoryRegisterRead":
-                        actionIsValidated = ValidateMemoryRegisterRead(actionList, validationIssues, index, action);
-                        break;
-                    case "MemoryRegisterWrite":
-                        actionIsValidated = ValidateMemoryRegisterWrite(actionList, validationIssues, index, action);
-                        break;
-                    case "OperateValue":
-                        actionIsValidated = ValidateOperateValue(actionList, validationIssues, index, action);
-                        break;
-                    case "SendEvent":
-                        actionIsValidated = ValidateSendEvent(actionList, validationIssues, index, action);
-                        break;
-                    case "WaitSeconds":
-                        actionIsValidated = ValidateWaitSeconds(actionList, validationIssues, index, action);
-                        break;
-                    case "WaitUntilVariableReachesNumericValue":
-                        actionIsValidated = ValidateWaitUntilVariableReachesNumericValue(actionList, validationIssues, index, action);
-                        break;
-                    case "DLLAutomation":
-                        actionIsValidated = ValidateDLLAutomation(actionList, validationIssues, index, action);
-                        break;
-                    case "FlightPositionLogger":
-                        actionIsValidated = ValidateFlightPositionLogger(actionList, validationIssues, index, action);
-                        break;
-                    case "FlightPositionLoggerStop":
-                        actionIsValidated = ValidateFlightPositionLoggerStop(actionList, validationIssues, index, action);
-                        break;
-                }
-                
                 var jsonValidationResult = ValidateJSON(action, validationIssues, index, Type.GetType($"FSAutomator.Backend.Actions.{action.Name}"));
-                actionIsValidated = actionIsValidated && jsonValidationResult;
 
-                action.IsValidated = actionIsValidated;
+                if (jsonValidationResult && action.ActionObject != null)
+                {
+                    switch (action.Name)
+                    {
+                        case "ConditionalAction":
+                            actionIsValidated = ValidateConditionalAction(actionList, validationIssues, index, action);
+                            break;
+                        case "ExecuteCodeFromDLL":
+                            actionIsValidated = ValidateExecuteCodeFromDLL(actionList, validationIssues, index, action);
+                            break;
+                        case "ExpectVariableValue":
+                            actionIsValidated = ValidateExpectVariableValue(actionList, validationIssues, index, action);
+                            break;
+                        case "GetVariable":
+                            actionIsValidated = ValidateGetVariable(actionList, validationIssues, index, action);
+                            break;
+                        case "MemoryRegisterRead":
+                            actionIsValidated = ValidateMemoryRegisterRead(actionList, validationIssues, index, action);
+                            break;
+                        case "MemoryRegisterWrite":
+                            actionIsValidated = ValidateMemoryRegisterWrite(actionList, validationIssues, index, action);
+                            break;
+                        case "OperateValue":
+                            actionIsValidated = ValidateOperateValue(actionList, validationIssues, index, action);
+                            break;
+                        case "SendEvent":
+                            actionIsValidated = ValidateSendEvent(actionList, validationIssues, index, action);
+                            break;
+                        case "WaitSeconds":
+                            actionIsValidated = ValidateWaitSeconds(actionList, validationIssues, index, action);
+                            break;
+                        case "WaitUntilVariableReachesNumericValue":
+                            actionIsValidated = ValidateWaitUntilVariableReachesNumericValue(actionList, validationIssues, index, action);
+                            break;
+                        case "DLLAutomation":
+                            actionIsValidated = ValidateDLLAutomation(actionList, validationIssues, index, action);
+                            break;
+                        case "FlightPositionLogger":
+                            actionIsValidated = ValidateFlightPositionLogger(actionList, validationIssues, index, action);
+                            break;
+                        case "FlightPositionLoggerStop":
+                            actionIsValidated = ValidateFlightPositionLoggerStop(actionList, validationIssues, index, action);
+                            break;
+                    }
+                }
+
+                action.IsValidated = actionIsValidated && jsonValidationResult;
             }
 
             return validationIssues;
@@ -148,6 +150,14 @@ namespace FSAutomator.BackEnd.Validators
             List<string> AllowedStringComparisonValues = new List<string>() { "=", "<>" };
 
             var actionObject = (ConditionalAction)action.ActionObject;
+
+            if (!AllowedNumberComparisonValues.Concat(AllowedStringComparisonValues).Contains(actionObject.Comparison))
+            {
+                var issue = $"ConditionalAction [{index}]: The comparison operator ({actionObject.Comparison} is not supported by operator.";
+                actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
+                return actionIsValidated;
+            }
+           
 
             if ((!Utils.IsNumericDouble(actionObject.FirstMember)) || (!Utils.IsNumericDouble(actionObject.SecondMember)))
             {

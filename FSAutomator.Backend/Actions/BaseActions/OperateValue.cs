@@ -9,7 +9,7 @@ namespace FSAutomator.Backend.Actions
 
         public string Operation { get; set; }
         public double Number { get; set; }
-        public string ItemToOperateOver { get; set; } // passar a número ??
+        public string ItemToOperateOver { get; set; } 
 
         public OperateValue()
         {
