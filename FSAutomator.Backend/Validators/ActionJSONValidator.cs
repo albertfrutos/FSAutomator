@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using Newtonsoft.Json;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.BackEnd.Validators
@@ -59,6 +60,9 @@ namespace FSAutomator.BackEnd.Validators
                         actionIsValidated = ValidateFlightPositionLoggerStop(actionList, validationIssues, index, action);
                         break;
                 }
+                
+                var jsonValidationResult = ValidateJSON(action, validationIssues, index, Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", action.Name))); ;
+                actionIsValidated = actionIsValidated && jsonValidationResult;
 
                 action.IsValidated = actionIsValidated;
             }
@@ -67,6 +71,24 @@ namespace FSAutomator.BackEnd.Validators
         }
 
 
+
+        private static bool ValidateJSON(FSAutomatorAction action, List<string> validationIssues, int index, Type actionType)
+        {
+            var actionObject = action.Parameters;
+
+            try
+            {   
+                JsonConvert.DeserializeObject(actionObject, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+            }
+            catch (Exception ex)
+            {
+                var errorMessage = ex.Message;
+                var issue = $"{action.Name} [{index}]: ActionObject contains an incorrect (malformed) JSON. The action cannot be validated until the JSON is valid - {errorMessage}";
+                return SetAsValidationFailed(validationIssues, issue, action);
+            }
+
+            return true;
+        }
 
         private static bool ValidateFlightPositionLogger(FSAutomatorAction[] actionList, List<string> validationIssues, int index, FSAutomatorAction action)
         {
@@ -203,16 +225,16 @@ namespace FSAutomator.BackEnd.Validators
         {
             bool actionIsValidated = true;
 
-            /*
+            
             var configuredWaitTime = (action.ActionObject as WaitSeconds).WaitTime;
 
-            if (!(configuredWaitTime.Trim().Length > 0) || !Utils.IsNumericDouble(configuredWaitTime))
+            if (!(configuredWaitTime > 0))
             {
-                var issue = String.Format("WaitSeconds [{0}]: Specified WaitTime '{1}' value not valid.", index, configuredWaitTime);
+                var issue = String.Format("WaitSeconds [{0}]: Specified WaitTime '{1}' value not valid. Must be grater than 0.", index, configuredWaitTime);
 
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
-            */
+            
 
             return actionIsValidated;
         }

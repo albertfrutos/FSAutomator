@@ -41,63 +41,10 @@ namespace FSAutomator.Backend.Entities
 
                 dynamic dParameters = parameters == null ? "" : JsonConvert.DeserializeObject(parameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
 
-                switch (actionType.Name)
-                {
-                    case "ConditionalAction":
-                        actionObject = new ConditionalAction(dParameters.FirstMember, dParameters.Comparison, dParameters.SecondMember, dParameters.ActionIfTrueUniqueID, dParameters.ActionIfFalseUniqueID);
-                        break;
-                    case "ExecuteCodeFromDLL":
-                        actionObject = new ExecuteCodeFromDLL(dParameters.DLLName, dParameters.DLLPath, dParameters.ClassName, dParameters.MethodName, dParameters.IncludeAsExternalAutomator);
-                        actionObject.PackFolder = automationFile.PackageName;
-                        break;
-                    case "ExpectVariableValue":
-                        actionObject = new ExpectVariableValue(dParameters.VariableName, dParameters.VariableExpectedValue, new GetVariable());
-                        break;
-                    case "GetVariable":
-                        actionObject = new GetVariable(dParameters.VariableName);
-                        break;
-                    case "MemoryRegisterRead":
-                        actionObject = new MemoryRegisterRead(Convert.ToBoolean(dParameters.RemoveAfterRead), dParameters.Id);
-                        break;
-                    case "MemoryRegisterWrite":
-                        actionObject = new MemoryRegisterWrite(dParameters.Value, dParameters.Id);
-                        break;
-                    case "OperateValue":
-                        actionObject = new OperateValue(dParameters.Operation, dParameters.Number, dParameters.ItemToOperateOver);
-                        break;
-                    case "SendEvent":
-                        actionObject = new SendEvent(dParameters.EventName, dParameters.EventValue);
-                        break;
-                    case "WaitSeconds":
-                        actionObject = new WaitSeconds(Convert.ToInt32(dParameters.WaitTime));
-                        break;
-                    case "WaitUntilVariableReachesNumericValue":
-                        actionObject = new WaitUntilVariableReachesNumericValue(dParameters.VariableName, dParameters.Comparison, dParameters.ThresholdValue, new GetVariable(), Convert.ToInt32(dParameters.CheckInterval));
-                        break;
-                    case "CalculateBearingToCoordinates":
-                        actionObject = new CalculateBearingToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
-                        break;
-                    case "CalculateDistanceToCoordinates":
-                        actionObject = new CalculateDistanceToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
-                        break;
-                    case "FlightPositionLogger":
-                        actionObject = new FlightPositionLogger(dParameters.LoggingTimeSeconds, dParameters.LoggingPeriodSeconds, new GetVariable(), dParameters.LogInNoLockingBackgroundMode);
-                        break;
-                    case "FlightPositionLoggerStop":
-                        actionObject = new FlightPositionLoggerStop();
-                        break;
-                    default:
-                        break;
-                }
+                var actionName = actionType.Name;
 
+                actionObject = DeserializeActionObjectByActionTypeName(automationFile, actionObject, dParameters, actionName);
 
-
-
-
-                /*
-                actionObject = JsonConvert.DeserializeObject(parameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-                actionObject.getVariable = new GetVariable();
-                */
             }
 
             s_Name = name;
@@ -239,9 +186,7 @@ namespace FSAutomator.Backend.Entities
                 }
                 catch(Exception ex)
                 {
-                    Trace.WriteLine("Malformed JSON");
-                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage(ex.Message, true, true));
-                    s_Parameters = parametersBackup;
+                    // malformed json is checked in the validation
                 }
                 RaisePropertyChanged("Parameters");
             }
@@ -341,6 +286,59 @@ namespace FSAutomator.Backend.Entities
             Done
         }
 
+        private static dynamic DeserializeActionObjectByActionTypeName(AutomationFile automationFile, dynamic actionObject, dynamic dParameters, string actionName)
+        {
+            switch (actionName)
+            {
+                case "ConditionalAction":
+                    actionObject = new ConditionalAction(dParameters.FirstMember, dParameters.Comparison, dParameters.SecondMember, dParameters.ActionIfTrueUniqueID, dParameters.ActionIfFalseUniqueID);
+                    break;
+                case "ExecuteCodeFromDLL":
+                    actionObject = new ExecuteCodeFromDLL(dParameters.DLLName, dParameters.DLLPath, dParameters.ClassName, dParameters.MethodName, dParameters.IncludeAsExternalAutomator);
+                    actionObject.PackFolder = automationFile.PackageName;
+                    break;
+                case "ExpectVariableValue":
+                    actionObject = new ExpectVariableValue(dParameters.VariableName, dParameters.VariableExpectedValue, new GetVariable());
+                    break;
+                case "GetVariable":
+                    actionObject = new GetVariable(dParameters.VariableName);
+                    break;
+                case "MemoryRegisterRead":
+                    actionObject = new MemoryRegisterRead(Convert.ToBoolean(dParameters.RemoveAfterRead), dParameters.Id);
+                    break;
+                case "MemoryRegisterWrite":
+                    actionObject = new MemoryRegisterWrite(dParameters.Value, dParameters.Id);
+                    break;
+                case "OperateValue":
+                    actionObject = new OperateValue(dParameters.Operation, dParameters.Number, dParameters.ItemToOperateOver);
+                    break;
+                case "SendEvent":
+                    actionObject = new SendEvent(dParameters.EventName, dParameters.EventValue);
+                    break;
+                case "WaitSeconds":
+                    actionObject = new WaitSeconds(Convert.ToInt32(dParameters.WaitTime));
+                    break;
+                case "WaitUntilVariableReachesNumericValue":
+                    actionObject = new WaitUntilVariableReachesNumericValue(dParameters.VariableName, dParameters.Comparison, dParameters.ThresholdValue, new GetVariable(), Convert.ToInt32(dParameters.CheckInterval));
+                    break;
+                case "CalculateBearingToCoordinates":
+                    actionObject = new CalculateBearingToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
+                    break;
+                case "CalculateDistanceToCoordinates":
+                    actionObject = new CalculateDistanceToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
+                    break;
+                case "FlightPositionLogger":
+                    actionObject = new FlightPositionLogger(dParameters.LoggingTimeSeconds, dParameters.LoggingPeriodSeconds, new GetVariable(), dParameters.LogInNoLockingBackgroundMode);
+                    break;
+                case "FlightPositionLoggerStop":
+                    actionObject = new FlightPositionLoggerStop();
+                    break;
+                default:
+                    break;
+            }
+
+            return actionObject;
+        }
 
 
     }
