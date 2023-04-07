@@ -105,8 +105,6 @@ namespace FSAutomator.BackEnd.Validators
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 
-            //aqui es pot comprobar si és bool el actionObject.LogInNoLockingBackgroundMode
-
             if (actionObject.LoggingTimeSeconds == 0)
             {
                 var existsFlightPositionLoggerActionAfterStartLogging = actionList.Reverse().TakeWhile(x => x != action).Where(y => y.Name == "FlightPositionLoggerStop").Any();

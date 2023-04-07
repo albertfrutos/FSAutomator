@@ -1,7 +1,9 @@
-﻿{
+{
   "Actions": [
     {
       "Name": "GetVariable",
+      "UniqueID": "b1a941ea-b170-4e52-9d08-b1d8a234a6fe",
+      "StopOnError": false,
       "Parameters": {
         "VariableName": "ATC dID"
       }

@@ -68,6 +68,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -110,6 +112,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -144,6 +148,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -174,6 +180,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -208,6 +216,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -242,6 +252,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -280,6 +292,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -314,6 +328,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -344,6 +360,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -386,6 +404,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -420,6 +440,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -454,6 +476,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },
@@ -492,6 +516,8 @@
       },
       "required": [
         "Name",
+        "UniqueID",
+        "StopOnError",
         "Parameters"
       ]
     },

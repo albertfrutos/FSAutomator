@@ -115,7 +115,7 @@ namespace FSAutomator.Backend
 
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
-                        var actionList = Utils.GetActionsList(fileToLoad);
+            var actionList = Utils.GetActionsList(fileToLoad, true);
 
             AddActions(actionList);
            

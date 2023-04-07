@@ -136,15 +136,26 @@ namespace FSAutomator.Backend.Utilities
         }
         */
 
-        public static ObservableCollection<FSAutomatorAction> GetActionsList(AutomationFile fileToLoad)
+        public static ObservableCollection<FSAutomatorAction> GetActionsList(AutomationFile fileToLoad, bool validateAutomationJSON)
         {
             var json = File.ReadAllText(fileToLoad.FilePath);
-
             var actionList = new ObservableCollection<FSAutomatorAction>();
+            var jsonObjectActions = JObject.Parse(json);
 
-            var jsonObject = JObject.Parse(json);
 
-            var actionsNode = jsonObject["Actions"].ToArray();
+            if (validateAutomationJSON)
+            {
+                IList<string> JSONValidationErrors;
+
+                var isValid = ValidateAutomationJSON(jsonObjectActions, out JSONValidationErrors);
+
+                if (!isValid)
+                {
+                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage($"JSON from {fileToLoad.FileName} is not valid according to the schema", false, false));
+                }
+            }
+
+            var actionsNode = jsonObjectActions["Actions"].ToArray();
 
             if (!actionsNode.Any())
             {
@@ -185,6 +196,13 @@ namespace FSAutomator.Backend.Utilities
 
         }
 
+        public static bool ValidateAutomationJSON(JObject jsonObjectActions, out IList<string> JSONValidationErrors)
+        {
+            var jsonSchemaText = File.ReadAllText(Config.SchemaFile);
+            JSchema schema = JSchema.Parse(jsonSchemaText);
+            return jsonObjectActions.IsValid(schema, out JSONValidationErrors);
+        }
+
         public static List<AutomationFile> GetAutomationFilesList()
         {
             var automationFiles = Directory.GetFiles(Config.AutomationsFolder, "*.json", SearchOption.TopDirectoryOnly).ToList();
@@ -205,7 +223,7 @@ namespace FSAutomator.Backend.Utilities
 
                 var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath, basePath, true);
 
-                var actionList = Utils.GetActionsList(jsonAutomationFile);
+                var actionList = Utils.GetActionsList(jsonAutomationFile, false);
 
                 if (actionList is null)
                 {
@@ -298,8 +316,6 @@ namespace FSAutomator.Backend.Utilities
 
         public static string GetValueToOperateOnFromTag(object sender, SimConnect connection, string itemIdentificator)
         {
-            //passar a actionresult - comentari
-
             if (!itemIdentificator.StartsWith("%"))
             {
                 return itemIdentificator;

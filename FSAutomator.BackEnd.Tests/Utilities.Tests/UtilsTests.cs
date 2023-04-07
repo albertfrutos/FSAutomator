@@ -180,12 +180,38 @@ namespace FSAutomator.Backend.Utilities.Tests
 
             var automationFile = new AutomationFile("jsonFile.json", "", "", @"TestFiles\jsonFile.json");
 
-            var result = Utils.GetActionsList(automationFile);
+            var result = Utils.GetActionsList(automationFile, false);
 
             Directory.Delete("TestFiles", true);
 
             result[0].Name.Should().Be("GetVariable");
             (result[0].ActionObject as GetVariable).VariableName.Should().Be("ATC ID");
+        }
+
+        [TestMethod]
+        public void ValidateAutomationJSON_JSONIsValid_ReturnsTrue()
+        {
+            const string json = @" { 'Actions': [ { 'Name': 'GetVariable', 'Parameters':  { 'VariableName': 'ATC ID' } } ] } ";
+
+            var jsonObjectActions = JObject.Parse(json);
+
+            var result = Utils.ValidateAutomationJSON(jsonObjectActions, out IList<string> errorsList);
+
+            result.Should().BeTrue();
+            errorsList.Count().Should().Be(0);
+        }
+
+        [TestMethod]
+        public void ValidateAutomationJSON_JSONIsNotValid_ReturnsFalse()
+        {
+            const string json = @" { 'Actions': [ { 'InventedParameterSubstitutingName': 'GetVariable', 'Parameters':  { 'VariableName': 'ATC ID' } } ] } ";
+
+            var jsonObjectActions = JObject.Parse(json);
+
+            var result = Utils.ValidateAutomationJSON(jsonObjectActions, out IList<string> errorsList);
+
+            result.Should().BeFalse();
+            errorsList.Count().Should().Be(1);
         }
 
         [TestMethod]

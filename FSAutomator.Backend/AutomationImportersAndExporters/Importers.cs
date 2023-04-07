@@ -47,7 +47,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
                 var automationFile = new AutomationFile(Path.GetFileName(JSONPath), Path.GetFileNameWithoutExtension(JSONPath), "", JSONPath, "", true);
 
-                var actionList = Utils.GetActionsList(automationFile);
+                var actionList = Utils.GetActionsList(automationFile, false);
 
                 if (actionList is null)
                 {
@@ -88,7 +88,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
             var automationFile = new AutomationFile(JSONFileName, "", "", JSONPath, "");
 
-            var actionList = Utils.GetActionsList(automationFile);
+            var actionList = Utils.GetActionsList(automationFile,false);
 
             if (actionList is null)
             {
