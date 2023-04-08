@@ -39,9 +39,6 @@
     <Content Include="Configuration\ApplicationConfiguration.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Configuration\AvailableActions\FSAutomatorAvailableActions.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Configuration\AvailableFixedBoolItems\FSAutomatorFixedBoolItems.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

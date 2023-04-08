@@ -14,6 +14,7 @@ namespace FSAutomator.BackEnd.Configuration
         private KMLLoggerLogConfig o_KMLLoggerLog { get; set; }
 
 
+
         private static ApplicationConfig instance = null;
 
         public static ApplicationConfig GetInstance
