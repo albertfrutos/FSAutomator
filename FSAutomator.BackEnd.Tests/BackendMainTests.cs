@@ -2,14 +2,8 @@ using FluentAssertions;
 using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Validators;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
 using System.Reflection;
 using static FSAutomator.Backend.Entities.InternalMessage;
 
@@ -74,7 +68,7 @@ namespace FSAutomator.Backend.Utilities.Tests
         }
 
         [TestMethod]
-        public void SaveAutomation_FileNameIsEmpty_ReturnsError()
+        public void SaveAutomation_FileNameIsEmpty_ReturnsInfoMessage()
         {
             //Arrange
             const string fileName = "";
@@ -88,26 +82,84 @@ namespace FSAutomator.Backend.Utilities.Tests
         }
         
         [TestMethod]
-        public void SaveAutomation_AutomationIsDLLAutomation_ReturnsError()
+        public void SaveAutomation_AutomationIsDLLAutomation_ReturnsInfoMessage()
         {
             //Arrange
             const string fileName = "testFileName.json";
-            const AutomationFile automationFile = new AutomationFile()
+            const string dllName = "randomDLL.dll";
+            
+            
+            string basePath = Path.Combine(currentDir, "Automations");
+            string dllFilePath = Path.Combine("Automations", dllName);
+
+            File.Copy(@"TestAuxiliaries\TestFiles\randomDLL.dll",@"Automations\randomDLL.dll");
+
+            backend.automator.ActionList.Add(
+                new FSAutomatorAction()
+                {
+                    Name = "DLLAutomation",
+                    ActionObject = new ExternalAutomator("randomDLL.dll", dllFilePath),
+                    Parameters = "{\"VariableName\":\"ATC ID\"}"
+                }
+            );
+
+            AutomationFile automationFile = new AutomationFile()
             {
-                BasePath = "C:\\Users\\Albert\\Source\\Repos\\albertfrutos\\FSAutomator\\FSAutomator.UI\\bin\\Debug\\net6.0-windows\\Automations",
-                FileName = "ExternalAutomationExample.dll",
-                FilePath = "Automations\\ExternalAutomationExample.dll",
+                BasePath = basePath,
+                FileName = dllName,
+                FilePath = dllFilePath,
                 IsPackage = false,
                 PackageName = "",
-                VisibleName = "ExternalAutomationExample [.dll]"
+                VisibleName = "randomDLL [.dll]"
             };
 
             //Act
-            var result = backend.SaveAutomation(null, fileName);
+            var result = backend.SaveAutomation(automationFile, fileName);
 
             //Assert
-            result.Message.Should().Be("Please enter an automation name.");
+            result.Message.Should().Be("Saving DLL automations is not supported");
             result.Type.Should().Be(MsgType.Info);
         }
+
+        [TestMethod]
+        public void SaveAutomation_ActionListHasNonDLLAutomationActions_ReturnsInfoMessage()
+        {
+            //Arrange
+            const string fileName = "testFileName.json";
+            const string expectedJSON = "{\r\n  \"Actions\": [\r\n    {\r\n      \"Name\": \"GetVariable\",\r\n      \"UniqueID\": null,\r\n      \"StopOnError\": false,\r\n      \"Parameters\": {\r\n        \"VariableName\": \"UNEXISTING VARIABLE\"\r\n      }\r\n    }\r\n  ]\r\n}";
+
+            string basePath = Path.Combine(currentDir, "Automations");
+            string filePath = Path.Combine("Automations", fileName);
+
+            backend.automator.ActionList.Add(
+                new FSAutomatorAction()
+                {
+                    Name = "GetVariable",
+                    ActionObject = new GetVariable("UNEXISTING VARIABLE"),
+                    Parameters = "{\"VariableName\":\"UNEXISTING VARIABLE\"}"
+                }
+            );
+
+            AutomationFile automationFile = new AutomationFile()
+            {
+                BasePath = basePath,
+                FileName = fileName,
+                FilePath = filePath,
+                IsPackage = false,
+                PackageName = "",
+                VisibleName = "visibleName"
+            };
+
+            //Act
+            var result = backend.SaveAutomation(automationFile, fileName);
+
+            //Assert
+            result.Message.Should().Be("Automation saved successfully");
+            result.Type.Should().Be(MsgType.Info);
+
+            Assert.IsTrue(File.Exists(filePath));
+            Assert.IsTrue(File.ReadAllText(filePath) == expectedJSON);
+        }
+
     }
 }
