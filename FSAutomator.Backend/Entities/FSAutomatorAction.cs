@@ -21,6 +21,7 @@ namespace FSAutomator.Backend.Entities
         private bool b_isAuxiliary;
         private bool b_stopOnError;
         private string s_validationOutcome;
+        private bool b_ParallelLaunch;
         private string s_mainFilePath;
         private AutomationFile o_AutomationFile;
 
@@ -256,7 +257,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public string ValidationOutcome
         {
@@ -266,6 +267,18 @@ namespace FSAutomator.Backend.Entities
             {
                 s_validationOutcome = value;
                 RaisePropertyChanged("ValidationOutcome");
+            }
+        }
+
+        [JsonIgnore]
+        public bool ParallelLaunch
+        {
+            get { return b_ParallelLaunch; }
+
+            set
+            {
+                b_ParallelLaunch = value;
+                RaisePropertyChanged("ParallelLaunch");
             }
         }
 

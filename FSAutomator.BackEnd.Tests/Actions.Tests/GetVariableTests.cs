@@ -24,12 +24,12 @@ namespace FSAutomator.Backend.Actions.Tests
             //Arrange
             this.getVariable = new GetVariable("ATC ID");
 
-            simConnectBridgeMock = new Mock<ISimConnectBridge>();
-            simConnectBridgeMock.Setup(x => x.AddToDataDefinition(It.IsAny<Enum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<SIMCONNECT_DATATYPE>(), It.IsAny<float>(), It.IsAny<uint>()));
-            simConnectBridgeMock.Setup(x => x.RegisterDataDefineStruct<StringType>(It.IsAny<Enum>()));
-            simConnectBridgeMock.Setup(x => x.SubscribeToRecvSimobjectDataBytypeEventHandler(It.IsAny<Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE>>()));
-            simConnectBridgeMock.Setup(x => x.RequestDataOnSimObjectType(It.IsAny<Enum>(), It.IsAny<Enum>(), It.IsAny<uint>(), It.IsAny<SIMCONNECT_SIMOBJECT_TYPE>()));
-            simConnectBridgeMock.Setup(x => x.ClearDataDefinition(It.IsAny<Enum>())).Callback(() =>
+            this.simConnectBridgeMock = new Mock<ISimConnectBridge>();
+            this.simConnectBridgeMock.Setup(x => x.AddToDataDefinition(It.IsAny<Enum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<SIMCONNECT_DATATYPE>(), It.IsAny<float>(), It.IsAny<uint>()));
+            this.simConnectBridgeMock.Setup(x => x.RegisterDataDefineStruct<StringType>(It.IsAny<Enum>()));
+            this.simConnectBridgeMock.Setup(x => x.SubscribeToRecvSimobjectDataBytypeEventHandler(It.IsAny<Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE>>()));
+            this.simConnectBridgeMock.Setup(x => x.RequestDataOnSimObjectType(It.IsAny<Enum>(), It.IsAny<Enum>(), It.IsAny<uint>(), It.IsAny<SIMCONNECT_SIMOBJECT_TYPE>()));
+            this.simConnectBridgeMock.Setup(x => x.ClearDataDefinition(It.IsAny<Enum>())).Callback(() =>
             {
                 this.getVariable.VariableValue = "myValue";
                 this.getVariable.retainUntilValueReadyEvent.Set();
@@ -47,6 +47,8 @@ namespace FSAutomator.Backend.Actions.Tests
         {
             //Arrange
             this.getVariable = new GetVariable("UNEXISTING VARIABLE");
+
+            this.simConnectBridgeMock = new Mock<ISimConnectBridge>();
 
             //Act
             var result = this.getVariable.ExecuteAction(this, simConnectBridgeMock.Object);

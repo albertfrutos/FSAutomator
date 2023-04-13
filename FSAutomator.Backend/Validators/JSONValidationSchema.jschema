@@ -38,6 +38,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -84,6 +87,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -126,6 +132,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -160,6 +169,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -188,6 +200,9 @@
           "type": "string"
         },
         "StopOnError": {
+          "type": "boolean"
+        },
+        "ParallelLaunch": {
           "type": "boolean"
         },
         "Parameters": {
@@ -224,6 +239,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -256,6 +274,9 @@
           "type": "string"
         },
         "StopOnError": {
+          "type": "boolean"
+        },
+        "ParallelLaunch": {
           "type": "boolean"
         },
         "Parameters": {
@@ -296,6 +317,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -330,6 +354,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -358,6 +385,9 @@
           "type": "string"
         },
         "StopOnError": {
+          "type": "boolean"
+        },
+        "ParallelLaunch": {
           "type": "boolean"
         },
         "Parameters": {
@@ -402,6 +432,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -436,6 +469,9 @@
         "StopOnError": {
           "type": "boolean"
         },
+        "ParallelLaunch": {
+          "type": "boolean"
+        },
         "Parameters": {
           "type": "object",
           "properties": {
@@ -468,6 +504,9 @@
           "type": "string"
         },
         "StopOnError": {
+          "type": "boolean"
+        },
+        "ParallelLaunch": {
           "type": "boolean"
         },
         "Parameters": {
@@ -507,12 +546,16 @@
         },
         "StopOnError": {
           "type": "boolean"
+        },
+        "ParallelLaunch": {
+          "type": "boolean"
         }
       },
       "required": [
         "Name",
         "UniqueID",
-        "StopOnError"
+        "StopOnError",
+        "ParallelLaunch"
       ]
     }
   }

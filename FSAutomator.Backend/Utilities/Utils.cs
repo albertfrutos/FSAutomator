@@ -282,7 +282,8 @@ namespace FSAutomator.Backend.Utilities
                     writer.WriteValue(action.UniqueID);
                     writer.WritePropertyName("StopOnError");
                     writer.WriteValue(action.StopOnError);
-
+                    writer.WritePropertyName("ParallelLaunch");
+                    writer.WriteValue(action.ParallelLaunch);
 
                     if (action.ActionObject != null)
                     {
