@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <None Remove="Automations\All_Actions_Example.json" />
+    <None Remove="Automations\AP_ON.json" />
     <None Remove="Automations\Automation.json" />
     <None Remove="Automations\Automation_Test.json" />
     <None Remove="Automations\Conditionals_Test.json" />
@@ -22,6 +23,9 @@
 
   <ItemGroup>
     <Content Include="Automations\All_Actions_Example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Automations\AP_ON.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Automations\GetVariable.json">
@@ -48,6 +52,10 @@
     <PackageReference Include="Geolocation.NetStandard" Version="1.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
     <PackageReference Include="Newtonsoft.Json.Schema" Version="3.0.14" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FSAutomator.SimConnect\FSAutomator.SimConnectInterface.csproj" />
   </ItemGroup>
 
   <ItemGroup>

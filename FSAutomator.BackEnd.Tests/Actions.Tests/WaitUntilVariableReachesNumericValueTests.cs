@@ -3,6 +3,7 @@ using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -38,7 +39,7 @@ namespace FSAutomator.Backend.Actions.Tests
                 }
             );
 
-            getVariableMock.SetupSequence(x => x.ExecuteAction(It.IsAny<object>(), It.IsAny<SimConnect>()))
+            getVariableMock.SetupSequence(x => x.ExecuteAction(It.IsAny<object>(), It.IsAny<ISimConnectBridge>()))
                 .Returns(new ActionResult(null, "100", false))
                 .Returns(new ActionResult(null, "235", false))
                 .Returns(new ActionResult(null, "567", false))

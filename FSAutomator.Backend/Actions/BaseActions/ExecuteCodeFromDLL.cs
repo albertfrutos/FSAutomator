@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -39,7 +40,7 @@ namespace FSAutomator.Backend.Actions
             this.IncludeAsExternalAutomator = IncludeAsExternalAutomator;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             var memoryRegisters = (sender as Automator).MemoryRegisters;
             var lastValue = (sender as Automator).lastOperationValue;

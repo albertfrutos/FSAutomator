@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
@@ -20,7 +21,7 @@ namespace FSAutomator.Backend.Actions
             Id = id;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             var memoryRegisters = (sender as Automator).MemoryRegisters;
 

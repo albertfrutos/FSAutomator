@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -314,7 +315,7 @@ namespace FSAutomator.Backend.Utilities
             }
         }
 
-        public static string GetValueToOperateOnFromTag(object sender, SimConnect connection, string itemIdentificator)
+        public static string GetValueToOperateOnFromTag(object sender, ISimConnectBridge connection, string itemIdentificator)
         {
             if (!itemIdentificator.StartsWith("%"))
             {

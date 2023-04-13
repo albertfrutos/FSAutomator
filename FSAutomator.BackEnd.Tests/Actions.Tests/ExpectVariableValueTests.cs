@@ -3,6 +3,7 @@ using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -20,7 +21,7 @@ namespace FSAutomator.Backend.Actions.Tests
         public void NumericValue_VariableHasTargetValue_TrueIsReturned()
         {
             getVariableMock = new Mock<IGetVariable>();
-            getVariableMock.Setup(x => x.ExecuteAction(It.IsAny<object>(), It.IsAny<SimConnect>())).Returns(new ActionResult(null, "MyATCID", false));
+            getVariableMock.Setup(x => x.ExecuteAction(It.IsAny<object>(), It.IsAny<ISimConnectBridge>())).Returns(new ActionResult(null, "MyATCID", false));
 
             this.expectedVariableValue = new ExpectVariableValue("ATC ID", "MyATCID", getVariableMock.Object);
 

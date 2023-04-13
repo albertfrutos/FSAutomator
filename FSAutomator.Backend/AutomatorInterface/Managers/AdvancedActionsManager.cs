@@ -2,6 +2,7 @@
 using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.BackEnd.AutomatorInterface.Managers
@@ -10,7 +11,7 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
     {
         private EventHandler<bool> finishFlightPositionLoggerEvent = null;
 
-        public AdvancedActionsManager(Automator automator, SimConnect connection) : base(automator, connection)
+        public AdvancedActionsManager(Automator automator, ISimConnectBridge connection) : base(automator, connection)
         {
 
         }

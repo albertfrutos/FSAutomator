@@ -41,7 +41,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             var isActionValidated = ActionJSONValidator.ValidateActions(backend.automator.ActionList.ToArray());
 
             //Assert
-            status.ValidationIssues.Should().BeNull();
+            isActionValidated.Should().BeEmpty();
             backend.automator.ActionList[0].IsValidated.Should().BeTrue();
         }
         
@@ -92,7 +92,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             string basePath = Path.Combine(currentDir, "Automations");
             string dllFilePath = Path.Combine("Automations", dllName);
 
-            File.Copy(@"TestAuxiliaries\TestFiles\randomDLL.dll",@"Automations\randomDLL.dll");
+            File.Copy(@"TestAuxiliaries\TestFiles\randomDLL.dll", dllFilePath);
 
             backend.automator.ActionList.Add(
                 new FSAutomatorAction()
@@ -119,6 +119,8 @@ namespace FSAutomator.Backend.Utilities.Tests
             //Assert
             result.Message.Should().Be("Saving DLL automations is not supported");
             result.Type.Should().Be(MsgType.Info);
+
+            File.Delete(dllFilePath);
         }
 
         [TestMethod]
