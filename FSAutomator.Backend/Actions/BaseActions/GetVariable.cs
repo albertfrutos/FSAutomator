@@ -33,39 +33,41 @@ namespace FSAutomator.Backend.Actions
         {
             bool error = false;
             this.VariableValue = null;
-
             var returnResult = "";
+
+            CommonEntities entities = new CommonEntities();
+
+
 
             variable = new Variable().GetVariableInformation(this.VariableName);
 
             if (variable is not null && variable.Type is not null)
             {
-                CommonEntities entities = new CommonEntities();
-
                 var dataType = entities.VariableTypes[variable.Type];
                 var defineID = entities.DefineIDs[variable.Type];
                 var unit = variable.Unit;
                 
                 semaphore.WaitOne();
 
-                if (variable.Type == "string")
+                connection.AddToDataDefinition(defineID, this.VariableName, unit, dataType, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+
+                switch (variable.Type)
                 {
-                    connection.AddToDataDefinition(defineID, this.VariableName, "", dataType, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-                    connection.RegisterDataDefineStruct<StringType>(DEFINITIONS.StringType);
-                }
-                else if (variable.Type == "num")
-                {
-                    connection.AddToDataDefinition(defineID, this.VariableName, unit, dataType, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-                    connection.RegisterDataDefineStruct<NumType>(DEFINITIONS.NumType);
-                }
-                else if (variable.Type == "bool")
-                {
-                    connection.AddToDataDefinition(defineID, this.VariableName, unit, dataType, 0.0f, SimConnect.SIMCONNECT_UNUSED);
-                    connection.RegisterDataDefineStruct<BoolType>(DEFINITIONS.BoolType);
+                    case "string":
+                        connection.RegisterDataDefineStruct<StringType>(DEFINITIONS.StringType);
+                        break;
+                    case "num":
+                        connection.RegisterDataDefineStruct<NumType>(DEFINITIONS.NumType);
+                        break;
+                    case "bool":
+                        connection.RegisterDataDefineStruct<BoolType>(DEFINITIONS.BoolType);
+                        break;
                 }
 
                 connection.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
+
                 Trace.WriteLine(this.VariableName);
+
                 connection.RequestDataOnSimObjectType(DATA_REQUESTS.REQUEST_1, defineID, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
                 connection.ClearDataDefinition(defineID);
 
@@ -73,7 +75,6 @@ namespace FSAutomator.Backend.Actions
                 semaphore.Release();
 
                 returnResult = $"Variable value is {this.VariableValue }";
-
             }
             else
             {
@@ -82,7 +83,6 @@ namespace FSAutomator.Backend.Actions
             }
 
             return new ActionResult(returnResult, this.VariableValue, error);
-
         }
 
         private void Simconnect_OnRecvSimobjectDataBytype(SimConnect sender, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE data)
@@ -94,24 +94,24 @@ namespace FSAutomator.Backend.Actions
 
             try
             {
-                if (variable.Type == "string")
+                dynamic result = null;
+
+                switch (variable.Type)
                 {
-                    StringType result = (StringType)data.dwData[0];
-                    this.VariableValue = result.stringVar;
+                    case "string":
+                        result = (StringType)data.dwData[0];
+                        break;
+                    case "num":
+                        result = (NumType)data.dwData[0];
+                        break;
+                    case "bool":
+                        result = (BoolType)data.dwData[0];
+                        break;
                 }
-                else if (variable.Type == "num")
-                {
-                    NumType result = (NumType)data.dwData[0];
-                    this.VariableValue = result.numVar.ToString();
-                }
-                else if (variable.Type == "bool")
-                {
-                    BoolType result = (BoolType)data.dwData[0];
-                    this.VariableValue = result.boolVar.ToString();
-                }
+
+                this.VariableValue = result.value.ToString();
 
                 retainUntilValueReadyEvent.Set();
-
             }
             catch (Exception ex)
             {

@@ -330,15 +330,4 @@ namespace FSAutomator.Backend
             return automator.ActionList;
         }
     }
-
-    public class Root
-    {
-        public List<FSAutomatorAction> Actions { get; set; }
-    }
-
-    public class Action
-    {
-        public string Name { get; set; }
-        public object Parameters { get; set; }
-    }
 }

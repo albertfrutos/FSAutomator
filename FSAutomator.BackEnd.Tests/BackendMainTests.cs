@@ -126,7 +126,7 @@ namespace FSAutomator.Backend.Utilities.Tests
         {
             //Arrange
             const string fileName = "testFileName.json";
-            const string expectedJSON = "{\r\n  \"Actions\": [\r\n    {\r\n      \"Name\": \"GetVariable\",\r\n      \"UniqueID\": null,\r\n      \"StopOnError\": false,\r\n      \"Parameters\": {\r\n        \"VariableName\": \"UNEXISTING VARIABLE\"\r\n      }\r\n    }\r\n  ]\r\n}";
+            const string expectedJSON = "{\r\n  \"Actions\": [\r\n    {\r\n      \"Name\": \"GetVariable\",\r\n      \"UniqueID\": \"id123\",\r\n      \"StopOnError\": false,\r\n      \"Parameters\": {\r\n        \"VariableName\": \"VARIABLE NAME\"\r\n      }\r\n    }\r\n  ]\r\n}";
 
             string basePath = Path.Combine(currentDir, "Automations");
             string filePath = Path.Combine("Automations", fileName);
@@ -135,8 +135,9 @@ namespace FSAutomator.Backend.Utilities.Tests
                 new FSAutomatorAction()
                 {
                     Name = "GetVariable",
-                    ActionObject = new GetVariable("UNEXISTING VARIABLE"),
-                    Parameters = "{\"VariableName\":\"UNEXISTING VARIABLE\"}"
+                    UniqueID = "id123",
+                    ActionObject = new GetVariable("VARIABLE NAME"),
+                    Parameters = "{\"VariableName\":\"VARIABLE NAME\"}"
                 }
             );
 
@@ -159,6 +160,67 @@ namespace FSAutomator.Backend.Utilities.Tests
 
             Assert.IsTrue(File.Exists(filePath));
             Assert.IsTrue(File.ReadAllText(filePath) == expectedJSON);
+        }
+        
+        [TestMethod]
+        public void LoadAction_AutomationJSONIsLoaded_LoadsAutomation()
+        {
+            //Arrange
+            const string fileName = "Simple_Action.json";
+
+            string basePath = Path.Combine(currentDir, "TestAuxiliaries", "TestFiles");
+            string filePath = Path.Combine("TestAuxiliaries", "TestFiles", fileName);
+
+            AutomationFile automationFile = new AutomationFile()
+            {
+                BasePath = basePath,
+                FileName = fileName,
+                FilePath = filePath,
+                IsPackage = false,
+                PackageName = "",
+                VisibleName = "visibleName"
+            };
+
+            //Act
+            backend.LoadActions(automationFile);
+
+            var loadedAction = backend.automator.ActionList[0];
+
+            //Assert
+            loadedAction.Name.Should().Be("GetVariable");
+            loadedAction.UniqueID.Should().Be("id1234");
+            loadedAction.StopOnError.Should().BeFalse();
+            loadedAction.ActionObject.Should().BeOfType<GetVariable>();
+        }
+        
+        [TestMethod]
+        public void LoadAction_AutomationDLLIsLoaded_LoadsAutomation()
+        {
+            //Arrange
+            const string fileName = "randomDLL.dll";
+
+            string basePath = Path.Combine(currentDir, "TestAuxiliaries", "TestFiles");
+            string filePath = Path.Combine("TestAuxiliaries", "TestFiles", fileName);
+
+            AutomationFile automationFile = new AutomationFile()
+            {
+                BasePath = basePath,
+                FileName = fileName,
+                FilePath = filePath,
+                IsPackage = false,
+                PackageName = "",
+                VisibleName = "visibleName"
+            };
+
+            //Act
+            backend.LoadActions(automationFile);
+
+            var loadedAction = backend.automator.ActionList[0];
+
+            //Assert
+            loadedAction.Name.Should().Be("DLLAutomation");
+            loadedAction.StopOnError.Should().BeTrue();
+            loadedAction.ActionObject.Should().BeOfType<ExternalAutomator>();
         }
 
     }

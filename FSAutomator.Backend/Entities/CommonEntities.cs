@@ -21,17 +21,17 @@ namespace FSAutomator.Backend.Entities
         internal struct StringType
         {
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-            public string stringVar;
+            public string value;
         }
 
         internal struct NumType
         {
-            public double numVar;
+            public double value;
         }
 
         internal struct BoolType
         {
-            public bool boolVar;
+            public bool value;
         }
 
         internal readonly Dictionary<string, SIMCONNECT_DATATYPE> VariableTypes = new Dictionary<string, SIMCONNECT_DATATYPE>
