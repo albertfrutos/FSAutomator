@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Automators;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.BackEnd.AutomatorInterface.Managers
@@ -8,7 +9,7 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
     {
 
 
-        public AutoPilotManager(Automator automator, SimConnect connection) : base(automator, connection)
+        public AutoPilotManager(Automator automator, ISimConnectBridge connection) : base(automator, connection)
         {
 
         }

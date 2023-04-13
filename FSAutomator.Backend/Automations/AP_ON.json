@@ -1,0 +1,11 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "AP_MASTER",
+        "EventValue": "1"
+      }
+    }
+  ]
+}

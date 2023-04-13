@@ -2,6 +2,7 @@
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
@@ -37,7 +38,7 @@ namespace FSAutomator.Backend.Actions
             this.getVariable = getVariable;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             if (!AllowedComparisonValues.Contains(Comparison))
             {

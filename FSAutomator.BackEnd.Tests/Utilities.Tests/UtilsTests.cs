@@ -218,6 +218,7 @@ namespace FSAutomator.Backend.Utilities.Tests
         public void GetAutomationFilesList_AutomationsAreAvailable_ListIsReturned()
         {
             const string automationsFolder = @"TestAuxiliaries\TestFiles";
+            string basePath = Path.Combine(currentDir, automationsFolder);
 
             Utils.Config.AutomationsFolder = automationsFolder;
 
@@ -225,7 +226,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             {
                 new AutomationFile()
                 {
-                    BasePath = Path.Combine(currentDir,automationsFolder),
+                    BasePath = basePath,
                     FileName = @"Actions_Example.json",
                     FilePath = @"TestAuxiliaries\TestFiles\Actions_Example.json",
                     IsPackage = false,
@@ -234,7 +235,16 @@ namespace FSAutomator.Backend.Utilities.Tests
                 },
                 new AutomationFile()
                 {
-                    BasePath = Path.Combine(currentDir,automationsFolder),
+                    BasePath = basePath,
+                    FileName = @"Simple_Action.json",
+                    FilePath = @"TestAuxiliaries\TestFiles\Simple_Action.json",
+                    IsPackage = false,
+                    PackageName = "",
+                    VisibleName = "Simple_Action [.json]"
+                },
+                new AutomationFile()
+                {
+                    BasePath = basePath,
                     FileName = @"randomDLL.dll",
                     FilePath = @"TestAuxiliaries\TestFiles\randomDLL.dll",
                     IsPackage = false,

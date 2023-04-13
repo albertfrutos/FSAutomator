@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Actions.Base;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
@@ -29,7 +30,7 @@ namespace FSAutomator.Backend.Actions
             this.getVariable = getVariable;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             if (!GetCurrentCoordinates(sender, connection))
             {
@@ -53,7 +54,7 @@ namespace FSAutomator.Backend.Actions
             return new ActionResult($"{distance} Km.", distance.ToString(), false);
         }
 
-        private bool GetCurrentCoordinates(object sender, SimConnect connection)
+        private bool GetCurrentCoordinates(object sender, ISimConnectBridge connection)
         {
 
             getVariable.VariableName = "PLANE LATITUDE";

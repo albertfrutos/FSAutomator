@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Diagnostics;
 using System.Reflection;
@@ -25,7 +26,7 @@ namespace FSAutomator.Backend.Automators
             this.DLLPath = DLLPath;
         }
 
-        public ActionResult ExecuteAction(Automator sender, SimConnect connection)
+        public ActionResult ExecuteAction(Automator sender, ISimConnectBridge connection)
         {
             this.externalAutomatorInterface = new FSAutomatorInterface(sender, connection, finishEvent);
 

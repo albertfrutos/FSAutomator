@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
@@ -8,7 +9,7 @@ namespace FSAutomator.Backend.Automators
 {
     public class Automator
     {
-        public SimConnect connection;
+        public ISimConnectBridge Connection;
 
         public Dictionary<string, string> MemoryRegisters = new Dictionary<string, string>();
         public FlightModel flightModel;
@@ -25,6 +26,11 @@ namespace FSAutomator.Backend.Automators
 
         }
 
+        public Automator(ISimConnectBridge connection)
+        {
+            this.Connection = connection;
+        }
+
         public void ExecuteActionList()
         {
             /*
@@ -36,7 +42,7 @@ namespace FSAutomator.Backend.Automators
             }
             */
 
-            this.flightModel = new FlightModel(this.connection);
+            this.flightModel = new FlightModel(this.Connection);
 
             var isThereAnyInvalidJSON = ActionList.Where(x => x.ActionObject == null).Any();
 
@@ -97,7 +103,7 @@ namespace FSAutomator.Backend.Automators
 
         internal ActionResult ExecuteAction(FSAutomatorAction action)
         {
-            var result = (ActionResult)(action.ActionObject as dynamic).ExecuteAction(this, connection);
+            var result = (ActionResult)(action.ActionObject as dynamic).ExecuteAction(this, Connection);
             return result;
         }
 

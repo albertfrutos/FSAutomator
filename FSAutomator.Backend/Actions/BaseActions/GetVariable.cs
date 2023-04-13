@@ -1,4 +1,5 @@
 ﻿using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using System.Diagnostics;
@@ -29,15 +30,13 @@ namespace FSAutomator.Backend.Actions
             VariableName = variableName;
             VariableValue = null;
         }
-        public virtual ActionResult ExecuteAction(object sender, SimConnect connection)
+        public virtual ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             bool error = false;
             this.VariableValue = null;
             var returnResult = "";
 
             CommonEntities entities = new CommonEntities();
-
-
 
             variable = new Variable().GetVariableInformation(this.VariableName);
 
@@ -64,7 +63,7 @@ namespace FSAutomator.Backend.Actions
                         break;
                 }
 
-                connection.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
+                connection.SubscribeToRecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
 
                 Trace.WriteLine(this.VariableName);
 

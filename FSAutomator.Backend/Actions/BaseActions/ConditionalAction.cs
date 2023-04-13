@@ -2,6 +2,7 @@
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
@@ -35,7 +36,7 @@ namespace FSAutomator.Backend.Actions
             ActionIfFalseUniqueID = actionIfFalseUniqueID;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             bool isConditionTrue = false;
 
@@ -92,7 +93,7 @@ namespace FSAutomator.Backend.Actions
             return new ActionResult($"{result.VisibleResult} - {isConditionTrue}", result.ComputedResult, result.Error);
         }
 
-        private static ActionResult ExecuteConditionalAction(object sender, SimConnect connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
+        private static ActionResult ExecuteConditionalAction(object sender, ISimConnectBridge connection, ObservableCollection<FSAutomatorAction> auxiliaryActionList, string actionUniqueID)
         {
             var action = auxiliaryActionList.Where(x => x.UniqueID == actionUniqueID).First();
             ActionResult result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { sender, connection });

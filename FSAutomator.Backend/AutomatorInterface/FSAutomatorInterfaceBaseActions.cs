@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.AutomatorInterface
@@ -8,13 +9,13 @@ namespace FSAutomator.Backend.AutomatorInterface
     public class FSAutomatorInterfaceBaseActions
     {
         internal Automator automator { get; set; }
-        internal SimConnect Connection { get; set; }
+        internal ISimConnectBridge Connection { get; set; }
         private GeneralStatus Status { get; set; }
 
         IGetVariable getVariable;
 
         ISendEvent sendEvent;
-        public FSAutomatorInterfaceBaseActions(Automator automator, SimConnect connection)
+        public FSAutomatorInterfaceBaseActions(Automator automator, ISimConnectBridge connection)
         {
             this.automator = automator;
             this.Connection = connection;

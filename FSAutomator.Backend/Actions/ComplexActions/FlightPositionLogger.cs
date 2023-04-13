@@ -3,6 +3,7 @@ using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
+using FSAutomator.SimConnectInterface;
 using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Xml;
@@ -37,7 +38,7 @@ namespace FSAutomator.Backend.Actions
             this.getVariable = getVariable;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             if (this.LogInNoLockingBackgroundMode)
             {
@@ -59,7 +60,7 @@ namespace FSAutomator.Backend.Actions
             finishLoggingEvent -= StopBackgroundLogging;
         }
 
-        private ActionResult StartLoggingFlight(object sender, SimConnect connection)
+        private ActionResult StartLoggingFlight(object sender, ISimConnectBridge connection)
         {
             Logger logger = new Logger();
 

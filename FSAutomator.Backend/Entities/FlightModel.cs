@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
@@ -14,12 +15,12 @@ namespace FSAutomator.Backend.Entities
         private const string flightModelCfgFileName = "flight_model.cfg";
         private string flightModelPath;
 
-        public FlightModel(SimConnect Connection)
+        public FlightModel(ISimConnectBridge Connection)
         {
             if (Connection != null)
             {
-                Connection.OnRecvSystemState += new SimConnect.RecvSystemStateEventHandler(GetAirCraftCfgPath);
-                Connection.RequestSystemState(DATA_REQUESTS.REQUEST_1, "AircraftLoaded");
+                //Connection.OnRecvSystemState += new SimConnect.RecvSystemStateEventHandler(GetAirCraftCfgPath);
+                //Connection.RequestSystemState(DATA_REQUESTS.REQUEST_1, "AircraftLoaded");
             }
         }
 
