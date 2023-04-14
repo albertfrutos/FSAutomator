@@ -99,7 +99,6 @@ namespace FSAutomator.SimConnectInterface
             {
                 this.Connection.Dispose();
                 this.Connection = null;
-                //status.IsConnectedToSim = false;
             }
         }
 
@@ -120,7 +119,7 @@ namespace FSAutomator.SimConnectInterface
             Connection.ClearDataDefinition(defineID);
         }
 
-        public void SubscribeToRecvSimobjectDataBytypeEventHandler(Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE> method)
+        public void SubscribeToOnRecvSimobjectDataBytypeEventHandler(Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE> method)
         {
             this.Connection.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(method);
 

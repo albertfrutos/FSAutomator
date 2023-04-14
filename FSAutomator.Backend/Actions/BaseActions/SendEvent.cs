@@ -25,7 +25,6 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
-            var a = new SimConnectBridge();
 
             this.EventValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.EventValue);
 

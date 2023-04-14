@@ -19,6 +19,6 @@ namespace FSAutomator.SimConnectInterface
         void SetNotificationGroupPriority(Enum groupID, uint sIMCONNECT_GROUP_PRIORITY_HIGHEST);
         void TransmitClientEvent(uint v1, Enum eventToSend, uint v2, Enum gROUP0, SIMCONNECT_EVENT_FLAG gROUPID_IS_PRIORITY);
         void ClearNotificationGroup(Enum groupID);
-        void SubscribeToRecvSimobjectDataBytypeEventHandler(Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE> simconnect_OnRecvSimobjectDataBytype);
+        void SubscribeToOnRecvSimobjectDataBytypeEventHandler(Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE> simconnect_OnRecvSimobjectDataBytype);
     }
 }

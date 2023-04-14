@@ -63,7 +63,7 @@ namespace FSAutomator.Backend.Actions
                         break;
                 }
 
-                connection.SubscribeToRecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
+                connection.SubscribeToOnRecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
 
                 Trace.WriteLine(this.VariableName);
 

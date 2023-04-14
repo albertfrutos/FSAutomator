@@ -15,7 +15,7 @@ namespace FSAutomator.Backend.Actions.Tests
     public class GetVariableTests
     {
         GetVariable getVariable;
-        
+
         Mock<ISimConnectBridge> simConnectBridgeMock;
 
         [TestMethod]
@@ -27,7 +27,7 @@ namespace FSAutomator.Backend.Actions.Tests
             this.simConnectBridgeMock = new Mock<ISimConnectBridge>();
             this.simConnectBridgeMock.Setup(x => x.AddToDataDefinition(It.IsAny<Enum>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<SIMCONNECT_DATATYPE>(), It.IsAny<float>(), It.IsAny<uint>()));
             this.simConnectBridgeMock.Setup(x => x.RegisterDataDefineStruct<StringType>(It.IsAny<Enum>()));
-            this.simConnectBridgeMock.Setup(x => x.SubscribeToRecvSimobjectDataBytypeEventHandler(It.IsAny<Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE>>()));
+            this.simConnectBridgeMock.Setup(x => x.SubscribeToOnRecvSimobjectDataBytypeEventHandler(It.IsAny<Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE>>()));
             this.simConnectBridgeMock.Setup(x => x.RequestDataOnSimObjectType(It.IsAny<Enum>(), It.IsAny<Enum>(), It.IsAny<uint>(), It.IsAny<SIMCONNECT_SIMOBJECT_TYPE>()));
             this.simConnectBridgeMock.Setup(x => x.ClearDataDefinition(It.IsAny<Enum>())).Callback(() =>
             {
