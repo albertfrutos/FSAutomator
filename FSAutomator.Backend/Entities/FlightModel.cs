@@ -19,12 +19,12 @@ namespace FSAutomator.Backend.Entities
         {
             if (Connection != null)
             {
-                //Connection.OnRecvSystemState += new SimConnect.RecvSystemStateEventHandler(GetAirCraftCfgPath);
-                //Connection.RequestSystemState(DATA_REQUESTS.REQUEST_1, "AircraftLoaded");
+                var path = Connection.ShortcutActions.GetLoadedAircraftCfgFilePath();
+                LoadFlightModelData(path);
             }
         }
 
-        private void GetAirCraftCfgPath(SimConnect Connection, SIMCONNECT_RECV_SYSTEM_STATE data)
+        private void LoadFlightModelData(string path)
         {
             var baseFSPathOfficial = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathOfficial;
             var baseFSPathCommunity = ApplicationConfig.GetInstance.FSPackagesPaths.FSPathCommunity;
@@ -32,7 +32,7 @@ namespace FSAutomator.Backend.Entities
             List<string> installedAircrafts = SearchFileInAllDirectories(baseFSPathOfficial, aircraftCfgFileName);
             installedAircrafts.AddRange(SearchFileInAllDirectories(baseFSPathCommunity, aircraftCfgFileName));
 
-            var currentAircraftCfgPath = installedAircrafts.Where(z => z.EndsWith(data.szString, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().ToString();
+            var currentAircraftCfgPath = installedAircrafts.Where(z => z.EndsWith(path, StringComparison.CurrentCultureIgnoreCase)).FirstOrDefault().ToString();
 
             if (currentAircraftCfgPath != "")
             {

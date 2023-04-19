@@ -25,8 +25,6 @@ namespace FSAutomator.Backend
 
         public Automator automator = null;
 
-        private Thread _simConnectReceiveThread = null;
-
         public GeneralStatus status = GeneralStatus.GetInstance;
 
         public ApplicationConfig config = ApplicationConfig.GetInstance;
@@ -93,7 +91,7 @@ namespace FSAutomator.Backend
             var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
             var uniqueID = Guid.NewGuid().ToString();
 
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, false, true, fileToLoad));
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, false, true, false, fileToLoad));
         }
 
         public List<string> ValidateActions()
@@ -145,6 +143,7 @@ namespace FSAutomator.Backend
             var uniqueID = jsonObject["UniqueID"].ToString();
             var stopOnError = (bool)jsonObject["StopOnError"];
             var actionParameters = jsonObject["Parameters"].ToString();
+            var parallelLaunch = (bool)jsonObject["ParallelLaunch"];
 
             if (!Utils.CheckIfActionExists(actionName))
             {
@@ -153,7 +152,7 @@ namespace FSAutomator.Backend
                 return;
             }
 
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, false, stopOnError, automationFile);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, false, stopOnError, parallelLaunch, automationFile);
 
             automator.ActionList.Insert(position + 1, action);
 

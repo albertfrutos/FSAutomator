@@ -10,6 +10,8 @@ namespace FSAutomator.SimConnectInterface
     {
         public SimConnect Connection { get; private set; } = null;
 
+        public ShortcutActions ShortcutActions { get; } = new ShortcutActions();
+
         public event EventHandler<ConnectionStatusChangeEventArgs> ConnectionStatusChangeEvent;
 
         private EventWaitHandle simConnectEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
@@ -76,6 +78,8 @@ namespace FSAutomator.SimConnectInterface
                 this.Connection.OnRecvException += new SimConnect.RecvExceptionEventHandler(this.Simconnect_OnRecvException);
 
                 this.StartMessageReceiveThreadHandler();
+
+                this.ShortcutActions.Connection = this.Connection;
             }
             catch (COMException ex)
             {
@@ -88,9 +92,9 @@ namespace FSAutomator.SimConnectInterface
             this.Connection.RegisterDataDefineStruct<T>(type);
         }
 
-        public void AddToDataDefinition(Enum defineID, string variableName, string unit, SIMCONNECT_DATATYPE dataType, float v, uint sIMCONNECT_UNUSED)
+        public void AddToDataDefinition(Enum defineID, string variableName, string unit, SIMCONNECT_DATATYPE dataType, float v)
         {
-            this.Connection.AddToDataDefinition(defineID, variableName, unit, dataType, 0.0f, sIMCONNECT_UNUSED);
+            this.Connection.AddToDataDefinition(defineID, variableName, unit, dataType, 0.0f, SimConnect.SIMCONNECT_UNUSED);
         }
 
         public void Disconnect()
@@ -123,6 +127,12 @@ namespace FSAutomator.SimConnectInterface
         {
             this.Connection.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(method);
 
+        }
+
+        public void SubscribeToRecvSystemStateEventHandlerAndGetAircraftLoadedCfgFilePath(Action<SimConnect, SIMCONNECT_RECV_SYSTEM_STATE> method)
+        {
+            this.Connection.OnRecvSystemState += new SimConnect.RecvSystemStateEventHandler(method);
+            this.Connection.RequestSystemState(DATA_REQUESTS.REQUEST_1, "AircraftLoaded");
         }
 
         private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)

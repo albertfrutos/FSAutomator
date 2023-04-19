@@ -25,7 +25,7 @@ namespace FSAutomator.Backend.Entities
         private string s_mainFilePath;
         private AutomationFile o_AutomationFile;
 
-        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
+        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, bool isAuxiliary, bool stopOnError, bool parallelLaunch, AutomationFile automationFile)
         {
 
 
@@ -56,6 +56,7 @@ namespace FSAutomator.Backend.Entities
             b_isValidated = false;
             b_isAuxiliary = isAuxiliary;
             b_stopOnError = stopOnError;
+            b_ParallelLaunch = parallelLaunch;
             o_AutomationFile = automationFile;
         }
 
@@ -332,7 +333,7 @@ namespace FSAutomator.Backend.Entities
                     actionObject = new WaitSeconds(Convert.ToInt32(dParameters.WaitTime));
                     break;
                 case "WaitUntilVariableReachesNumericValue":
-                    actionObject = new WaitUntilVariableReachesNumericValue(dParameters.VariableName, dParameters.Comparison, dParameters.ThresholdValue, new GetVariable(), Convert.ToInt32(dParameters.CheckInterval));
+                    actionObject = new WaitUntilVariableReachesNumericValue(dParameters.VariableName, dParameters.Comparison, dParameters.ThresholdValue, new GetVariable(dParameters.VariableName), Convert.ToInt32(dParameters.CheckInterval));
                     break;
                 case "CalculateBearingToCoordinates":
                     actionObject = new CalculateBearingToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());

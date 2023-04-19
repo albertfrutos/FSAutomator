@@ -54,30 +54,19 @@ namespace FSAutomator.Backend.Automators
 
             foreach (FSAutomatorAction action in ActionList)
             {
+                var errorOccurred = false;
 
-                var stopExecutionByActionError = RunAndProcessAction(action);
-
-                if (stopExecutionByActionError)
+                if (action.ParallelLaunch)
                 {
-                    var error = new InternalMessage()
-                    {
-                        Message = "An error caused the automation to stop (as configured)",
-                        Type = InternalMessage.MsgType.Error
-                    };
-
-                    status.ReportStatus(error);
-                    break;
+                    Task.Run(() => errorOccurred = ProcessAction(action));
+                }
+                else
+                {
+                    errorOccurred = ProcessAction(action);
                 }
 
-                if (status.GeneralErrorHasOcurred)
+                if (errorOccurred)
                 {
-                    var error = new InternalMessage()
-                    {
-                        Message = "A general critical error caused the automation to stop",
-                        Type = InternalMessage.MsgType.Error
-                    };
-
-                    status.ReportStatus(error);
                     break;
                 }
             }
@@ -86,7 +75,36 @@ namespace FSAutomator.Backend.Automators
 
         }
 
-        private bool RunAndProcessAction(FSAutomatorAction action)
+        private bool ProcessAction(FSAutomatorAction action)
+        {
+            var stopExecutionByActionError = RunAction(action);
+
+            if (stopExecutionByActionError)
+            {
+                var error = new InternalMessage()
+                {
+                    Message = $"An error caused the automation to stop (as configured in [{ActionList.IndexOf(action)}]{action.Name} - {action.UniqueID})",
+                    Type = InternalMessage.MsgType.Error
+                };
+
+                status.ReportStatus(error);
+            }
+
+            if (status.GeneralErrorHasOcurred)
+            {
+                var error = new InternalMessage()
+                {
+                    Message = $"A general critical error caused the automation to stop ([{ActionList.IndexOf(action)}]{action.Name} - {action.UniqueID})",
+                    Type = InternalMessage.MsgType.Error
+                };
+
+                status.ReportStatus(error);
+            }
+
+            return stopExecutionByActionError || status.GeneralErrorHasOcurred;
+        }
+
+        private bool RunAction(FSAutomatorAction action)
         {
             action.Status = ActionStatus.Running;
 

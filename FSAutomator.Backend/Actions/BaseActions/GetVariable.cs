@@ -48,7 +48,7 @@ namespace FSAutomator.Backend.Actions
                 
                 semaphore.WaitOne();
 
-                connection.AddToDataDefinition(defineID, this.VariableName, unit, dataType, 0.0f, SimConnect.SIMCONNECT_UNUSED);
+                connection.AddToDataDefinition(defineID, this.VariableName, unit, dataType, 0.0f);
 
                 switch (variable.Type)
                 {
@@ -65,7 +65,6 @@ namespace FSAutomator.Backend.Actions
 
                 connection.SubscribeToOnRecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
 
-                Trace.WriteLine(this.VariableName);
 
                 connection.RequestDataOnSimObjectType(DATA_REQUESTS.REQUEST_1, defineID, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
                 connection.ClearDataDefinition(defineID);

@@ -180,6 +180,7 @@ namespace FSAutomator.Backend.Utilities
                 var actionParameters = action["Parameters"]?.ToString();
                 var actionIsAuxiliary = Convert.ToBoolean(action["IsAuxiliary"]?.ToString());
                 var actionStopOnError = Convert.ToBoolean(action["StopOnError"]?.ToString());
+                var parallelLaunch = Convert.ToBoolean(action["ParallelLaunch"]?.ToString());
 
                 actionList.Add(new FSAutomatorAction(
                     actionName,
@@ -188,6 +189,7 @@ namespace FSAutomator.Backend.Utilities
                     actionParameters,
                     actionIsAuxiliary,
                     actionStopOnError,
+                    parallelLaunch,
                     fileToLoad
                     ));
 

@@ -26,6 +26,7 @@ namespace FSAutomator.Backend.Actions
         {
 
         }
+
         public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             var result = this.getVariable.ExecuteAction(sender, connection);
