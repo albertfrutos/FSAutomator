@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.AutomatorInterface
@@ -8,10 +9,13 @@ namespace FSAutomator.Backend.AutomatorInterface
     public class FSAutomatorInterfaceBaseActions
     {
         internal Automator automator { get; set; }
-        internal SimConnect Connection { get; set; }
+        internal ISimConnectBridge Connection { get; set; }
         private GeneralStatus Status { get; set; }
 
-        public FSAutomatorInterfaceBaseActions(Automator automator, SimConnect connection)
+        IGetVariable getVariable;
+
+        ISendEvent sendEvent;
+        public FSAutomatorInterfaceBaseActions(Automator automator, ISimConnectBridge connection)
         {
             this.automator = automator;
             this.Connection = connection;
@@ -65,7 +69,7 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         public ActionResult ExpectVariableValue(string variableName, string variableExpectedValue)
         {
-            var action = new ExpectVariableValue(variableName, variableExpectedValue);
+            var action = new ExpectVariableValue(variableName, variableExpectedValue, getVariable);
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }
@@ -79,14 +83,14 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         public ActionResult WaitSeconds(int time)
         {
-            var action = new WaitSeconds(time); //eliminar
+            var action = new WaitSeconds(time);
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }
 
         public ActionResult WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
         {
-            var action = new WaitUntilVariableReachesNumericValue(variableName, comparison, thresholdValue, checkInterval);
+            var action = new WaitUntilVariableReachesNumericValue(variableName, comparison, thresholdValue, new GetVariable(), checkInterval);
             var result = action.ExecuteAction(automator, Connection);
             return result;
         }

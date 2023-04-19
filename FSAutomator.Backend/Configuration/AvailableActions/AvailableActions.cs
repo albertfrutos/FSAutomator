@@ -1,4 +1,6 @@
-﻿namespace FSAutomator.BackEnd.Configuration
+﻿using FSAutomator.Backend.Utilities;
+
+namespace FSAutomator.BackEnd.Configuration
 {
     public class AvailableAction
     {
@@ -19,11 +21,7 @@
 
         public AvailableActions GetAvailableActions()
         {
-            var availableActions = AppDomain.CurrentDomain.GetAssemblies()
-                       .SelectMany(t => t.GetTypes())
-                       .Where(t => t.IsClass && t.IsNested == false && t.Namespace == "FSAutomator.Backend.Actions")
-                       .Select(T => T.Name)
-                       .ToList();
+            var availableActions = Utils.GetExistingActions();
 
             FSAutomatorAvailableActions = new List<AvailableAction>();
 

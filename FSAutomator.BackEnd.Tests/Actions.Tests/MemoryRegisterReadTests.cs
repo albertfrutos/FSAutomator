@@ -5,12 +5,12 @@ using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
-namespace FSAutomator.BackEnd.Tests
+namespace FSAutomator.Backend.Actions.Tests
 {
     [TestClass]
     public class MemoryRegisterReadTests
     {
-        MemoryRegisterRead mrd;
+        MemoryRegisterRead Mrd;
         Automator automator;
 
         const string testValue = "TestValue";
@@ -21,7 +21,7 @@ namespace FSAutomator.BackEnd.Tests
         {
             const bool removeAfterRead = false;
 
-            this.mrd = new MemoryRegisterRead()
+            this.Mrd = new MemoryRegisterRead()
             {
                 RemoveAfterRead = removeAfterRead,
                 Id = testId
@@ -35,7 +35,7 @@ namespace FSAutomator.BackEnd.Tests
                 }
             };
 
-            var testResult = this.mrd.ExecuteAction(this.automator, null);
+            var testResult = this.Mrd.ExecuteAction(this.automator, null);
 
             this.automator.MemoryRegisters.Should().ContainKey(testId);
             this.automator.MemoryRegisters.Should().ContainValue(testValue);
@@ -49,7 +49,7 @@ namespace FSAutomator.BackEnd.Tests
         {
             const bool removeAfterRead = true;
 
-            this.mrd = new MemoryRegisterRead()
+            this.Mrd = new MemoryRegisterRead()
             {
                 RemoveAfterRead = removeAfterRead,
                 Id = testId
@@ -63,7 +63,7 @@ namespace FSAutomator.BackEnd.Tests
                 }
             };
 
-            var testResult = this.mrd.ExecuteAction(this.automator, null);
+            var testResult = this.Mrd.ExecuteAction(this.automator, null);
 
             this.automator.MemoryRegisters.Should().NotContainKey(testId);
 
@@ -76,7 +76,7 @@ namespace FSAutomator.BackEnd.Tests
         {
             const bool removeAfterRead = true;
 
-            this.mrd = new MemoryRegisterRead()
+            this.Mrd = new MemoryRegisterRead()
             {
                 RemoveAfterRead = removeAfterRead,
                 Id = testId
@@ -87,7 +87,7 @@ namespace FSAutomator.BackEnd.Tests
                 MemoryRegisters = new Dictionary<string, string>()
             };
 
-            var testResult = this.mrd.ExecuteAction(this.automator, null);
+            var testResult = this.Mrd.ExecuteAction(this.automator, null);
 
             testResult.ComputedResult.Should().Be(null);
             testResult.Error.Should().BeTrue();

@@ -575,14 +575,14 @@
   },
   {
     "name": "FLY ASSISTANT LANDING SPEED",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Returns the POH range or an estimated value for this speed.",
     "group": "Aircraft_AutopilotAssistant_Variables"
   },
   {
     "name": "FLY ASSISTANT LANDING SPEED DISPLAY MODE",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Returns the display mode of the speed, CSS side (only STALL SPEED is working and will turn red when below).",
     "group": "Aircraft_AutopilotAssistant_Variables"
@@ -610,7 +610,7 @@
   },
   {
     "name": "FLY ASSISTANT NEAREST NAME",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Returns the name of the element at the specified index.",
     "group": "Aircraft_AutopilotAssistant_Variables"
@@ -645,7 +645,7 @@
   },
   {
     "name": "FLY ASSISTANT STALL SPEED DISPLAY MODE",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Returns the flight assistant stall speed display mode.",
     "group": "Aircraft_AutopilotAssistant_Variables"
@@ -659,7 +659,7 @@
   },
   {
     "name": "FLY ASSISTANT TAKEOFF SPEED DISPLAY MODE",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Returns the flight assistant takeoff speed display mode.",
     "group": "Aircraft_AutopilotAssistant_Variables"
@@ -4418,7 +4418,7 @@
   },
   {
     "name": "TITLE",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Title from aircraft.cfg",
     "group": "Aircraft_Misc_Variables"
@@ -4985,7 +4985,7 @@
   },
   {
     "name": "ADF IDENT",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ICAO code",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -4999,7 +4999,7 @@
   },
   {
     "name": "ADF NAME",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Descriptive name",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5055,7 +5055,7 @@
   },
   {
     "name": "ATC AIRLINE",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The name of the Airline used by ATC, as a string with a maximum length of 50 characters.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5104,7 +5104,7 @@
   },
   {
     "name": "ATC FLIGHT NUMBER",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Flight Number used by ATC, as a string with a maximum number of 6 characters.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5139,7 +5139,7 @@
   },
   {
     "name": "ATC ID",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ID used by ATC, as a string with a maximum number of 10 characters.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5153,7 +5153,7 @@
   },
   {
     "name": "ATC MODEL",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Model used by ATC, as a string with a maximum number of 10 characters.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5174,7 +5174,7 @@
   },
   {
     "name": "ATC RUNWAY AIRPORT NAME",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The name of the airport of the runway assigned by the ATC. Returns &quot;&quot; if no runway is assigned.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5342,7 +5342,7 @@
   },
   {
     "name": "COM ACTIVE FREQ IDENT:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The identity of the station that is tuned on the indexed active COM radio. Index is 1, 2, or 3.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5412,7 +5412,7 @@
   },
   {
     "name": "COM STANDBY FREQ IDENT:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The identity of the station that is tuned on the indexed standby COM radio. Index is 1, 2, or 3.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5454,14 +5454,14 @@
   },
   {
     "name": "GPS APPROACH AIRPORT ID",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ID of airport",
     "group": "Aircraft_RadioNavigation_Variables"
   },
   {
     "name": "GPS APPROACH APPROACH ID",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ID of approach",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5524,7 +5524,7 @@
   },
   {
     "name": "GPS APPROACH TRANSITION ID",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ID of approach transition",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5846,7 +5846,7 @@
   },
   {
     "name": "GPS WP NEXT ID",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ID of next GPS waypoint",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5874,7 +5874,7 @@
   },
   {
     "name": "GPS WP PREV ID",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ID of previous GPS waypoint",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -5993,7 +5993,7 @@
   },
   {
     "name": "HSI STATION IDENT",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Returns the ident of the the next GPS waypoint, if GPS_DRIVES_NAV1 is true. If GPS DRIVES NAV1 is false, it returns the identity of the station that is tuned on nav radio 1.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -6126,7 +6126,7 @@
   },
   {
     "name": "NAV CLOSE IDENT:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ICAO code. Requires an index value from 1 to 4 to set which NAV to target.          Note that this SimVar will only work if the NAV1_CLOSE_FREQ_SET key event has been set to 1 (TRUE).        ",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -6140,7 +6140,7 @@
   },
   {
     "name": "NAV CLOSE NAME:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Descriptive name. Requires an index value from 1 to 4 to set which NAV to target.          Note that this SimVar will only work if the NAV1_CLOSE_FREQ_SET key event has been set to 1 (TRUE).        ",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -6280,7 +6280,7 @@
   },
   {
     "name": "NAV IDENT",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "ICAO code",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -6294,7 +6294,7 @@
   },
   {
     "name": "NAV LOC AIRPORT IDENT",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The airport ICAO ident for the localizer that is currently tuned on the nav radio (like &#39;EGLL&#39; or &#39;KJFK&#39;)",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -6322,7 +6322,7 @@
   },
   {
     "name": "NAV NAME",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Descriptive name",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -6483,7 +6483,7 @@
   },
   {
     "name": "TACAN STATION IDENT:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The tuned station identifier for the indexed Tacan.",
     "group": "Aircraft_RadioNavigation_Variables"
@@ -7603,14 +7603,14 @@
   },
   {
     "name": "DROPPABLE OBJECTS TYPE:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The type of droppable object at the station number identified by the index.",
     "group": "Aircraft_System_Variables"
   },
   {
     "name": "DROPPABLE OBJECTS UI NAME:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Descriptive name, used in User Interface dialogs, of a droppable object, identified by index.",
     "group": "Aircraft_System_Variables"
@@ -7624,7 +7624,7 @@
   },
   {
     "name": "PAYLOAD STATION NAME:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Descriptive name for payload station",
     "group": "Aircraft_System_Variables"
@@ -7638,7 +7638,7 @@
   },
   {
     "name": "PAYLOAD STATION OBJECT:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "Places the named object at the payload station identified by the index (starting from 1). The string is the Container name (refer to the title property of Simulation Object Configuration Files).",
     "group": "Aircraft_System_Variables"
@@ -8219,7 +8219,7 @@
   },
   {
     "name": "CATEGORY",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "One of the following:                      &quot;Airplane&quot;,            &quot;Helicopter&quot;,            &quot;Boat&quot;,            &quot;GroundVehicle&quot;,            &quot;ControlTower&quot;,            &quot;SimpleObject&quot;,            &quot;Viewer&quot;                  ",
     "group": "Miscellaneous_Variables"
@@ -8261,7 +8261,7 @@
   },
   {
     "name": "IDLE ANIMATION ID",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "The ID of the idle animation for the sim object.",
     "group": "Miscellaneous_Variables"
@@ -8786,7 +8786,7 @@
   },
   {
     "name": "SMART CAMERA LIST DESCRIPTION:index",
-    "unit": "String",
+    "unit": "",
     "type": "string",
     "description": "This returns a localized string that represents the smartcam target specified by the given index. Indices count from 0 so index 0 is the first target in the list.",
     "group": "Camera_Variables"

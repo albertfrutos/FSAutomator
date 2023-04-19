@@ -1,7 +1,9 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions.Base;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
+using FSAutomator.SimConnectInterface;
 using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Xml;
@@ -10,7 +12,7 @@ using System.Xml.Serialization;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class FlightPositionLogger
+    public class FlightPositionLogger: ActionBase, IAction
     {
         public int LoggingTimeSeconds { get; set; } = 60;
         public int LoggingPeriodSeconds { get; set; } = 1;
@@ -18,25 +20,25 @@ namespace FSAutomator.Backend.Actions
  
         private System.Timers.Timer loggingTimeTimer;
 
-        private bool continueLogging = true;
+        internal bool continueLogging = true;
 
         private EventHandler<bool> finishLoggingEvent;
 
-        private string KmlContent = "";
 
         public FlightPositionLogger()
         {
 
         }
 
-        public FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, bool logInNoLockingBackgroundMode = false)
+        public FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, IGetVariable getVariable, bool logInNoLockingBackgroundMode = false) : base(getVariable)
         {
             this.LoggingTimeSeconds = loggingTimeSeconds;
             this.LoggingPeriodSeconds = loggingPeriodSeconds;
             this.LogInNoLockingBackgroundMode = logInNoLockingBackgroundMode;
+            this.getVariable = getVariable;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             if (this.LogInNoLockingBackgroundMode)
             {
@@ -47,19 +49,18 @@ namespace FSAutomator.Backend.Actions
             }
             else
             {
-                StartLoggingFlight(sender, connection);
+                var result = StartLoggingFlight(sender, connection);
+                return result;
             }
-            
-            return new ActionResult(KmlContent, KmlContent, false);
         }
 
-        private void StopBackgroundLogging(object sender, bool isManualStop)
+        internal void StopBackgroundLogging(object sender, bool isManualStop)
         {
             StopLogging(this, isManualStop);
             finishLoggingEvent -= StopBackgroundLogging;
         }
 
-        private ActionResult StartLoggingFlight(object sender, SimConnect connection)
+        private ActionResult StartLoggingFlight(object sender, ISimConnectBridge connection)
         {
             Logger logger = new Logger();
 
@@ -68,7 +69,7 @@ namespace FSAutomator.Backend.Actions
 
             bool isLoggingTimeEnabled = loggingTime > 0;
 
-            if (isLoggingTimeEnabled)
+            if (isLoggingTimeEnabled && !LogInNoLockingBackgroundMode)
             {
                 loggingTimeTimer = new System.Timers.Timer(loggingTime * 1000);
                 loggingTimeTimer.Elapsed += delegate { StopLoggingTimeIsOver(); };
@@ -79,9 +80,14 @@ namespace FSAutomator.Backend.Actions
 
             while (continueLogging)
             {
-                latitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection).ComputedResult;
-                longitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection).ComputedResult;
-                altitude = new GetVariable("PLANE ALTITUDE").ExecuteAction(sender, connection).ComputedResult;
+                this.getVariable.VariableName = "PLANE LATITUDE";
+                latitude = this.getVariable.ExecuteAction(sender, connection).ComputedResult;
+
+                this.getVariable.VariableName = "PLANE LONGITUDE";
+                longitude = this.getVariable.ExecuteAction(sender, connection).ComputedResult;
+
+                this.getVariable.VariableName = "PLANE ALTITUDE";
+                altitude = this.getVariable.ExecuteAction(sender, connection).ComputedResult;
 
                 var altitudeMetric = (Convert.ToDouble(altitude) * 0.3048).ToString();
 
@@ -95,13 +101,15 @@ namespace FSAutomator.Backend.Actions
                 return new ActionResult("No points were logged.", "No points were logged.", true);
             }
 
+            var fileName = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+
             var xmlPoints = ConvertLogToXML(logger.Points, typeof(List<Point>));
-            WriteLogToDisk(xmlPoints, "prova.xml");
+            WriteLogToDisk(xmlPoints, $"{fileName}.xml");
 
             var kmlPoints = ConvertLogToKMLTrace(logger.Points);
-            WriteLogToDisk(kmlPoints, "prova.kml");
+            WriteLogToDisk(kmlPoints, $"{fileName}.kml");
 
-            return new ActionResult("Logging finished.", "Logging finished.", false);
+            return new ActionResult("Logging finished.", fileName, false);
 
         }
 
@@ -123,7 +131,6 @@ namespace FSAutomator.Backend.Actions
             var indentedKmlFileContent = XDocument.Parse(template).ToString();
 
             return indentedKmlFileContent;
-
         }
 
         private static string ConvertPointsToKMLCompatibleCoordinates(List<Point> points)
@@ -137,7 +144,6 @@ namespace FSAutomator.Backend.Actions
 
             return coordinatesString.ToString();
         }
-
 
         private static string ConvertLogToXML(object ObjectToSerialize, Type typeOfPoints)
         {
@@ -179,11 +185,7 @@ namespace FSAutomator.Backend.Actions
                 Directory.CreateDirectory(logsFolder);
             }
 
-            // usar path.combine
-
             File.WriteAllText(Path.Combine(logsFolder, filename), content);
         }
-
-
     }
 }

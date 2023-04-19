@@ -5,6 +5,7 @@ using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.AutomationImportersAndExporters;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Validators;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,18 +13,17 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
+using static FSAutomator.SimConnectInterface.Entities;
 
 namespace FSAutomator.Backend
 {
     public class BackendMain
     {
-        private SimConnect m_SimConnect = null;
+        private ISimConnectBridge Connection;
 
         private EventWaitHandle _simConnectEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
 
-        public Automator automator = new Automator();
-
-        private Thread _simConnectReceiveThread = null;
+        public Automator automator = null;
 
         public GeneralStatus status = GeneralStatus.GetInstance;
 
@@ -31,21 +31,13 @@ namespace FSAutomator.Backend
 
         public BackendMain()
         {
+            this.Initialize();
         }
 
         public void Execute()
         {
 
             automator.ExecuteActionList();
-        }
-
-        public SimConnect Connection
-        {
-            get
-            {
-                return m_SimConnect;
-            }
-            set { }
         }
 
         public InternalMessage SaveAutomation(AutomationFile automation, string newFileName)
@@ -97,10 +89,9 @@ namespace FSAutomator.Backend
         private void LoadDLLActions(AutomationFile fileToLoad)
         {
             var fileToLoadPath = Path.Combine(config.AutomationsFolder, fileToLoad.PackageName, fileToLoad.FileName);
-
-            var externalAutomatorObject = new ExternalAutomator(fileToLoad.FileName, fileToLoadPath);
             var uniqueID = Guid.NewGuid().ToString();
-            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, externalAutomatorObject, false, true, fileToLoad));
+
+            AddAction(new FSAutomatorAction("DLLAutomation", uniqueID, ActionStatus.Pending, fileToLoadPath, false, true, false, fileToLoad));
         }
 
         public List<string> ValidateActions()
@@ -116,33 +107,19 @@ namespace FSAutomator.Backend
 
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
-            var actionList = Utils.GetAutomationsObjectList(fileToLoad);
+            var actionList = Utils.GetActionsList(fileToLoad, true);
 
-            if (actionList is null)
-            {
-                var exMessage = String.Format("There was a problem while processing the action list for {0}", fileToLoad.FileName);
-                status.ReportStatus(new InternalMessage(exMessage, true));
-                return;
-            }
-
-            foreach (FSAutomatorAction action in actionList)
-            {
-                var finalAction = ApplyActionModifications(fileToLoad, action);
-
-                AddAction(finalAction);
-            }
-
+            AddActions(actionList);
+           
             return;
         }
 
-        private static FSAutomatorAction ApplyActionModifications(AutomationFile fileToLoad, FSAutomatorAction action)
+        private void AddActions(ObservableCollection<FSAutomatorAction> actionList)
         {
-            if (action.Name == "ExecuteCodeFromDLL")
+            foreach (FSAutomatorAction action in actionList)
             {
-                (action.ActionObject as ExecuteCodeFromDLL).PackFolder = fileToLoad.PackageName;
+                AddAction(action);
             }
-
-            return action;
         }
 
         public void AddAction(FSAutomatorAction action)
@@ -163,25 +140,19 @@ namespace FSAutomator.Backend
         {
             var jsonObject = JObject.Parse(actionJSON);
             var actionName = jsonObject["Name"].ToString();
-
-            var actionParameters = jsonObject["Parameters"].ToString();
-            var uniqueID = Guid.NewGuid().ToString();
+            var uniqueID = jsonObject["UniqueID"].ToString();
             var stopOnError = (bool)jsonObject["StopOnError"];
+            var actionParameters = jsonObject["Parameters"].ToString();
+            var parallelLaunch = (bool)jsonObject["ParallelLaunch"];
 
-            Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
-
-            if (actionType == null)
+            if (!Utils.CheckIfActionExists(actionName))
             {
                 var message = new InternalMessage($"Action name ({actionName}) does not exist. Did you select an action?", true);
                 status.ReportStatus(message);
                 return;
             }
 
-            Activator.CreateInstance(actionType);
-
-            var actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-
-            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, actionObject, false, stopOnError, automationFile);
+            FSAutomatorAction action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, false, stopOnError, parallelLaunch, automationFile);
 
             automator.ActionList.Insert(position + 1, action);
 
@@ -206,6 +177,9 @@ namespace FSAutomator.Backend
 
         public void Initialize()
         {
+            this.Connection = new SimConnectBridge();
+            this.automator = new Automator(this.Connection);
+
             status.ReportStatusEvent += ProcessErrorEvent;
         }
 
@@ -263,83 +237,39 @@ namespace FSAutomator.Backend
         public void Disconnect()
         {
             Console.WriteLine("Disconnect");
-
-            if (m_SimConnect != null)
-            {
-                m_SimConnect.Dispose();
-                m_SimConnect = null;
-                status.IsConnectedToSim = false;
-            }
+            Connection.Disconnect();
+            status.IsConnectedToSim = Connection.IsConnected();
         }
 
         public void Connect()
         {
-
             try
             {
-                m_SimConnect = new SimConnect("Simconnect - FSAutomator", IntPtr.Zero, 0, _simConnectEventHandle, 0);
-
-                m_SimConnect.OnRecvOpen += new SimConnect.RecvOpenEventHandler(Simconnect_OnRecvOpen);
-                m_SimConnect.OnRecvQuit += new SimConnect.RecvQuitEventHandler(Simconnect_OnRecvQuit);
-                m_SimConnect.OnRecvException += new SimConnect.RecvExceptionEventHandler(Simconnect_OnRecvException);
-
-                StartMessageReceiveThreadHandler();
+                Connection.Connect();
+                Connection.ConnectionStatusChangeEvent += HandleConnectionStatusChange;
             }
             catch (COMException ex)
             {
                 Trace.WriteLine("Connection to simulator failed: " + ex.Message);
             }
-
-
-
         }
 
-        private void StartMessageReceiveThreadHandler()
+        private void HandleConnectionStatusChange(object sender, ConnectionStatusChangeEventArgs e)
         {
-            _simConnectReceiveThread = new Thread(new ThreadStart(SimConnect_MessageReceiveThreadHandler));
-            _simConnectReceiveThread.IsBackground = true;
-            _simConnectReceiveThread.Start();
+            status.IsConnectedToSim = Connection.IsConnected();
 
-        }
-        private void SimConnect_MessageReceiveThreadHandler()
-        {
-            while (true)
+            switch (e.ConnectionStatus)
             {
-                _simConnectEventHandle.WaitOne();
-
-                try
-                {
-                    m_SimConnect?.ReceiveMessage();
-                }
-                catch
-                {
-                    // ignored
-                }
+                case ConnectionStatus.Open:
+                    status.GeneralErrorHasOcurred = false;
+                    break;
+                case ConnectionStatus.Exception:
+                    status.ReportStatus(new InternalMessage("An exception ocurred with the connection to the sim and the automation will be stopped: " + e.Message, true, true));
+                    break;
+                case ConnectionStatus.Failed:
+                    status.ReportStatus(new InternalMessage("Connection to simulator failed. Automation will be aborted: " + e.Message, true, true));
+                    break;
             }
-        }
-
-        private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)
-        {
-            this.automator.connection = this.m_SimConnect;
-            status.IsConnectedToSim = true;
-            status.GeneralErrorHasOcurred = false;
-        }
-
-        private void Simconnect_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
-        {
-            Console.WriteLine("An exception occurred Simconnect_OnRecvException: {0}", data.dwException.ToString());
-            SIMCONNECT_EXCEPTION eException = (SIMCONNECT_EXCEPTION)data.dwException;
-            Disconnect();
-
-            // This causes a trigger of a general (critical error). This means that the automation will be stopped.
-            status.ReportStatus(new InternalMessage("An exception ocurred with the connection to the sim and the automation will be stopped: " + eException.ToString(), true, true));
-        }
-
-        private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
-        {
-            status.IsConnectedToSim = false;
-            Disconnect();
-            Console.WriteLine("Simulator has exited. Closing connection and exiting Simulator module");
         }
 
         public void ImportAutomationFromFilePath(string filepath)

@@ -1,11 +1,14 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions.Base;
+using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class WaitUntilVariableReachesNumericValue : IAction
+    public class WaitUntilVariableReachesNumericValue : ActionBase, IAction
     {
 
         public string VariableName { get; set; }
@@ -20,20 +23,22 @@ namespace FSAutomator.Backend.Actions
         internal FSAutomatorAction CurrentAction = null;
 
         bool isValueReached = false;
+
         public WaitUntilVariableReachesNumericValue()
         {
 
         }
 
-        internal WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, int checkInterval = 200)
+        internal WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, IGetVariable getVariable, int checkInterval = 200) :base(getVariable)
         {
             VariableName = variableName;
             Comparison = comparison;
             ThresholdValue = thresholdValue;
             CheckInterval = checkInterval;
+            this.getVariable = getVariable;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             if (!AllowedComparisonValues.Contains(Comparison))
             {
@@ -56,7 +61,7 @@ namespace FSAutomator.Backend.Actions
 
             do
             {
-                var variableResult = new GetVariable(this.VariableName).ExecuteAction(sender, connection).ComputedResult;
+                var variableResult = getVariable.ExecuteAction(sender, connection).ComputedResult;
                 CheckVariableRecovered(variableResult);
                 Thread.Sleep(CheckInterval);
             } while (!this.isValueReached);
@@ -68,11 +73,11 @@ namespace FSAutomator.Backend.Actions
 
         private void GetCurrentAction(object sender)
         {
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+            var actionsList = (sender as Automator).ActionList;
 
             if (actionsList != null)
             {
-                CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).First();
+                CurrentAction = actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).FirstOrDefault();
             }
         }
 

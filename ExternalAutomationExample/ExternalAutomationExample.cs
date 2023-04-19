@@ -1,5 +1,6 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -47,7 +48,7 @@ namespace FSAutomator.ExternalAutomation
             return new ActionResult("Finished execution", "Finished execution", false);
         }
 
-        public string MyLonelyMethod(object sender, SimConnect connection, AutoResetEvent finishEvent, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
+        public string MyLonelyMethod(object sender, ISimConnectBridge connection, AutoResetEvent finishEvent, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
         {
             Trace.WriteLine("test MyLonelyMethodTest");
             finishEvent.Set();
@@ -57,7 +58,7 @@ namespace FSAutomator.ExternalAutomation
 
     public class Lalala
     {
-        public string LalalaTest(object sender, SimConnect connection, AutoResetEvent finishEvent, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
+        public string LalalaTest(object sender, ISimConnectBridge connection, AutoResetEvent finishEvent, Dictionary<string, string> memoryRegisters, string lastValue, ObservableCollection<FSAutomatorAction> actionList)
         {
             Trace.WriteLine("test lalalatest");
             finishEvent.Set();

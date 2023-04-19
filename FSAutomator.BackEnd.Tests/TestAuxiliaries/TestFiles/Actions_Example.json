@@ -1,0 +1,24 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "myId12345",
+      "StopOnError": false,
+      "Parameters": {
+        "DLLName": "random.dll",
+        "ClassName": "ExampleClass",
+        "MethodName": "ExampleMethod",
+        "IncludeAsExternalAutomator": true
+      }
+    },
+    {
+      "Name": "ExpectVariableValue",
+      "UniqueID": "06f845bc-18cf-40f3-a6f1-bb9ecf1e9597",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "VariableExpectedValue": "80"
+      }
+    }
+  ]
+}

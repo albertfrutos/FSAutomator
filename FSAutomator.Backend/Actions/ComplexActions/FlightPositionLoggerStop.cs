@@ -1,4 +1,5 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
@@ -20,7 +21,7 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, SimConnect connection)
         {
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+            var actionsList = (sender as Automator).ActionList;
             var loggerActions = actionsList.Where(x => x.Name == "FlightPositionLogger").ToList();
 
             if (!loggerActions.Any())
@@ -29,9 +30,9 @@ namespace FSAutomator.Backend.Actions
             }
 
             var loggerAction = loggerActions.First();
-            loggerAction.ActionObject.GetType().GetMethod("StopLogging").Invoke(this, new object[] { true });
+            (loggerAction.ActionObject as FlightPositionLogger).StopLogging(this, true);
 
-            return new ActionResult("a", "a", false);
+            return new ActionResult("Logger stopped", "Logger Stopped", false);
         }
     }
 }

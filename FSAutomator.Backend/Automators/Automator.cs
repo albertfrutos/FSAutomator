@@ -1,4 +1,6 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions;
+using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
@@ -7,7 +9,7 @@ namespace FSAutomator.Backend.Automators
 {
     public class Automator
     {
-        public SimConnect connection;
+        public ISimConnectBridge Connection;
 
         public Dictionary<string, string> MemoryRegisters = new Dictionary<string, string>();
         public FlightModel flightModel;
@@ -24,43 +26,47 @@ namespace FSAutomator.Backend.Automators
 
         }
 
+        public Automator(ISimConnectBridge connection)
+        {
+            this.Connection = connection;
+        }
+
         public void ExecuteActionList()
         {
+            /*
             if (this.connection == null)
             {
                 var message = new InternalMessage("Connection not active", true, false);
                 status.ReportStatus(message);
                 return;
             }
+            */
 
-            this.flightModel = new FlightModel(this.connection);
+            this.flightModel = new FlightModel(this.Connection);
+
+            var isThereAnyInvalidJSON = ActionList.Where(x => x.ActionObject == null).Any();
+
+            if (isThereAnyInvalidJSON)
+            {
+                status.ReportStatus(new InternalMessage("There are some actions with an invalid JSON", true, true));
+                return;
+            }
 
             foreach (FSAutomatorAction action in ActionList)
             {
+                var errorOccurred = false;
 
-                var stopExecutionByActionError = RunAndProcessAction(action);
-
-                if (stopExecutionByActionError)
+                if (action.ParallelLaunch)
                 {
-                    var error = new InternalMessage()
-                    {
-                        Message = "An error caused the automation to stop (as configured)",
-                        Type = InternalMessage.MsgType.Error
-                    };
-
-                    status.ReportStatus(error);
-                    break;
+                    Task.Run(() => errorOccurred = ProcessAction(action));
+                }
+                else
+                {
+                    errorOccurred = ProcessAction(action);
                 }
 
-                if (status.GeneralErrorHasOcurred)
+                if (errorOccurred)
                 {
-                    var error = new InternalMessage()
-                    {
-                        Message = "A general critical error caused the automation to stop",
-                        Type = InternalMessage.MsgType.Error
-                    };
-
-                    status.ReportStatus(error);
                     break;
                 }
             }
@@ -69,7 +75,36 @@ namespace FSAutomator.Backend.Automators
 
         }
 
-        private bool RunAndProcessAction(FSAutomatorAction action)
+        private bool ProcessAction(FSAutomatorAction action)
+        {
+            var stopExecutionByActionError = RunAction(action);
+
+            if (stopExecutionByActionError)
+            {
+                var error = new InternalMessage()
+                {
+                    Message = $"An error caused the automation to stop (as configured in [{ActionList.IndexOf(action)}]{action.Name} - {action.UniqueID})",
+                    Type = InternalMessage.MsgType.Error
+                };
+
+                status.ReportStatus(error);
+            }
+
+            if (status.GeneralErrorHasOcurred)
+            {
+                var error = new InternalMessage()
+                {
+                    Message = $"A general critical error caused the automation to stop ([{ActionList.IndexOf(action)}]{action.Name} - {action.UniqueID})",
+                    Type = InternalMessage.MsgType.Error
+                };
+
+                status.ReportStatus(error);
+            }
+
+            return stopExecutionByActionError || status.GeneralErrorHasOcurred;
+        }
+
+        private bool RunAction(FSAutomatorAction action)
         {
             action.Status = ActionStatus.Running;
 
@@ -86,7 +121,7 @@ namespace FSAutomator.Backend.Automators
 
         internal ActionResult ExecuteAction(FSAutomatorAction action)
         {
-            var result = (ActionResult)action.ActionObject.GetType().GetMethod("ExecuteAction").Invoke(action.ActionObject, new object[] { this, connection });
+            var result = (ActionResult)(action.ActionObject as dynamic).ExecuteAction(this, Connection);
             return result;
         }
 

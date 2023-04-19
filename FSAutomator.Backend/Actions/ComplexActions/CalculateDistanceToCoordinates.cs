@@ -1,10 +1,12 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions.Base;
+using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class CalculateDistanceToCoordinates : IAction
+    public class CalculateDistanceToCoordinates : ActionBase, IAction
     {
 
         public double FinalLatitude { get; set; }
@@ -14,18 +16,21 @@ namespace FSAutomator.Backend.Actions
 
         public double currentLongitude;
 
+        IGetVariable getVariable;
+
         public CalculateDistanceToCoordinates()
         {
 
         }
 
-        public CalculateDistanceToCoordinates(double lat, double lon)
+        public CalculateDistanceToCoordinates(double lat, double lon, IGetVariable getVariable) : base(getVariable)
         {
             this.FinalLatitude = lat;
             this.FinalLongitude = lon;
+            this.getVariable = getVariable;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             if (!GetCurrentCoordinates(sender, connection))
             {
@@ -49,15 +54,18 @@ namespace FSAutomator.Backend.Actions
             return new ActionResult($"{distance} Km.", distance.ToString(), false);
         }
 
-        private bool GetCurrentCoordinates(object sender, SimConnect connection)
+        private bool GetCurrentCoordinates(object sender, ISimConnectBridge connection)
         {
-            var currentLatitude = new GetVariable("PLANE LATITUDE").ExecuteAction(sender, connection);
+
+            getVariable.VariableName = "PLANE LATITUDE";
+            var currentLatitude = getVariable.ExecuteAction(sender, connection);
             this.currentLatitude = Convert.ToDouble(currentLatitude.ComputedResult);
 
-            var currentLongitude = new GetVariable("PLANE LONGITUDE").ExecuteAction(sender, connection);
+            getVariable.VariableName = "PLANE LONGITUDE";
+            var currentLongitude = getVariable.ExecuteAction(sender, connection);
             this.currentLongitude = Convert.ToDouble(currentLongitude.ComputedResult);
 
-            return currentLatitude.Error && currentLongitude.Error;
+            return !(currentLatitude.Error || currentLongitude.Error);
         }
     }
 }

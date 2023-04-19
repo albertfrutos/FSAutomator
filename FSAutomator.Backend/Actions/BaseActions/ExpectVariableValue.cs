@@ -1,36 +1,47 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Actions.Base;
+using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class ExpectVariableValue : IAction
+    public class ExpectVariableValue : ActionBase, IAction
     {
 
         public string VariableName { get; set; }
         public string VariableExpectedValue { get; set; }
 
 
-        internal ExpectVariableValue(string variableName, string variableExpectedValue)
+
+
+        internal ExpectVariableValue(string variableName, string variableExpectedValue, IGetVariable getVariable) : base(getVariable)
         {
             VariableName = variableName;
             VariableExpectedValue = variableExpectedValue;
+            this.getVariable = getVariable;
         }
 
-        public ExpectVariableValue()
+        public ExpectVariableValue():base()
         {
 
         }
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
-        {
-            var result = new GetVariable(this.VariableName).ExecuteAction(sender, connection);
 
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
+        {
+            var result = this.getVariable.ExecuteAction(sender, connection);
+
+            string isExpectedValue = CheckIfVariableHasExpectedValue(sender, connection, result.ComputedResult);
+
+             return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
+        }
+
+        internal string CheckIfVariableHasExpectedValue(object sender, ISimConnectBridge connection, string variableRealValue)
+        {
             this.VariableExpectedValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.VariableExpectedValue);
 
-            var isExpectedValue = (result.ComputedResult == VariableExpectedValue).ToString();
-
-            return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
+            var isExpectedValue = (variableRealValue == VariableExpectedValue).ToString();
+            return isExpectedValue;
         }
-
     }
 }

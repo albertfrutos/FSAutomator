@@ -1,11 +1,13 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Collections.ObjectModel;
+using System.Dynamic;
 using System.Text;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
 
@@ -57,13 +59,12 @@ namespace FSAutomator.Backend.Utilities
             return a;
         }
 
-        public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction, string packDirName = "")
+        public static bool CheckIfAllDLLsInActionFileExist(List<string> dllFilesInAction)
         {
             var allDLLsExist = true;
 
             foreach (string fullDLLPath in dllFilesInAction)
             {
-
                 if (!File.Exists(Path.Combine(fullDLLPath)))
                 {
                     allDLLsExist = false;
@@ -73,65 +74,35 @@ namespace FSAutomator.Backend.Utilities
             return allDLLsExist;
         }
 
-        public static ObservableCollection<FSAutomatorAction> GetAutomationsObjectList(AutomationFile fileToLoad, bool validateJSON = false)
+        public static bool CheckIfActionExists(string actionName)
         {
-            try
-            {
-                var filePath = fileToLoad.FilePath;
+            var availableActions = GetExistingActions();
 
-                var json = File.ReadAllText(filePath);
-
-                var jsonObject = JObject.Parse(json);
-
-                var actionsNode = jsonObject["Actions"].ToArray();
-
-                if (!actionsNode.Any())
-                {
-                    var exMessage = String.Format("No actions defined in JSON file.");
-                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage(exMessage, true));
-                    return null;
-                }
-
-                if (validateJSON)
-                {
-                    //aquiii
-                    var schemaTxt = File.ReadAllText(Config.SchemaFile);
-                    var schema = JsonSchema.Parse(schemaTxt);
-                    if(!jsonObject.IsValid(schema, out IList<string> jsonValidationErrors))
-                    {
-                        GeneralStatus.GetInstance.ValidationIssues.AddRange(jsonValidationErrors);
-                    }
-                }
-                
-
-                                
-
-                var actionsList = CreateActionList(fileToLoad, actionsNode);
-
-                return actionsList;
-            }
-            catch (Exception ex)
-            {
-                throw new ArgumentException(ex.Message);
-            }
-
+            return availableActions.Contains(actionName);
         }
 
+        public static List<string> GetExistingActions()
+        {
+            var actions = AppDomain.CurrentDomain.GetAssemblies()
+               .SelectMany(t => t.GetTypes())
+               .Where(t => t.IsClass && t.IsNested == false && t.Namespace == "FSAutomator.Backend.Actions")
+               .Select(T => T.Name)
+               .ToList();
+
+            return actions;
+        }
+
+        /*
         private static ObservableCollection<FSAutomatorAction> CreateActionList(AutomationFile fileToLoad, JToken[] actions)
         {
             ObservableCollection<FSAutomatorAction> actionsList = new ObservableCollection<FSAutomatorAction>();
 
-            var availableActions = AppDomain.CurrentDomain.GetAssemblies()
-                       .SelectMany(t => t.GetTypes())
-                       .Where(t => t.IsClass && t.IsNested == false && t.Namespace == "FSAutomator.Backend.Actions")
-                       .Select(T => T.Name)
-                       .ToList();
 
             foreach (JToken token in actions)
             {
                 var actionName = token["Name"].ToString();
 
-                if (!availableActions.Contains(actionName))
+                if (!CheckIfActionExists(actionName))
                 {
                     var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
                     GeneralStatus.GetInstance.ReportStatus(exMessage);
@@ -158,17 +129,81 @@ namespace FSAutomator.Backend.Utilities
                 }
                 var actionParameters = token["Parameters"] is null ? "" : token["Parameters"].ToString();
 
-                Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", actionName));
-
-                var actionObject = Activator.CreateInstance(actionType);
-
-                actionObject = JsonConvert.DeserializeObject(actionParameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
-
-                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, actionObject, isAuxiliary, stopOnError, fileToLoad);
+                var action = new FSAutomatorAction(actionName, uniqueID, ActionStatus.Pending, actionParameters, isAuxiliary, stopOnError, fileToLoad);
 
                 actionsList.Add(action);
             }
             return actionsList;
+        }
+        */
+
+        public static ObservableCollection<FSAutomatorAction> GetActionsList(AutomationFile fileToLoad, bool validateAutomationJSON)
+        {
+            var json = File.ReadAllText(fileToLoad.FilePath);
+            var actionList = new ObservableCollection<FSAutomatorAction>();
+            var jsonObjectActions = JObject.Parse(json);
+
+
+            if (validateAutomationJSON)
+            {
+                IList<string> JSONValidationErrors;
+
+                var isValid = ValidateAutomationJSON(jsonObjectActions, out JSONValidationErrors);
+
+                if (!isValid)
+                {
+                    GeneralStatus.GetInstance.ReportStatus(new InternalMessage($"JSON from {fileToLoad.FileName} is not valid according to the schema", false, false));
+                }
+            }
+
+            var actionsNode = jsonObjectActions["Actions"].ToArray();
+
+            if (!actionsNode.Any())
+            {
+                var exMessage = String.Format("No actions defined in JSON file {0}", fileToLoad.FileName);
+                GeneralStatus.GetInstance.ReportStatus(new InternalMessage(exMessage, true));
+                return null;
+            }
+
+            foreach (JToken action in actionsNode)
+            {
+                var actionName = action["Name"]?.ToString();
+
+                if (!Utils.CheckIfActionExists(actionName))
+                {
+                    var exMessage = new InternalMessage($"The action {actionName} is not supported.", true);
+                    GeneralStatus.GetInstance.ReportStatus(exMessage);
+                    return null;
+                }
+
+                var actionUniqueID = String.IsNullOrEmpty(action["UniqueID"]?.ToString().Trim()) ? Guid.NewGuid().ToString() : action["UniqueID"]?.ToString();
+                var actionParameters = action["Parameters"]?.ToString();
+                var actionIsAuxiliary = Convert.ToBoolean(action["IsAuxiliary"]?.ToString());
+                var actionStopOnError = Convert.ToBoolean(action["StopOnError"]?.ToString());
+                var parallelLaunch = Convert.ToBoolean(action["ParallelLaunch"]?.ToString());
+
+                actionList.Add(new FSAutomatorAction(
+                    actionName,
+                    actionUniqueID,
+                    ActionStatus.Pending,
+                    actionParameters,
+                    actionIsAuxiliary,
+                    actionStopOnError,
+                    parallelLaunch,
+                    fileToLoad
+                    ));
+
+            }
+
+            return actionList;
+
+        }
+
+        public static bool ValidateAutomationJSON(JObject jsonObjectActions, out IList<string> JSONValidationErrors)
+        {
+            var jsonSchemaText = File.ReadAllText(Config.SchemaFile);
+            JSchema schema = JSchema.Parse(jsonSchemaText);
+            return jsonObjectActions.IsValid(schema, out JSONValidationErrors);
         }
 
         public static List<AutomationFile> GetAutomationFilesList()
@@ -191,13 +226,13 @@ namespace FSAutomator.Backend.Utilities
 
                 var jsonAutomationFile = new AutomationFile(fileName, packageName, visibleName, filePath, basePath, true);
 
-                var actionList = Utils.GetAutomationsObjectList(jsonAutomationFile);
+                var actionList = Utils.GetActionsList(jsonAutomationFile, false);
 
                 if (actionList is null)
                 {
                     continue;
                 }
-
+                
                 var dllFilesAsExternalAutomatorAutomationFileList = actionList.Where(x => x.Name == "ExecuteCodeFromDLL")
                     .Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true)
                     .Select(z => new AutomationFile(
@@ -207,10 +242,8 @@ namespace FSAutomator.Backend.Utilities
                         Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
                         Directory.GetParent(Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
                         )).ToList();
-
+                
                 automationsToLoad.Add(jsonAutomationFile);
-                automationsToLoad.AddRange(dllFilesAsExternalAutomatorAutomationFileList);
-
             }
             return automationsToLoad;
         }
@@ -251,7 +284,8 @@ namespace FSAutomator.Backend.Utilities
                     writer.WriteValue(action.UniqueID);
                     writer.WritePropertyName("StopOnError");
                     writer.WriteValue(action.StopOnError);
-
+                    writer.WritePropertyName("ParallelLaunch");
+                    writer.WriteValue(action.ParallelLaunch);
 
                     if (action.ActionObject != null)
                     {
@@ -284,9 +318,9 @@ namespace FSAutomator.Backend.Utilities
             }
         }
 
-        public static string GetValueToOperateOnFromTag(object sender, SimConnect connection, string itemIdentificator)
+        public static string GetValueToOperateOnFromTag(object sender, ISimConnectBridge connection, string itemIdentificator)
         {
-            if (!(itemIdentificator.Contains("%") || itemIdentificator.StartsWith("%")))
+            if (!itemIdentificator.StartsWith("%"))
             {
                 return itemIdentificator;
             }
@@ -343,6 +377,20 @@ namespace FSAutomator.Backend.Utilities
             var kmlCodifiedColor = $"{B}{G}{R}";
 
             return kmlCodifiedColor;
+        }
+
+        internal static bool TryParse<T>(string text, out T value)
+        {
+            value = default(T);
+            try
+            {
+                value = (T)Convert.ChangeType(text, typeof(T));
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

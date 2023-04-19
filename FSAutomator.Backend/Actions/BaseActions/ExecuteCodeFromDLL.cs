@@ -1,5 +1,7 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
@@ -19,6 +21,7 @@ namespace FSAutomator.Backend.Actions
 
         public string PackFolder = "";
 
+        [JsonIgnore]
         public ApplicationConfig Config = ApplicationConfig.GetInstance;
 
         AutoResetEvent finishEvent = new AutoResetEvent(false);
@@ -37,11 +40,11 @@ namespace FSAutomator.Backend.Actions
             this.IncludeAsExternalAutomator = IncludeAsExternalAutomator;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
-            var memoryRegisters = (Dictionary<string, string>)sender.GetType().GetField("MemoryRegisters").GetValue(sender);
-            var lastValue = sender.GetType().GetField("lastOperationValue").GetValue(sender).ToString();
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+            var memoryRegisters = (sender as Automator).MemoryRegisters;
+            var lastValue = (sender as Automator).lastOperationValue;
+            var actionsList = (sender as Automator).ActionList;
 
             var path = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), Config.AutomationsFolder, this.PackFolder, this.DLLName);
             var DLL = Assembly.LoadFrom(path);

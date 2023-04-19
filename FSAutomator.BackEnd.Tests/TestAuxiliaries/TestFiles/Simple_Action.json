@@ -1,0 +1,12 @@
+﻿{
+  "Actions": [
+    {
+      "Name": "GetVariable",
+      "UniqueID": "id1234",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "variable name"
+      }
+    }
+  ]
+}

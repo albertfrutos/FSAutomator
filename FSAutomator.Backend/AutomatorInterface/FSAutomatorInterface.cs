@@ -1,6 +1,7 @@
 ﻿using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.AutomatorInterface.Managers;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.AutomatorInterface
@@ -16,7 +17,7 @@ namespace FSAutomator.Backend.AutomatorInterface
 
         internal AutoResetEvent FinishEvent = new AutoResetEvent(false);
 
-        public FSAutomatorInterface(Automator automator, SimConnect connection, AutoResetEvent finishEvent) : base(automator, connection)
+        public FSAutomatorInterface(Automator automator, ISimConnectBridge connection, AutoResetEvent finishEvent) : base(automator, connection)
         {
             Status = GeneralStatus.GetInstance;
             FinishEvent = finishEvent;

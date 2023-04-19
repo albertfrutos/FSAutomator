@@ -1,4 +1,6 @@
-﻿using FSAutomator.Backend.Entities;
+﻿using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
@@ -24,9 +26,8 @@ namespace FSAutomator.Backend.Actions
             WaitTime = time;
         }
 
-        public ActionResult ExecuteAction(object sender, SimConnect connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
-
             totalSeconds = Convert.ToDouble(this.WaitTime);
 
             waitTimer = new System.Timers.Timer(1000);
@@ -45,7 +46,7 @@ namespace FSAutomator.Backend.Actions
             TimeSpan t = TimeSpan.FromSeconds(totalSeconds);
             var remainingTime = $"{t.Hours:D2}:{t.Minutes:D2}:{t.Seconds:D2}";
 
-            var actionsList = (ObservableCollection<FSAutomatorAction>)sender.GetType().GetField("ActionList").GetValue(sender);
+            var actionsList = (sender as Automator).ActionList;
             var CurrentAction = (FSAutomatorAction)actionsList.Where(x => x.Status == FSAutomatorAction.ActionStatus.Running).First();
 
             CurrentAction.Result.VisibleResult = remainingTime;

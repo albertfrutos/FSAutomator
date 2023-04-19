@@ -121,6 +121,7 @@ namespace FSAutomator.ViewModel
             {
                 b_EditMode = value;
                 RaisePropertyChanged("EditMode");
+                ValidateActions(null);
             }
         }
 
@@ -290,7 +291,7 @@ namespace FSAutomator.ViewModel
         public MainWindowViewModel()
         {
             backEnd = new BackendMain();
-            backEnd.Initialize();
+            //backEnd.Initialize();
             ActionListUI = backEnd.GetActionList();
 
             SubscribeToEvents();

@@ -1,4 +1,6 @@
-﻿using FSAutomator.Backend.Utilities;
+﻿using FSAutomator.Backend.Actions;
+using FSAutomator.Backend.Automators;
+using FSAutomator.Backend.Utilities;
 using Newtonsoft.Json;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -19,11 +21,32 @@ namespace FSAutomator.Backend.Entities
         private bool b_isAuxiliary;
         private bool b_stopOnError;
         private string s_validationOutcome;
+        private bool b_ParallelLaunch;
         private string s_mainFilePath;
         private AutomationFile o_AutomationFile;
 
-        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, object actionObject, bool isAuxiliary, bool stopOnError, AutomationFile automationFile)
+        public FSAutomatorAction(string name, string uniqueID, ActionStatus status, string parameters, bool isAuxiliary, bool stopOnError, bool parallelLaunch, AutomationFile automationFile)
         {
+
+
+            dynamic actionObject = null;
+
+            if (name == "DLLAutomation")
+            {
+                actionObject = new ExternalAutomator(automationFile.FileName, parameters);
+            }
+            else
+            {
+                Type actionType = Type.GetType(String.Format("FSAutomator.Backend.Actions.{0}", name));
+
+                dynamic dParameters = parameters == null ? "" : JsonConvert.DeserializeObject(parameters, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
+
+                var actionName = actionType.Name;
+
+                actionObject = DeserializeActionObjectByActionTypeName(automationFile, actionObject, dParameters, actionName);
+
+            }
+
             s_Name = name;
             s_UniqueID = uniqueID;
             e_Status = status;
@@ -33,6 +56,7 @@ namespace FSAutomator.Backend.Entities
             b_isValidated = false;
             b_isAuxiliary = isAuxiliary;
             b_stopOnError = stopOnError;
+            b_ParallelLaunch = parallelLaunch;
             o_AutomationFile = automationFile;
         }
 
@@ -47,6 +71,7 @@ namespace FSAutomator.Backend.Entities
 
         }
 
+        [JsonProperty(Required = Required.Default)]
         public string Name
         {
             get { return s_Name; }
@@ -58,6 +83,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public int Id
         {
@@ -70,6 +96,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         public bool IsAuxiliary
         {
             get { return b_isAuxiliary; }
@@ -81,6 +108,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         public bool StopOnError
         {
             get { return b_stopOnError; }
@@ -92,6 +120,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         public AutomationFile AutomationFile
         {
             get { return o_AutomationFile; }
@@ -103,6 +132,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         public string UniqueID
         {
             get { return s_UniqueID; }
@@ -114,6 +144,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public ActionStatus Status
         {
@@ -125,7 +156,8 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("Status");
             }
         }
-        
+
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public bool IsCurrent
         {
@@ -138,26 +170,30 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+
+        [JsonProperty(Required = Required.Default)]
         public string Parameters
         {
             get { return s_Parameters.Replace("\r", "").Replace("\n", ""); }
 
             set
             {
+                var parametersBackup = s_Parameters;
                 s_Parameters = value;
                 Type actionType = Utils.GetType(String.Format("FSAutomator.Backend.Actions.{0}", Name));
                 try
                 {
                     ActionObject = JsonConvert.DeserializeObject(value, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 }
-                catch
+                catch(Exception ex)
                 {
-                    Trace.WriteLine("Malformed JSON");
+                    ActionObject = null;
                 }
                 RaisePropertyChanged("Parameters");
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public string ParametersBeautified
         {
@@ -165,9 +201,11 @@ namespace FSAutomator.Backend.Entities
             set
             {
                 Parameters = value;
+                RaisePropertyChanged("ParametersBeautified");
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public ActionResult Result
         {
@@ -183,6 +221,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         public object ActionObject
         {
             get { return o_Object; }
@@ -194,6 +233,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public string MainFilePath
         {
@@ -205,6 +245,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public bool IsValidated
         {
@@ -217,6 +258,7 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        [JsonProperty(Required = Required.Default)]
         [JsonIgnore]
         public string ValidationOutcome
         {
@@ -226,6 +268,18 @@ namespace FSAutomator.Backend.Entities
             {
                 s_validationOutcome = value;
                 RaisePropertyChanged("ValidationOutcome");
+            }
+        }
+
+        [JsonIgnore]
+        public bool ParallelLaunch
+        {
+            get { return b_ParallelLaunch; }
+
+            set
+            {
+                b_ParallelLaunch = value;
+                RaisePropertyChanged("ParallelLaunch");
             }
         }
 
@@ -246,6 +300,59 @@ namespace FSAutomator.Backend.Entities
             Done
         }
 
+        private static dynamic DeserializeActionObjectByActionTypeName(AutomationFile automationFile, dynamic actionObject, dynamic dParameters, string actionName)
+        {
+            switch (actionName)
+            {
+                case "ConditionalAction":
+                    actionObject = new ConditionalAction(dParameters.FirstMember, dParameters.Comparison, dParameters.SecondMember, dParameters.ActionIfTrueUniqueID, dParameters.ActionIfFalseUniqueID);
+                    break;
+                case "ExecuteCodeFromDLL":
+                    actionObject = new ExecuteCodeFromDLL(dParameters.DLLName, dParameters.DLLPath, dParameters.ClassName, dParameters.MethodName, dParameters.IncludeAsExternalAutomator);
+                    actionObject.PackFolder = automationFile.PackageName;
+                    break;
+                case "ExpectVariableValue":
+                    actionObject = new ExpectVariableValue(dParameters.VariableName, dParameters.VariableExpectedValue, new GetVariable());
+                    break;
+                case "GetVariable":
+                    actionObject = new GetVariable(dParameters.VariableName);
+                    break;
+                case "MemoryRegisterRead":
+                    actionObject = new MemoryRegisterRead(Convert.ToBoolean(dParameters.RemoveAfterRead), dParameters.Id);
+                    break;
+                case "MemoryRegisterWrite":
+                    actionObject = new MemoryRegisterWrite(dParameters.Value, dParameters.Id);
+                    break;
+                case "OperateValue":
+                    actionObject = new OperateValue(dParameters.Operation, dParameters.Number, dParameters.ItemToOperateOver);
+                    break;
+                case "SendEvent":
+                    actionObject = new SendEvent(dParameters.EventName, dParameters.EventValue);
+                    break;
+                case "WaitSeconds":
+                    actionObject = new WaitSeconds(Convert.ToInt32(dParameters.WaitTime));
+                    break;
+                case "WaitUntilVariableReachesNumericValue":
+                    actionObject = new WaitUntilVariableReachesNumericValue(dParameters.VariableName, dParameters.Comparison, dParameters.ThresholdValue, new GetVariable(dParameters.VariableName), Convert.ToInt32(dParameters.CheckInterval));
+                    break;
+                case "CalculateBearingToCoordinates":
+                    actionObject = new CalculateBearingToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
+                    break;
+                case "CalculateDistanceToCoordinates":
+                    actionObject = new CalculateDistanceToCoordinates(dParameters.FinalLatitude, dParameters.FinalLongitude, new GetVariable());
+                    break;
+                case "FlightPositionLogger":
+                    actionObject = new FlightPositionLogger(dParameters.LoggingTimeSeconds, dParameters.LoggingPeriodSeconds, new GetVariable(), dParameters.LogInNoLockingBackgroundMode);
+                    break;
+                case "FlightPositionLoggerStop":
+                    actionObject = new FlightPositionLoggerStop();
+                    break;
+                default:
+                    break;
+            }
+
+            return actionObject;
+        }
 
 
     }

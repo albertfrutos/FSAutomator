@@ -1,6 +1,19 @@
 ﻿{
   "Actions": [
     {
+      "Name": "GetVariable",
+      "Parameters": {
+        "VariableName": "PLANE HEADING DEGREES GYRO"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "Parameters": {
+        "EventName": "HEADING_BUG_SET",
+        "EventValue": "%PrevValue%"
+      }
+    },
+    {
       "Name": "SendEvent",
       "Parameters": {
         "EventName": "AP_MASTER",
@@ -12,13 +25,6 @@
       "Parameters": {
         "EventName": "TOGGLE_FLIGHT_DIRECTOR",
         "EventValue": "1"
-      }
-    },
-    {
-      "Name": "SendEvent",
-      "Parameters": {
-        "EventName": "HEADING_BUG_SET",
-        "EventValue": "155"
       }
     },
     {

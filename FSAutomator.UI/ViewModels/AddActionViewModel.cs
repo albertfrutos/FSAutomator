@@ -15,7 +15,10 @@ namespace FSAutomator.ViewModel
     {
 
         private AvailableActions l_AvailableActions;
+        private Parameter s_SActionParameters;
         private List<AvailableFixedBoolItem> l_FixedBoolItems;
+        private List<Parameter> l_ActionParameters;
+        private string s_UniqueID = null;
         private string s_FixedBoolItemName;
         private string s_AvailableActionsName;
         private string s_SerializedJSON;
@@ -23,8 +26,7 @@ namespace FSAutomator.ViewModel
 
         private ICommand? b_ButtonOK;
 
-        private List<Parameter> l_ActionParameters;
-        private Parameter s_SActionParameters;
+
 
         public ICommand ButtonOK
         {
@@ -59,6 +61,9 @@ namespace FSAutomator.ViewModel
                 writer.WriteStartObject();
                 writer.WritePropertyName("Name");
                 writer.WriteValue(SAvailableActionName);
+                
+                writer.WritePropertyName("UniqueID");
+                writer.WriteValue(SUniqueID);
 
                 writer.WritePropertyName("IsAuxiliary");
                 var isAuxiliary = l_FixedBoolItems.Where(x => x.Name == "IsAuxiliary").Select(y => y.Value.ToString()).First();
@@ -202,6 +207,15 @@ namespace FSAutomator.ViewModel
                 RaisePropertyChanged("SFixedBoolItemName");
             }
 
+        }
+
+        private string SUniqueID
+        {
+            get
+            {
+                s_UniqueID = s_UniqueID ?? Guid.NewGuid().ToString();
+                return s_UniqueID;
+            }
         }
 
 

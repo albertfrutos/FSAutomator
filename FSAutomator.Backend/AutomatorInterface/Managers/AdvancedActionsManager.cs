@@ -2,6 +2,7 @@
 using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
+using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.BackEnd.AutomatorInterface.Managers
@@ -10,25 +11,25 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
     {
         private EventHandler<bool> finishFlightPositionLoggerEvent = null;
 
-        public AdvancedActionsManager(Automator automator, SimConnect connection) : base(automator, connection)
+        public AdvancedActionsManager(Automator automator, ISimConnectBridge connection) : base(automator, connection)
         {
 
         }
         public string CalculateBearingToCoordinates(double latitude, double longitude)
         {
-            var result = new CalculateBearingToCoordinates(latitude, longitude).ExecuteAction(this, Connection).ComputedResult;
+            var result = new CalculateBearingToCoordinates(latitude, longitude, new GetVariable()).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
 
         public string CalculateDistanceToCoordinates(double latitude, double longitude)
         {
-            var result = new CalculateDistanceToCoordinates(latitude, longitude).ExecuteAction(this, Connection).ComputedResult;
+            var result = new CalculateDistanceToCoordinates(latitude, longitude, new GetVariable()).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
         
         public ActionResult FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, bool logInNoLockingBackgroundMode = false)
         {
-            var result = new FlightPositionLogger(loggingTimeSeconds, loggingPeriodSeconds, logInNoLockingBackgroundMode).ExecuteAction(this, Connection);
+            var result = new FlightPositionLogger(loggingTimeSeconds, loggingPeriodSeconds, new GetVariable(), logInNoLockingBackgroundMode).ExecuteAction(this, Connection);
             
             if(logInNoLockingBackgroundMode)
             {

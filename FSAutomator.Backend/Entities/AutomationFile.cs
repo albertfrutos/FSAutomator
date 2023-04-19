@@ -18,5 +18,9 @@
             FilePath = filePath;
             BasePath = basePath;
         }
+
+        public AutomationFile()
+        {
+        }
     }
 }

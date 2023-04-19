@@ -21,7 +21,6 @@ namespace FSAutomator.Backend.Entities
             this.ReturnObject = returnObject;
         }
 
-
         public string VisibleResult
         {
             get { return s_VisibleResult; }
