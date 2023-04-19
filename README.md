@@ -14,6 +14,7 @@ The solution contains 4 projects:
 
  * **FSAutomator.BackEnd** - This is the backend of the application, where al the interaction with the automations, actions and the simulator occurs.
  * **FSAutomatior.UI** - The UI of the application in WPF.
+ * **FSAutomator.SimConnectInterface** - Interface with MS FlightSimulator, as the communication with the Sim is isolated from the application itself.
  * **ExternalAutomationExample** - An example on how you can use the DLLAutomation action
  * **Auxiliary** - An auxiliary method I used to generate the methods used by the public interface that is used by DLLAutomation. It connects to the MSFS SDK web documentation to get some data and generate the code. Not necessary.
 
@@ -31,6 +32,11 @@ The solution contains 4 projects:
 | SendEvent                            | x              | x             | Sends the specified value to the specified event in the simulator                                                                     |
 | WaitSeconds                          | x              | x             | Waits for 'n' seconds before continuing                                                                                               |
 | WaitUntilVariableReachesNumericValue | x              | x             | Waits until a specified variable value reaches the specified value (or meets criteria)                                                |
+| CalculateBearingToCoordinates | x              | x             | Calculates the bearing from the current airplane coordinates to the destination coordinates                                                |
+| CalculateDistanceToCoordinates | x              | x             | Calculates the distance from the current airplane coordinates to the destination coordinates                                                |
+| FlightPositionLogger | x              | x             | Starts Logging the flight. When finished (see FlightPositionLoggerStop) exports it to both intermediate XML format and to KML                                                 |
+| FlightPositionLoggerStop | x              | x             | Stops logging process started by                                                 |
+
 
 NOTE: Unsupported actions when using automations via DLL library are not supported because they can be executed much more easily via code.
 
@@ -42,13 +48,14 @@ NOTE: All properties in the JSON file **must** be entered as a string, even if t
 
 All JSON actions have some properties in common: 
 
-| Property    | Type     | Description                                                                                                   | Default value: |
-|-------------|----------|---------------------------------------------------------------------------------------------------------------|----------------|
-| Name        | string   | Action Name. This must be written exactly as stated in 'SupportedActions'.                                    | (none)         |
-| UniqueID    | string   | A unique ID (can be any string you like, but must be unique.                                                  | Random GUID    |
-| IsAuxiliary | boolean  | If true, and in case the action is ExecuteCodeFromDLL, the DLL will also be shown as a spare automation.      | false          |
-| StopOnError | boolean  | If true, the automation will stop running in case an error occurs.                                            | false          |
-| Parameters  | json obj | An ActionObject defining the action parameters					                                             | (none)         |
+| Property      | Type     | Description                                                                                                   | Default value: |
+|---------------|----------|---------------------------------------------------------------------------------------------------------------|----------------|
+| Name          | string   | Action Name. This must be written exactly as stated in 'SupportedActions'.                                    | (none)         |
+| UniqueID      | string   | A unique ID (can be any string you like, but must be unique.                                                  | Random GUID    |
+| IsAuxiliary   | boolean  | If true, and in case the action is ExecuteCodeFromDLL, the DLL will also be shown as a spare automation.      | false          |
+| StopOnError   | boolean  | If true, the automation will stop running in case an error occurs.                                            | false          |
+| Parameters    | json obj | An ActionObject defining the action parameters					                           | (none)         |
+| ParallelLaunch| boolean  | If true, the action will be launched in a separate thread and the next one started.	                   | false          |
 
 All actions also return the same object type, which is an ActionResult object containing 3 properties:
 
@@ -346,3 +353,141 @@ Example: the following will wait until ground velocity is higher than 150 knots.
  * For DLLAutomations, there is a project in the solution called ExternalAutomationExample
  * Regargins automation, the following json and c# code to use as DLLAutomation do the same:
 
+The following is a json containing an example for each action (not all actions have all the json properties, but they include all the parameters of the action). This is also available in the file _All_Actions_Example.json_:
+
+```json
+{
+  "Actions": [
+    {
+      "Name": "ConditionalAction",
+      "UniqueID": "2vy54",
+      "StopOnError": true,
+      "ParallelLaunch":  true,
+      "Parameters": {
+        "FirstMember": "abcd",
+        "Comparison": "=",
+        "SecondMember": "350",
+        "ActionIfTrueUniqueID": "5h0t3o",
+        "ActionIfFalseUniqueID": "5h0t3oAA"
+      }
+    },
+    {
+      "Name": "ExecuteCodeFromDLL",
+      "UniqueID": "5h0t3o",
+      "StopOnError": false,
+      "Parameters": {
+        "DLLName": "ExternalAutomationExample.dll",
+        "ClassName": "Lalala",
+        "MethodName": "LalalaTest",
+        "IncludeAsExternalAutomator": true
+      }
+    },
+    {
+      "Name": "ExpectVariableValue",
+      "UniqueID": "06f845bc-18cf-40f3-a6f1-bb9ecf1e9597",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "VariableExpectedValue": "80"
+      }
+    },
+    {
+      "Name": "GetVariable",
+      "UniqueID": "a55ae53b-da59-4899-a085-4d53f2e5bd42",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "ATC ID"
+      }
+    },
+    {
+      "Name": "MemoryRegisterWrite",
+      "UniqueID": "227ffc1c-522d-4c19-9975-2cfe3a4efc4e",
+      "StopOnError": false,
+      "Parameters": {
+        "Value": "%AutomationId%2vy54",
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "MemoryRegisterRead",
+      "UniqueID": "84c7f38d-879e-444d-8307-099ccaca0c43",
+      "StopOnError": false,
+      "Parameters": {
+        "RemoveAfterRead": true,
+        "Id": "Id_01"
+      }
+    },
+    {
+      "Name": "OperateValue",
+      "UniqueID": "ddc58253-a99c-4deb-b59c-7b007f043be0",
+      "StopOnError": false,
+      "Parameters": {
+        "Operation": "*",
+        "Number": 2.0,
+        "ItemToOperateOver": "%FM%xFullFlapsStallSpeed"
+      }
+    },
+    {
+      "Name": "SendEvent",
+      "UniqueID": "627278f4-6b3f-489c-a40f-5367e8d74dc5",
+      "StopOnError": false,
+      "Parameters": {
+        "EventName": "HEADING_BUG_SET",
+        "EventValue": "%PrevValue%"
+      }
+    },
+    {
+      "Name": "WaitSeconds",
+      "UniqueID": "fe99c616-57f4-44be-985d-e3ebcc9365e3",
+      "StopOnError": false,
+      "Parameters": {
+        "WaitTime": 10
+      }
+    },
+    {
+      "Name": "WaitUntilVariableReachesNumericValue",
+      "UniqueID": "7d9862e0-a53b-4ad3-b2aa-8a31b4d2d861",
+      "StopOnError": false,
+      "Parameters": {
+        "VariableName": "AUTOPILOT HEADING LOCK DIR",
+        "Comparison": ">",
+        "ThresholdValue": "270",
+        "CheckInterval": 200
+      }
+    },
+    {
+      "Name": "CalculateBearingToCoordinates",
+      "UniqueID": "4e5bcfd8-475e-46e3-8180-947545dbe297",
+      "StopOnError": false,
+      "Parameters": {
+        "FinalLatitude": 3.2568759,
+        "FinalLongitude": 26.592632
+      }
+    },
+    {
+      "Name": "CalculateDistanceToCoordinates",
+      "UniqueID": "df702cb0-3eb6-497b-9d64-db54eda327f7",
+      "StopOnError": false,
+      "Parameters": {
+        "FinalLatitude": 3.2568759,
+        "FinalLongitude": 26.592632
+      }
+    },
+    {
+      "Name": "FlightPositionLogger",
+      "UniqueID": "d1028915-6d09-40ca-8c24-408dd34d978b",
+      "StopOnError": false,
+      "Parameters": {
+        "LoggingTimeSeconds": 60,
+        "LoggingPeriodSeconds": 1,
+        "LogInNoLockingBackgroundMode": false
+      }
+    },
+    {
+      "Name": "FlightPositionLoggerStop",
+      "UniqueID": "1647eb07-1516-48a2-aad2-f025234043ea",
+      "StopOnError": false
+    }
+  ]
+}
+```
