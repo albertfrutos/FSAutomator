@@ -20,6 +20,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void ExecuteAction_FinalCoordinates_OriginCoordinatesAreRetrivied_ReturnsDistanceToFinalCoordinates()
         {
+            //Arrange
             this.getVariableMock = new Mock<IGetVariable>();
 
             var calculateBearingToCoordinates = new CalculateDistanceToCoordinates(41.176307, 1.262329, this.getVariableMock.Object);
@@ -28,8 +29,10 @@ namespace FSAutomator.Backend.Actions.Tests
                 .Returns(new ActionResult("41.29219", "41.29219", false))
                 .Returns(new ActionResult("2.08371", "2.08371", false));
 
+            //Act
             var result = calculateBearingToCoordinates.ExecuteAction(null, null);
 
+            //Assert
             result.ComputedResult.Should().Be("69.88");
         }
     }

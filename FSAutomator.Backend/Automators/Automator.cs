@@ -33,14 +33,14 @@ namespace FSAutomator.Backend.Automators
 
         public void ExecuteActionList()
         {
-            /*
-            if (this.connection == null)
+            
+            if (this.Connection == null)
             {
                 var message = new InternalMessage("Connection not active", true, false);
                 status.ReportStatus(message);
                 return;
             }
-            */
+            
 
             this.flightModel = new FlightModel(this.Connection);
 

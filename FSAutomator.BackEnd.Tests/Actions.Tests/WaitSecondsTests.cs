@@ -23,6 +23,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void NumberOfSeconds_WaitIsTriggered_TheSpecifiedSecondsAreWaited()
         {
+            //Arrange
             this.automator = new Automator();
             this.automator.ActionList.Add(new FSAutomatorAction()
             {
@@ -33,12 +34,14 @@ namespace FSAutomator.Backend.Actions.Tests
             this.waiter = new WaitSeconds(numberOfSecondsToWait);
             var stopWatch = new Stopwatch();
 
+            //Act
             stopWatch.Start();
 
             var result = this.waiter.ExecuteAction(automator, null);
 
             stopWatch.Stop();
 
+            //Assert
             stopWatch.ElapsedMilliseconds.Should().BeLessThan(maximumNumberOfSecondsForTestExecution*1000);
         }
     }

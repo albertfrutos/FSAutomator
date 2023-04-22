@@ -19,6 +19,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void ARegister_ReadingExistingIdWithoutDeletingIt_ValueIsReturnedAndKeptInRegister()
         {
+            //Arrange
             const bool removeAfterRead = false;
 
             this.Mrd = new MemoryRegisterRead()
@@ -35,8 +36,10 @@ namespace FSAutomator.Backend.Actions.Tests
                 }
             };
 
+            //Act
             var testResult = this.Mrd.ExecuteAction(this.automator, null);
 
+            //Assert
             this.automator.MemoryRegisters.Should().ContainKey(testId);
             this.automator.MemoryRegisters.Should().ContainValue(testValue);
 
@@ -47,6 +50,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void ARegister_ReadingExistingIdAndDeletingIt_ValueIsReturnedAndDeletedFromRegister()
         {
+            //Arrange
             const bool removeAfterRead = true;
 
             this.Mrd = new MemoryRegisterRead()
@@ -63,8 +67,10 @@ namespace FSAutomator.Backend.Actions.Tests
                 }
             };
 
+            //Act
             var testResult = this.Mrd.ExecuteAction(this.automator, null);
 
+            //Assert
             this.automator.MemoryRegisters.Should().NotContainKey(testId);
 
             testResult.ComputedResult.Should().Be(testValue);
@@ -74,6 +80,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void ARegister_ReadingNotExistingId_ReturnsError()
         {
+            //Arrange
             const bool removeAfterRead = true;
 
             this.Mrd = new MemoryRegisterRead()
@@ -87,8 +94,10 @@ namespace FSAutomator.Backend.Actions.Tests
                 MemoryRegisters = new Dictionary<string, string>()
             };
 
+            //Act
             var testResult = this.Mrd.ExecuteAction(this.automator, null);
 
+            //Assert
             testResult.ComputedResult.Should().Be(null);
             testResult.Error.Should().BeTrue();
         }

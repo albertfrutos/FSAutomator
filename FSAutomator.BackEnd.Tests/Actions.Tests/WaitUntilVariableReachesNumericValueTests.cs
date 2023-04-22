@@ -27,6 +27,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestInitialize()]
         public void TestInitialize() 
         {
+            //Arrange
             getVariableMock = new Mock<IGetVariable>();
 
             automator = new Automator();
@@ -51,8 +52,10 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void NumericThreshold_ValidComparisonEquals_WaitsForEqualValue()
         {
+            //Act
             ActionResult result = GetResult("=", numericThreshold);
 
+            //Assert
             getVariableMock.Verify(x => x.ExecuteAction(automator, null), Times.Exactly(4));
 
             result.ComputedResult.Should().Be(numericThreshold);
@@ -62,8 +65,10 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void NumericThreshold_ValidComparisonIsHigher_WaitsForHigherValue()
         {
+            //Act
             ActionResult result = GetResult(">", numericThreshold);
 
+            //Assert
             getVariableMock.Verify(x => x.ExecuteAction(automator, null), Times.Exactly(5));
 
             result.ComputedResult.Should().Be(numericHigher);
@@ -72,18 +77,22 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void NumericThreshold_ValidComparisonIsLower_WaitsForLowerValue()
         {
+            //Act
             ActionResult result = GetResult("<", numericThreshold);
 
             getVariableMock.Verify(x => x.ExecuteAction(automator, null), Times.Exactly(1));
 
+            //Assert
             result.ComputedResult.Should().Be(numericLower);
         }
 
         [TestMethod]
         public void NumericThreshold_InvalidComparison_ReturnError()
         {
+            //Act
             ActionResult result = GetResult("invalid", numericThreshold);
 
+            //Assert
             result.ComputedResult.Should().Be(null);
             result.VisibleResult.Should().Contain("Comparison not supported");
         }
@@ -91,9 +100,11 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void NumericThreshold_ValidComparisonNoCurrentAction_ReturnError()
         {
+            //Act
             this.automator.ActionList[0].Status = FSAutomatorAction.ActionStatus.Done;
             ActionResult result = GetResult("<", numericThreshold);
 
+            //Assert
             result.ComputedResult.Should().Be(null);
             result.VisibleResult.Should().Contain("No current action could be found");
         }
@@ -101,8 +112,10 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void NonNumericThreshold_ValidComparison_ReturnError()
         {
+            //Act
             ActionResult result = GetResult("<", "abcd");
-
+            
+            //Assert
             result.ComputedResult.Should().Be(null);
             result.VisibleResult.Should().Contain("ThresholdValue not a number");
         }

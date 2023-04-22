@@ -15,6 +15,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void ARegister_AddValueWithNewId_ValueIsStored()
         {
+            //Arrange
             const string testValue = "TestValue";
             const string testId = "TestId";
 
@@ -29,8 +30,10 @@ namespace FSAutomator.Backend.Actions.Tests
                 MemoryRegisters = new Dictionary<string, string>()
             };
 
+            //Act
             var testResult = Mrw.ExecuteAction(automator, null);
 
+            //Assert
             automator.MemoryRegisters.Should().ContainKey(testId);
             automator.MemoryRegisters.Should().ContainValue(testValue);
 
@@ -41,6 +44,7 @@ namespace FSAutomator.Backend.Actions.Tests
         [TestMethod]
         public void ARegister_AddValueWithExistingId_AnErrorIsReported()
         {
+            //Arrange
             const string testValue = "TestValue";
             const string testId = "TestId";
 
@@ -58,8 +62,10 @@ namespace FSAutomator.Backend.Actions.Tests
                 }
             };
 
+            //Act
             var testResult = this.Mrw.ExecuteAction(automator, null);
 
+            //Assert
             testResult.ComputedResult.Should().BeNull();
             testResult.Error.Should().BeTrue();
         }

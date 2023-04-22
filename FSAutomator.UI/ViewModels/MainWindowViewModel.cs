@@ -291,7 +291,6 @@ namespace FSAutomator.ViewModel
         public MainWindowViewModel()
         {
             backEnd = new BackendMain();
-            //backEnd.Initialize();
             ActionListUI = backEnd.GetActionList();
 
             SubscribeToEvents();
