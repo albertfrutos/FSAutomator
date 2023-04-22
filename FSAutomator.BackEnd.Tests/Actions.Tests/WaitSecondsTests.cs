@@ -37,7 +37,7 @@ namespace FSAutomator.Backend.Actions.Tests
             //Act
             stopWatch.Start();
 
-            var result = this.waiter.ExecuteAction(automator, null);
+            this.waiter.ExecuteAction(automator, null);
 
             stopWatch.Stop();
 

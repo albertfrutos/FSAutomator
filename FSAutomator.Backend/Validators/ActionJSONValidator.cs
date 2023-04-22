@@ -353,7 +353,7 @@ namespace FSAutomator.BackEnd.Validators
 
             if (variableType != CommonEntities.DEFINITIONS.NumType)
             {
-                var issue = $"WaitUntilVariableReachesNumericValue [{index}]: trying monitor a value which is not numeric. Monitored varaible type is {variableType.ToString()} ";
+                var issue = $"WaitUntilVariableReachesNumericValue [{index}]: trying monitor a value which is not numeric. Monitored varaible type is {variableType} ";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
 

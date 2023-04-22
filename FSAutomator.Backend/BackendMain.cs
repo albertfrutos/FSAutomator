@@ -21,8 +21,6 @@ namespace FSAutomator.Backend
     {
         private ISimConnectBridge Connection;
 
-        private EventWaitHandle _simConnectEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-
         public Automator automator = null;
 
         public GeneralStatus status = GeneralStatus.GetInstance;

@@ -388,7 +388,7 @@ namespace FSAutomator.ViewModel
             {
                 AddActionWindow addAction = new AddActionWindow();
                 addAction.ShowDialog();
-                var newActionJSON = addAction.finalJSON;
+                var newActionJSON = addAction.FinalJSON;
 
                 if (String.IsNullOrEmpty(newActionJSON))
                 {

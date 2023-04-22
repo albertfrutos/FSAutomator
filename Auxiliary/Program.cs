@@ -8,12 +8,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
-public class MyObject
-{
-    public string Key { get; set; }
-    public string Value { get; set; }
-}
-
 public class Program
 {
     public static void Main()
