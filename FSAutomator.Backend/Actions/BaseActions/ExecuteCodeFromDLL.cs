@@ -2,9 +2,7 @@
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
-using System.Collections.ObjectModel;
 using System.Reflection;
 
 namespace FSAutomator.Backend.Actions

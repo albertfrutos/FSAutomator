@@ -1,8 +1,6 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Entities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
-using System.Diagnostics;
 using System.Reflection;
 
 namespace FSAutomator.Backend.Automators
@@ -37,7 +35,7 @@ namespace FSAutomator.Backend.Automators
             object instance = Activator.CreateInstance(type);
 
             var result = instance.GetType().GetMethod("Execute").Invoke(instance, new object[] { this.externalAutomatorInterface });
-            
+
             ExternalAutomationFinishActions();
 
             return (ActionResult)result;

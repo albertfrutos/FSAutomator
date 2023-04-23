@@ -32,7 +32,7 @@
         </Grid.ColumnDefinitions>
 
         <ComboBox ItemsSource="{Binding AvailableActionsNames}" SelectedItem="{Binding SAvailableActionName}" BorderBrush="#FFCECECE" VerticalAlignment="Center" OpacityMask="Black" Margin="13,0,9,0" Height="22" Grid.ColumnSpan="2" />
-        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedValue ="{Binding SActionParameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15,48,7,18" AutoGenerateColumns="False" CanUserAddRows="false" CanUserResizeRows="False" GridLinesVisibility="None" RowHeaderWidth="0" Background="{x:Null}" IsReadOnly="False" Grid.RowSpan="2" KeyUp="dataGridActions_KeyUp">
+        <DataGrid  x:Name="dataGridActions" SelectionMode="Single" SelectionUnit="FullRow"  ItemsSource="{Binding ActionParameters,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" SelectedValue ="{Binding SActionParameters, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="15,48,7,18" AutoGenerateColumns="False" CanUserAddRows="false" CanUserResizeRows="False" GridLinesVisibility="None" RowHeaderWidth="0" Background="{x:Null}" IsReadOnly="False" Grid.RowSpan="2" >
             <DataGrid.CellStyle>
                 <Style TargetType="{x:Type DataGridCell}">
                     <Style.Triggers>

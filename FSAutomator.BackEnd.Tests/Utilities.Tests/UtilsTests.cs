@@ -2,10 +2,7 @@ using FluentAssertions;
 using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -160,7 +157,7 @@ namespace FSAutomator.Backend.Utilities.Tests
 
             result.Should().BeFalse();
         }
-        
+
         [TestMethod]
         public void GetExistingActions_SomeActionExists_ReturnsTrue()
         {
@@ -296,7 +293,7 @@ namespace FSAutomator.Backend.Utilities.Tests
         {
             const string theValue = "MyValue";
 
-            var result = Utils.GetValueToOperateOnFromTag(null,null, theValue);
+            var result = Utils.GetValueToOperateOnFromTag(null, null, theValue);
             result.Should().Be(theValue);
         }
 
@@ -341,7 +338,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             //Assert
             result.Should().Be(propertyValue);
         }
-        
+
         [TestMethod]
         public void GetValueToOperateFromTag_FlightModelTagWithNonExistingProperty_ReturnsError()
         {
@@ -366,7 +363,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             //Assert
             result.Should().Contain("not found in the flight model");
         }
-        
+
         [TestMethod]
         public void GetValueToOperateFromTag_AutomationIdTag_ReturnsResultFromAutomationId()
         {
@@ -399,7 +396,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             //Assert
             result.Should().Be("ComputedResultValue");
         }
-        
+
         [TestMethod]
         public void GetValueToOperateFromTag_MemoryRegisterTag_ReturnsResultFromAutomationId()
         {
@@ -409,7 +406,7 @@ namespace FSAutomator.Backend.Utilities.Tests
 
             this.automator = new Automator();
             automator.MemoryRegisters.Add("R1", "R1Content");
-            
+
             //Act
             var result = Utils.GetValueToOperateOnFromTag(this.automator, null, tag);
 
@@ -421,11 +418,11 @@ namespace FSAutomator.Backend.Utilities.Tests
         public void TryParse_MatchingTypeAndValue_ReturnsTrueAndOutputsTheValue()
         {
             var result = Utils.TryParse<int>("100", out int outputVar);
-            
+
             result.Should().BeTrue();
             outputVar.Should().Be(100);
         }
-        
+
         [TestMethod]
         public void TryParse_IncorrectMatchingTypeAndValue_ReturnsFalse()
         {
@@ -433,7 +430,7 @@ namespace FSAutomator.Backend.Utilities.Tests
 
             result.Should().BeFalse();
             outputVar.Should().Be(0);
-            
+
         }
     }
 }

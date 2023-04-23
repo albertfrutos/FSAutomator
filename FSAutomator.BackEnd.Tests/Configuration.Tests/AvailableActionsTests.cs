@@ -1,15 +1,6 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Automators;
-using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Newtonsoft.Json.Linq;
-using System.Collections.ObjectModel;
-using System.Reflection;
 
 namespace FSAutomator.Backend.Utilities.Tests
 {
@@ -43,7 +34,7 @@ namespace FSAutomator.Backend.Utilities.Tests
                 "FlightPositionLoggerStop"
             };
 
-            var availableActions = new AvailableActions().GetAvailableActions().FSAutomatorAvailableActions.Select( a => a.Name).ToList();
+            var availableActions = new AvailableActions().GetAvailableActions().FSAutomatorAvailableActions.Select(a => a.Name).ToList();
 
             availableActions.Should().BeEquivalentTo(expectedAvailableActions);
 

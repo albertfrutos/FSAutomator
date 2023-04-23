@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -121,7 +122,7 @@ namespace FSAutomator.ViewModel
             {
                 b_EditMode = value;
                 RaisePropertyChanged("EditMode");
-                ValidateActions(null);
+                ValidateActions();
             }
         }
 
@@ -129,7 +130,9 @@ namespace FSAutomator.ViewModel
         {
             get
             {
-                return backEnd.GetValidationIssuesList();
+                var validationIssues = backEnd.GetValidationIssuesList() ?? new List<string>();
+                var schemaValidationIssues = backEnd.GetJSONValidationIssuesList() ?? new List<string>();
+                return Enumerable.Concat(validationIssues, schemaValidationIssues).ToList();
             }
             set
             {
@@ -321,7 +324,7 @@ namespace FSAutomator.ViewModel
 
         public void ReportEventReceiver(object sender, InternalMessage msg)
         {
-            MessageBox.Show(msg.Message,msg.Type.ToString());
+            MessageBox.Show(msg.Message, msg.Type.ToString());
         }
 
         private void ConnectionStatusReceiver(object? sender, bool e)
@@ -449,7 +452,7 @@ namespace FSAutomator.ViewModel
 
             backEnd.LoadActions(SelectedItemAutomationFilesList);
             SelectedAutomationName = l_SelectedItemAutomationFilesList.FileName;
-            ValidateActions(null);
+            ValidateActions();
         }
 
 
@@ -473,13 +476,13 @@ namespace FSAutomator.ViewModel
 
             RefreshAutomationFilesList();
         }
-        
+
         private void InitializeNewAutomation()
         {
             SelectedItemAutomationFilesList = new AutomationFile("");
         }
-        
-        private void ValidateActions(object commandParameter)
+
+        private void ValidateActions(object commandParameter = null)
         {
             if (backEnd != null)
             {

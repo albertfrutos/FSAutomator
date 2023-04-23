@@ -3,8 +3,6 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
-using System.Collections.ObjectModel;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -29,7 +27,7 @@ namespace FSAutomator.Backend.Actions
 
         }
 
-        internal WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, IGetVariable getVariable, int checkInterval = 200) :base(getVariable)
+        internal WaitUntilVariableReachesNumericValue(string variableName, string comparison, string thresholdValue, IGetVariable getVariable, int checkInterval = 200) : base(getVariable)
         {
             VariableName = variableName;
             Comparison = comparison;

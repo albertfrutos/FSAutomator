@@ -1,11 +1,7 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace FSAutomator.Backend.Actions.Tests
 {
@@ -68,7 +64,7 @@ namespace FSAutomator.Backend.Actions.Tests
             const string firstMember = "member";
             const string secondMember = "member";
             const string comparisonType = "=";
-            
+
             //Act
             ActionResult result = ProcessStringComparisonActions(firstMember, secondMember, comparisonType, "trueID", "falseID");
 
@@ -140,7 +136,7 @@ namespace FSAutomator.Backend.Actions.Tests
             result.VisibleResult.Should().Contain("Both true and false UniqueID for execution are missing");
             result.Error.Should().BeTrue();
         }
-        
+
         [TestMethod]
         public void ComparisonValues_TrueUniqueIDIsEmpty_ReturnsError()
         {
@@ -150,7 +146,7 @@ namespace FSAutomator.Backend.Actions.Tests
             const string comparisonType = "<>";
             //Act
             ActionResult result = ProcessStringComparisonActions(firstMember, secondMember, comparisonType, "", "falseID");
-            
+
             //Assert
             result.ComputedResult.Should().BeNull();
             result.Error.Should().BeTrue();
@@ -204,7 +200,7 @@ namespace FSAutomator.Backend.Actions.Tests
             result.Error.Should().BeFalse();
         }
 
-        private ActionResult ProcessStringComparisonActions(string firstMember, string secondMember, string comparisonType, string trueID , string falseID)
+        private ActionResult ProcessStringComparisonActions(string firstMember, string secondMember, string comparisonType, string trueID, string falseID)
         {
 
             this.conditionalAction = new ConditionalAction(firstMember, comparisonType, secondMember, trueID, falseID);

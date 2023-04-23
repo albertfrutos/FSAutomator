@@ -1,7 +1,6 @@
 ﻿using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Entities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 
@@ -18,11 +17,11 @@ namespace FSAutomator.ExternalAutomation
 
             return null;
 
-            
+
 
             var initialPlaneHeading = FSAutomator.GetVariable("PLANE HEADING DEGREES GYRO");
 
-            var initialAltitude = Autopilot.GetVariable("PLANE ALTITUDE",true);
+            var initialAltitude = Autopilot.GetVariable("PLANE ALTITUDE", true);
             var retractLandingGearAltitude = initialAltitude + 1000;
 
             AdvancedActions.FlightPositionLoggerStop(true);

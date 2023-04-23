@@ -53,7 +53,7 @@ namespace FSAutomator.Backend.Entities
                 RaisePropertyChanged("Error");
             }
         }
-        
+
         public dynamic ReturnObject
         {
             get { return o_ReturnObject; }

@@ -2,12 +2,10 @@
 using FSAutomator.Backend.Entities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Schema;
 using System.Collections.ObjectModel;
-using System.Dynamic;
 using System.Text;
 using static FSAutomator.Backend.Entities.FSAutomatorAction;
 
@@ -149,6 +147,7 @@ namespace FSAutomator.Backend.Utilities
                 IList<string> JSONValidationErrors;
 
                 var isValid = ValidateAutomationJSON(jsonObjectActions, out JSONValidationErrors);
+                GeneralStatus.GetInstance.JSONSchemaValidationIssues = JSONValidationErrors.ToList();
 
                 if (!isValid)
                 {
@@ -232,7 +231,7 @@ namespace FSAutomator.Backend.Utilities
                 {
                     continue;
                 }
-                
+
                 var dllFilesAsExternalAutomatorAutomationFileList = actionList.Where(x => x.Name == "ExecuteCodeFromDLL")
                     .Where(y => (y.ActionObject as ExecuteCodeFromDLL).IncludeAsExternalAutomator == true)
                     .Select(z => new AutomationFile(
@@ -242,7 +241,7 @@ namespace FSAutomator.Backend.Utilities
                         Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName),
                         Directory.GetParent(Path.Combine(Config.AutomationsFolder, Directory.GetParent(filePath).Name, (z.ActionObject as ExecuteCodeFromDLL).DLLName)).FullName
                         )).ToList();
-                
+
                 automationsToLoad.Add(jsonAutomationFile);
             }
             return automationsToLoad;
@@ -306,7 +305,7 @@ namespace FSAutomator.Backend.Utilities
 
                         writer.WriteEndObject();
                     }
-                                       
+
                     writer.WriteEndObject();
                 }
 

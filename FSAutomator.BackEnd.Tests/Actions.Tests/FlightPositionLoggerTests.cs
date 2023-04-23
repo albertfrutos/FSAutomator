@@ -1,14 +1,9 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace FSAutomator.Backend.Actions.Tests
@@ -45,7 +40,7 @@ namespace FSAutomator.Backend.Actions.Tests
         {
             const int logDuration = 3;
             const int loggingPeriod = 1;
-            
+
             //Arrange
 
             var stopWatch = new Stopwatch();
@@ -64,13 +59,13 @@ namespace FSAutomator.Backend.Actions.Tests
             File.Exists(Path.Combine(ApplicationConfig.GetInstance.LoggerFolder, $"{result.ComputedResult}.xml")).Should().BeTrue();
             stopWatch.ElapsedMilliseconds.Should().BeLessThan(4000);
         }
-        
+
         [TestMethod]
         public void ValidLoggerConfigurationWithBackgroundModeDisabled_StartLogging_StopsAndSavesLoggerAfterStopCommandIsSent()
         {
             const int logDuration = 3;
             const int loggingPeriod = 1;
-            
+
             //Arrange
             var stopWatch = new Stopwatch();
 

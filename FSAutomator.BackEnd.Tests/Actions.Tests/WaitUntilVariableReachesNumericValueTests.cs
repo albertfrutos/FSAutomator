@@ -1,10 +1,7 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -14,9 +11,9 @@ namespace FSAutomator.Backend.Actions.Tests
     public class WaitUntilVariableReachesNumericValueTests
     {
         WaitUntilVariableReachesNumericValue waitUntilVariableReachesNumericValue;
-        
+
         Mock<IGetVariable> getVariableMock;
-        
+
         Automator automator;
 
         private const string numericThreshold = "778";
@@ -25,7 +22,7 @@ namespace FSAutomator.Backend.Actions.Tests
 
 
         [TestInitialize()]
-        public void TestInitialize() 
+        public void TestInitialize()
         {
             //Arrange
             getVariableMock = new Mock<IGetVariable>();
@@ -96,7 +93,7 @@ namespace FSAutomator.Backend.Actions.Tests
             result.ComputedResult.Should().Be(null);
             result.VisibleResult.Should().Contain("Comparison not supported");
         }
-        
+
         [TestMethod]
         public void NumericThreshold_ValidComparisonNoCurrentAction_ReturnError()
         {
@@ -114,7 +111,7 @@ namespace FSAutomator.Backend.Actions.Tests
         {
             //Act
             ActionResult result = GetResult("<", "abcd");
-            
+
             //Assert
             result.ComputedResult.Should().Be(null);
             result.VisibleResult.Should().Contain("ThresholdValue not a number");

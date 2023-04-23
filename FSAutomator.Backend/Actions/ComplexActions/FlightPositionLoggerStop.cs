@@ -1,14 +1,6 @@
 ﻿using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Configuration;
-using FSAutomator.BackEnd.Entities;
-using Geolocation;
 using Microsoft.FlightSimulator.SimConnect;
-using System.Collections.ObjectModel;
-using System.Xml;
-using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace FSAutomator.Backend.Actions
 {

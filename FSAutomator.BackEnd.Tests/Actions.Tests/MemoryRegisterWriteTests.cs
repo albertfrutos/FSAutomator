@@ -1,9 +1,6 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace FSAutomator.Backend.Actions.Tests
 {
@@ -40,7 +37,7 @@ namespace FSAutomator.Backend.Actions.Tests
             testResult.ComputedResult.Should().Be(testValue);
             testResult.Error.Should().BeFalse();
         }
-        
+
         [TestMethod]
         public void ARegister_AddValueWithExistingId_AnErrorIsReported()
         {

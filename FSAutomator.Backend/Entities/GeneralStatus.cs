@@ -12,6 +12,7 @@ namespace FSAutomator.Backend.Entities
         private bool b_IsConnectedToSim { get; set; } = false;
         private bool b_IsAutomationFullyValidated { get; set; } = false;
         private List<string> l_ValidationIssues { get; set; }
+        private List<string> l_JSONSchemaValidationIssues { get; set; }
         private bool b_GeneralErrorHasOcurred { get; set; } = false;
 
 
@@ -57,9 +58,20 @@ namespace FSAutomator.Backend.Entities
             set
             {
                 this.l_ValidationIssues = value;
-                this.IsAutomationFullyValidated = value.Any();
+                CalculateIsAutomationFullyValidated();
 
                 RaisePropertyChanged("ValidationIssues");
+            }
+        }
+
+        public List<string> JSONSchemaValidationIssues
+        {
+            get { return this.l_JSONSchemaValidationIssues; }
+            set
+            {
+                this.l_JSONSchemaValidationIssues = value;
+
+                RaisePropertyChanged("JSONSchemaValidationIssues");
             }
         }
 
@@ -79,7 +91,6 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
-
         private void ConnectionChangeEvent()
         {
             if (this.ConnectionStatusChangeEvent != null)
@@ -98,5 +109,9 @@ namespace FSAutomator.Backend.Entities
             }
         }
 
+        private void CalculateIsAutomationFullyValidated()
+        {
+            this.IsAutomationFullyValidated = ValidationIssues.Any() && JSONSchemaValidationIssues.Any();
+        }
     }
 }

@@ -2,7 +2,6 @@
 using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions
@@ -19,7 +18,7 @@ namespace FSAutomator.Backend.Actions
         private Variable variable;
 
         static Semaphore semaphore = new Semaphore(1, 1);
-        
+
         public GetVariable()
         {
 
@@ -45,7 +44,7 @@ namespace FSAutomator.Backend.Actions
                 var dataType = entities.VariableTypes[variable.Type];
                 var defineID = entities.DefineIDs[variable.Type];
                 var unit = variable.Unit;
-                
+
                 semaphore.WaitOne();
 
                 connection.AddToDataDefinition(defineID, this.VariableName, unit, dataType, 0.0f);

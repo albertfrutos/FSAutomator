@@ -1,12 +1,7 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 
 namespace FSAutomator.Backend.Actions.Tests
@@ -42,7 +37,7 @@ namespace FSAutomator.Backend.Actions.Tests
             stopWatch.Stop();
 
             //Assert
-            stopWatch.ElapsedMilliseconds.Should().BeLessThan(maximumNumberOfSecondsForTestExecution*1000);
+            stopWatch.ElapsedMilliseconds.Should().BeLessThan(maximumNumberOfSecondsForTestExecution * 1000);
         }
     }
 }

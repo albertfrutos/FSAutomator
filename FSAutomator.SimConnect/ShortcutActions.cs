@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.FlightSimulator.SimConnect;
+﻿using Microsoft.FlightSimulator.SimConnect;
 using static FSAutomator.SimConnectInterface.Entities;
 
 
@@ -19,7 +14,7 @@ namespace FSAutomator.SimConnectInterface
 
         public ShortcutActions()
         {
-            
+
         }
 
         public string GetLoadedAircraftCfgFilePath()

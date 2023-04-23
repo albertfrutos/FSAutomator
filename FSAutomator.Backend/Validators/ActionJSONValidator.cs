@@ -79,7 +79,7 @@ namespace FSAutomator.BackEnd.Validators
             var actionObject = action.Parameters;
 
             try
-            {   
+            {
                 JsonConvert.DeserializeObject(actionObject, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
             }
             catch (Exception ex)
@@ -99,7 +99,7 @@ namespace FSAutomator.BackEnd.Validators
             var actionObject = (FlightPositionLogger)action.ActionObject;
 
 
-           if (actionObject.LoggingPeriodSeconds <= 0)
+            if (actionObject.LoggingPeriodSeconds <= 0)
             {
                 var issue = $"FlightPositionLogger [{index}]: LoggingPeriodSeconds must be higher or equal to 0.";
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
@@ -155,7 +155,7 @@ namespace FSAutomator.BackEnd.Validators
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 return actionIsValidated;
             }
-           
+
 
             if ((!Utils.IsNumericDouble(actionObject.FirstMember)) || (!Utils.IsNumericDouble(actionObject.SecondMember)))
             {
@@ -233,7 +233,7 @@ namespace FSAutomator.BackEnd.Validators
         {
             bool actionIsValidated = true;
 
-            
+
             var configuredWaitTime = (action.ActionObject as WaitSeconds).WaitTime;
 
             if (!(configuredWaitTime > 0))
@@ -242,7 +242,7 @@ namespace FSAutomator.BackEnd.Validators
 
                 actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
             }
-            
+
 
             return actionIsValidated;
         }
@@ -317,7 +317,7 @@ namespace FSAutomator.BackEnd.Validators
 
                 if ((variableType != CommonEntities.DEFINITIONS.NumType) && (variableType != CommonEntities.DEFINITIONS.BoolType))
                 {
-                    var issue = $"OperateValue [{index}]: trying to operate on previous value but previous GetValue does neither return a numeric value nor a boolean value."; 
+                    var issue = $"OperateValue [{index}]: trying to operate on previous value but previous GetValue does neither return a numeric value nor a boolean value.";
                     action.ValidationOutcome = issue;
                     actionIsValidated = SetAsValidationFailed(validationIssues, issue, action);
                 }

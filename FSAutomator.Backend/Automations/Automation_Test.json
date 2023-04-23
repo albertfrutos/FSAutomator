@@ -61,7 +61,7 @@
         "VariableName": "GROUND VELOCITY",
         "Comparison": ">",
         "ThresholdValue": "150",
-        "CheckInterval": "200"
+        "CheckInterval": 200
       }
     },
     {
@@ -81,7 +81,7 @@
       "Name": "OperateValue",
       "Parameters": {
         "Operation": "+",
-        "Number": "100",
+        "Number": 100,
         "ItemToOperateOver": "%PrevValue%"
       }
     },
@@ -91,7 +91,7 @@
         "VariableName": "PLANE ALTITUDE",
         "Comparison": ">",
         "ThresholdValue": "%PrevValue%",
-        "CheckInterval": "200"
+        "CheckInterval": 200
       }
     },
     {
@@ -134,7 +134,7 @@
         "DLLName": "ExternalAutomationExample.dll",
         "ClassName": "Lalala",
         "MethodName": "LalalaTest",
-        "IncludeAsExternalAutomator": "false"
+        "IncludeAsExternalAutomator": false
       }
     },
     {
@@ -144,7 +144,8 @@
       "Parameters": {
         "DLLName": "ExternalAutomationExample.dll",
         "ClassName": "ExternalAutomation",
-        "MethodName": "MyLonelyMethod"
+        "MethodName": "MyLonelyMethod",
+        "IncludeAsExternalAutomator": false
       }
     }
   ]

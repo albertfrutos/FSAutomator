@@ -3,7 +3,6 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Utilities;
 using Newtonsoft.Json;
 using System.ComponentModel;
-using System.Diagnostics;
 
 namespace FSAutomator.Backend.Entities
 {
@@ -185,7 +184,7 @@ namespace FSAutomator.Backend.Entities
                 {
                     ActionObject = JsonConvert.DeserializeObject(value, actionType, new JsonSerializerSettings { DefaultValueHandling = DefaultValueHandling.Ignore });
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     ActionObject = null;
                 }

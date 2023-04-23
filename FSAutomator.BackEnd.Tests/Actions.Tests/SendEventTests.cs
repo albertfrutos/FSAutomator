@@ -1,13 +1,8 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Automators;
-using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
 using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
-using static FSAutomator.Backend.Entities.CommonEntities;
 
 namespace FSAutomator.Backend.Actions.Tests
 {
@@ -15,7 +10,7 @@ namespace FSAutomator.Backend.Actions.Tests
     public class SendEventTests
     {
         SendEvent sendEvent;
-        
+
         Mock<ISimConnectBridge> simConnectBridgeMock;
 
         [TestMethod]
@@ -40,7 +35,7 @@ namespace FSAutomator.Backend.Actions.Tests
             result.ComputedResult.Should().Be(EventValue);
             result.Error.Should().BeFalse();
         }
-        
+
         [TestMethod]
         public void NotExistingVariable_VariableHasTargetValue_NullIsReturned()
         {

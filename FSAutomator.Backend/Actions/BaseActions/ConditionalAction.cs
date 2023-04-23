@@ -3,7 +3,6 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 using System.Collections.ObjectModel;
 
 namespace FSAutomator.Backend.Actions

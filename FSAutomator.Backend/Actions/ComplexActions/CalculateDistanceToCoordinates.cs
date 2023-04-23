@@ -2,7 +2,6 @@
 using FSAutomator.Backend.Entities;
 using FSAutomator.SimConnectInterface;
 using Geolocation;
-using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {

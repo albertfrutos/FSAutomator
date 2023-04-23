@@ -3,7 +3,6 @@ using FSAutomator.Backend.AutomatorInterface;
 using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.BackEnd.AutomatorInterface.Managers
 {
@@ -26,12 +25,12 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
             var result = new CalculateDistanceToCoordinates(latitude, longitude, new GetVariable()).ExecuteAction(this, Connection).ComputedResult;
             return result;
         }
-        
+
         public ActionResult FlightPositionLogger(int loggingTimeSeconds, int loggingPeriodSeconds, bool logInNoLockingBackgroundMode = false)
         {
             var result = new FlightPositionLogger(loggingTimeSeconds, loggingPeriodSeconds, new GetVariable(), logInNoLockingBackgroundMode).ExecuteAction(this, Connection);
-            
-            if(logInNoLockingBackgroundMode)
+
+            if (logInNoLockingBackgroundMode)
             {
                 finishFlightPositionLoggerEvent = result.ReturnObject;
                 return result;
@@ -42,7 +41,7 @@ namespace FSAutomator.BackEnd.AutomatorInterface.Managers
 
         public ActionResult FlightPositionLoggerStop(bool isManualStop = false)
         {
-            if(finishFlightPositionLoggerEvent is null)
+            if (finishFlightPositionLoggerEvent is null)
             {
                 return new ActionResult("Logger has not been started", "Logger has not been started", true);
             }

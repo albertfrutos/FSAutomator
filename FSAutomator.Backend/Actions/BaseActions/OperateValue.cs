@@ -1,7 +1,6 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -10,13 +9,13 @@ namespace FSAutomator.Backend.Actions
 
         public string Operation { get; set; }
         public double Number { get; set; }
-        public string ItemToOperateOver { get; set; } 
+        public string ItemToOperateOver { get; set; }
 
         public OperateValue()
         {
 
         }
-        
+
         public OperateValue(string operation, double number, string itemToOperateOver)
         {
             this.Operation = operation;

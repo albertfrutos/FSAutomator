@@ -1,13 +1,10 @@
-﻿using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Automators;
+﻿using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.AutomationImportersAndExporters;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Validators;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -103,12 +100,17 @@ namespace FSAutomator.Backend
             return status.ValidationIssues;
         }
 
+        public List<string> GetJSONValidationIssuesList()
+        {
+            return status.JSONSchemaValidationIssues;
+        }
+
         private void LoadJSONActions(AutomationFile fileToLoad)
         {
             var actionList = Utils.GetActionsList(fileToLoad, true);
 
             AddActions(actionList);
-           
+
             return;
         }
 

@@ -1,6 +1,4 @@
 ﻿using Microsoft.FlightSimulator.SimConnect;
-using System;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 using static FSAutomator.SimConnectInterface.Entities;
 
@@ -15,7 +13,7 @@ namespace FSAutomator.SimConnectInterface
         public event EventHandler<ConnectionStatusChangeEventArgs> ConnectionStatusChangeEvent;
 
         private EventWaitHandle simConnectEventHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-        
+
         private Thread simConnectReceiveThread = null;
 
         private static SimConnectBridge simConnectBridgeInstance = null;
@@ -53,7 +51,7 @@ namespace FSAutomator.SimConnectInterface
 
         public void MapClientEventToSimEvent(Enum eventToSend, string eventName)
         {
-            Connection.MapClientEventToSimEvent((Enum) eventToSend, eventName);
+            Connection.MapClientEventToSimEvent((Enum)eventToSend, eventName);
         }
 
         public void TransmitClientEvent(uint objectID, Enum eventID, uint dwData, Enum groupID, SIMCONNECT_EVENT_FLAG flags)

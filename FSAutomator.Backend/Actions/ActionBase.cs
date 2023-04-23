@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FSAutomator.Backend.Actions.Base
+﻿namespace FSAutomator.Backend.Actions.Base
 {
     public class ActionBase
     {
@@ -20,7 +14,7 @@ namespace FSAutomator.Backend.Actions.Base
             this.getVariable = getVariable;
             this.sendEvent = sendEvent;
         }
-        
+
         public ActionBase(IGetVariable getVariable)
         {
             this.getVariable = getVariable;

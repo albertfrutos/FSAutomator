@@ -2,7 +2,6 @@
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
 using FSAutomator.SimConnectInterface;
-using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -22,7 +21,7 @@ namespace FSAutomator.Backend.Actions
             this.getVariable = getVariable;
         }
 
-        public ExpectVariableValue():base()
+        public ExpectVariableValue() : base()
         {
 
         }
@@ -33,7 +32,7 @@ namespace FSAutomator.Backend.Actions
 
             string isExpectedValue = CheckIfVariableHasExpectedValue(sender, connection, result.ComputedResult);
 
-             return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
+            return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
         }
 
         internal string CheckIfVariableHasExpectedValue(object sender, ISimConnectBridge connection, string variableRealValue)

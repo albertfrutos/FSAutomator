@@ -4,20 +4,18 @@ using FSAutomator.Backend.Utilities;
 using FSAutomator.BackEnd.Configuration;
 using FSAutomator.BackEnd.Entities;
 using FSAutomator.SimConnectInterface;
-using Geolocation;
-using Microsoft.FlightSimulator.SimConnect;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
 namespace FSAutomator.Backend.Actions
 {
-    public class FlightPositionLogger: ActionBase, IAction
+    public class FlightPositionLogger : ActionBase, IAction
     {
         public int LoggingTimeSeconds { get; set; } = 60;
         public int LoggingPeriodSeconds { get; set; } = 1;
         public bool LogInNoLockingBackgroundMode { get; set; } = false;
- 
+
         private System.Timers.Timer loggingTimeTimer;
 
         internal bool continueLogging = true;
@@ -96,7 +94,7 @@ namespace FSAutomator.Backend.Actions
                 Thread.Sleep(loggingPeriod);
             }
 
-            if(!logger.Points.Any())
+            if (!logger.Points.Any())
             {
                 return new ActionResult("No points were logged.", "No points were logged.", true);
             }
@@ -137,7 +135,7 @@ namespace FSAutomator.Backend.Actions
         {
             var coordinatesString = "";
 
-            foreach(Point point in points)
+            foreach (Point point in points)
             {
                 coordinatesString = $"{coordinatesString}{point.Longitude},{point.Latitude},{point.Altitude} ";
             }

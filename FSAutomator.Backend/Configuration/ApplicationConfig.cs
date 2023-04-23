@@ -59,13 +59,13 @@ namespace FSAutomator.BackEnd.Configuration
             get { return this.s_LoggerFolder; }
             set { this.s_LoggerFolder = value; }
         }
-        
+
         public string FilesFolder
         {
             get { return this.s_FilesFolder; }
             set { this.s_FilesFolder = value; }
         }
-        
+
         public string SchemaFile
         {
             get { return this.s_SchemaFile; }
@@ -77,7 +77,7 @@ namespace FSAutomator.BackEnd.Configuration
             get { return this.o_FSPackagesPaths; }
             set { this.o_FSPackagesPaths = value; }
         }
-        
+
         public KMLLoggerLogConfig KMLLoggerLog
         {
             get { return this.o_KMLLoggerLog; }

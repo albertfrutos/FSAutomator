@@ -61,7 +61,7 @@ namespace FSAutomator.ViewModel
                 writer.WriteStartObject();
                 writer.WritePropertyName("Name");
                 writer.WriteValue(SAvailableActionName);
-                
+
                 writer.WritePropertyName("UniqueID");
                 writer.WriteValue(SUniqueID);
 

@@ -1,8 +1,4 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Automators;
-using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
 using FSAutomator.SimConnectInterface;
 using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -41,7 +37,7 @@ namespace FSAutomator.Backend.Actions.Tests
             //Assert
             result.ComputedResult.Should().Be("myValue");
         }
-        
+
         [TestMethod]
         public void NotExistingVariable_VariableHasTargetValue_NullIsReturned()
         {

@@ -88,7 +88,7 @@ namespace FSAutomator.BackEnd.AutomationImportersAndExporters
 
             var automationFile = new AutomationFile(JSONFileName, "", "", JSONPath, "");
 
-            var actionList = Utils.GetActionsList(automationFile,false);
+            var actionList = Utils.GetActionsList(automationFile, false);
 
             if (actionList is null)
             {

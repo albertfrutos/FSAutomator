@@ -1,11 +1,6 @@
 using FluentAssertions;
-using FSAutomator.Backend.Actions;
-using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.Backend.Utilities;
-using Microsoft.FlightSimulator.SimConnect;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace FSAutomator.Backend.Actions.Tests
 {
@@ -33,7 +28,7 @@ namespace FSAutomator.Backend.Actions.Tests
             //Arrange
 
             //Act
-            var result = GetOperateValueResult("-",2,"8");
+            var result = GetOperateValueResult("-", 2, "8");
 
             //Assert
             result.ComputedResult.Should().Be("6");

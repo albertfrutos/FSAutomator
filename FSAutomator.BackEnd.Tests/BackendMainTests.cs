@@ -44,7 +44,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             isActionValidated.Should().BeEmpty();
             backend.automator.ActionList[0].IsValidated.Should().BeTrue();
         }
-        
+
         [TestMethod]
         public void ValidateActions_ActionsWithOneIssueIsUsed_ReturnsOneIssue()
         {
@@ -80,15 +80,15 @@ namespace FSAutomator.Backend.Utilities.Tests
             result.Message.Should().Be("Please enter an automation name.");
             result.Type.Should().Be(MsgType.Info);
         }
-        
+
         [TestMethod]
         public void SaveAutomation_AutomationIsDLLAutomation_ReturnsInfoMessage()
         {
             //Arrange
             const string fileName = "testFileName.json";
             const string dllName = "randomDLL.dll";
-            
-            
+
+
             string basePath = Path.Combine(currentDir, "Automations");
             string dllFilePath = Path.Combine("Automations", dllName);
 
@@ -163,7 +163,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             Assert.IsTrue(File.Exists(filePath));
             Assert.IsTrue(File.ReadAllText(filePath) == expectedJSON);
         }
-        
+
         [TestMethod]
         public void LoadAction_AutomationJSONIsLoaded_LoadsAutomation()
         {
@@ -194,7 +194,7 @@ namespace FSAutomator.Backend.Utilities.Tests
             loadedAction.StopOnError.Should().BeFalse();
             loadedAction.ActionObject.Should().BeOfType<GetVariable>();
         }
-        
+
         [TestMethod]
         public void LoadAction_AutomationDLLIsLoaded_LoadsAutomation()
         {

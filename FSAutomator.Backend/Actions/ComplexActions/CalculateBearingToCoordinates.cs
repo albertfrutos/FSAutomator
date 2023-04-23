@@ -2,7 +2,6 @@
 using FSAutomator.Backend.Entities;
 using FSAutomator.SimConnectInterface;
 using Geolocation;
-using Microsoft.FlightSimulator.SimConnect;
 
 namespace FSAutomator.Backend.Actions
 {
@@ -16,7 +15,7 @@ namespace FSAutomator.Backend.Actions
 
         public double currentLongitude;
 
-        public CalculateBearingToCoordinates(double lat, double lon, IGetVariable getVariable):base(getVariable)
+        public CalculateBearingToCoordinates(double lat, double lon, IGetVariable getVariable) : base(getVariable)
         {
             this.FinalLatitude = lat;
             this.FinalLongitude = lon;

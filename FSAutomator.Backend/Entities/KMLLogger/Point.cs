@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FSAutomator.BackEnd.Entities
+﻿namespace FSAutomator.BackEnd.Entities
 {
     public class Point
     {
@@ -25,5 +19,5 @@ namespace FSAutomator.BackEnd.Entities
         }
     }
 
-    
+
 }
