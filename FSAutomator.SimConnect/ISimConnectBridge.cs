@@ -16,12 +16,14 @@ namespace FSAutomator.SimConnectInterface
         void RegisterDataDefineStruct<T>(Enum stringType);
         void RequestDataOnSimObjectType(Enum requestID, Enum defineID, uint v, SIMCONNECT_SIMOBJECT_TYPE uSER);
         void ClearDataDefinition(Enum defineID);
-        void SubscribeToRecvSystemStateEventHandlerAndGetAircraftLoadedCfgFilePath(Action<SimConnect, SIMCONNECT_RECV_SYSTEM_STATE> getAirCraftCfgPath);
+        // void SubscribeToRecvSystemStateEventHandlerAndGetAircraftLoadedCfgFilePath(Action<SimConnect, SIMCONNECT_RECV_SYSTEM_STATE> getAirCraftCfgPath);
         void MapClientEventToSimEvent(Enum eventToSend, string eventName);
         void AddClientEventToNotificationGroup(Enum groupID, Enum eventToSend, bool v);
         void SetNotificationGroupPriority(Enum groupID, uint sIMCONNECT_GROUP_PRIORITY_HIGHEST);
         void TransmitClientEvent(uint v1, Enum eventToSend, uint v2, Enum gROUP0, SIMCONNECT_EVENT_FLAG gROUPID_IS_PRIORITY);
         void ClearNotificationGroup(Enum groupID);
+        
         void SubscribeToOnRecvSimobjectDataBytypeEventHandler(Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE> simconnect_OnRecvSimobjectDataBytype);
+        
     }
 }

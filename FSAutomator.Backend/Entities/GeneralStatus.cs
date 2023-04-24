@@ -93,10 +93,7 @@ namespace FSAutomator.Backend.Entities
 
         private void ConnectionChangeEvent()
         {
-            if (this.ConnectionStatusChangeEvent != null)
-            {
-                this.ConnectionStatusChangeEvent.Invoke(this, this.IsConnectedToSim);
-            }
+            this.ConnectionStatusChangeEvent?.Invoke(this, this.IsConnectedToSim);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

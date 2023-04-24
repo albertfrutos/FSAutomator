@@ -65,6 +65,11 @@ namespace FSAutomator.Backend
             return new InternalMessage("Automation saved successfully", false);
         }
 
+        public bool IsConnectedToSim()
+        {
+            return this.status.IsConnectedToSim;
+        }
+
         public void LoadActions(AutomationFile fileToLoad)
         {
             ClearAutomationList();
@@ -252,6 +257,16 @@ namespace FSAutomator.Backend
             {
                 Trace.WriteLine("Connection to simulator failed: " + ex.Message);
             }
+        }
+
+        public void SubscribeToReportStatusEvent(EventHandler<InternalMessage> method)
+        {
+            this.status.ReportStatusEvent += method;
+        }
+
+        public void SubscribeToConnectionStatusChangeEvent(EventHandler<bool> method)
+        {
+            this.status.ConnectionStatusChangeEvent += method;
         }
 
         private void HandleConnectionStatusChange(object sender, ConnectionStatusChangeEventArgs e)

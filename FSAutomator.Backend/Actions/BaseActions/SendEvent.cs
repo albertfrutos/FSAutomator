@@ -46,7 +46,7 @@ namespace FSAutomator.Backend.Actions
             }
         }
 
-        internal static bool CheckIfEventExists(string eventName)
+        private static bool CheckIfEventExists(string eventName)
         {
             return Enum.IsDefined(typeof(EVENTS), eventName);
         }

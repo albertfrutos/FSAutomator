@@ -257,9 +257,9 @@ namespace FSAutomator.Backend.Utilities.Tests
         }
 
         [TestMethod]
-        public void GetJSONTextFromAutomationList_ANActionIsSaved_GeneratesJSONCorrectly()
+        public void GetJSONTextFromAutomationList_AnActionIsSaved_GeneratesJSONCorrectly()
         {
-            var expectedJson = JToken.Parse(@"{  'Actions': [    {      'Name': 'GetVariable',      'UniqueID': null,      'StopOnError': false,      'Parameters': {        'VariableName': 'ATC ID'      }    }  ]}");
+            var expectedJson = JToken.Parse(@"{  'Actions': [    {      'Name': 'GetVariable',      'UniqueID': null,      'StopOnError': false,      'ParallelLaunch': false,      'Parameters': {        'VariableName': 'ATC ID'      }    }  ]}");
 
             var actionList = new ObservableCollection<FSAutomatorAction>()
             {

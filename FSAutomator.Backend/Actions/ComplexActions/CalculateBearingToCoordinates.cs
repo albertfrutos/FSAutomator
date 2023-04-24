@@ -20,7 +20,6 @@ namespace FSAutomator.Backend.Actions
             this.FinalLatitude = lat;
             this.FinalLongitude = lon;
             this.getVariable = getVariable;
-
         }
 
         public CalculateBearingToCoordinates()

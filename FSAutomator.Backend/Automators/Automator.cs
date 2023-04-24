@@ -32,7 +32,7 @@ namespace FSAutomator.Backend.Automators
         public void ExecuteActionList()
         {
 
-            if (this.Connection == null)
+            if (!this.status.IsConnectedToSim)
             {
                 var message = new InternalMessage("Connection not active", true, false);
                 status.ReportStatus(message);

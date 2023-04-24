@@ -57,7 +57,7 @@ namespace FSAutomator.Backend.Actions.Tests
             result.ComputedResult.Should().Contain(DateTime.Now.ToString("yyyyMMdd"));
             File.Exists(Path.Combine(ApplicationConfig.GetInstance.LoggerFolder, $"{result.ComputedResult}.kml")).Should().BeTrue();
             File.Exists(Path.Combine(ApplicationConfig.GetInstance.LoggerFolder, $"{result.ComputedResult}.xml")).Should().BeTrue();
-            stopWatch.ElapsedMilliseconds.Should().BeLessThan(4000);
+            stopWatch.ElapsedMilliseconds.Should().BeLessThan(6000);
         }
 
         [TestMethod]

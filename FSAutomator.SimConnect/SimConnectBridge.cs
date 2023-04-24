@@ -110,7 +110,6 @@ namespace FSAutomator.SimConnectInterface
         }
 
 
-
         public void RequestDataOnSimObjectType(Enum requestID, Enum defineID, uint v, SIMCONNECT_SIMOBJECT_TYPE simObjectType)
         {
             Connection.RequestDataOnSimObjectType(requestID, defineID, v, simObjectType);
@@ -124,30 +123,26 @@ namespace FSAutomator.SimConnectInterface
         public void SubscribeToOnRecvSimobjectDataBytypeEventHandler(Action<SimConnect, SIMCONNECT_RECV_SIMOBJECT_DATA_BYTYPE> method)
         {
             this.Connection.OnRecvSimobjectDataBytype += new SimConnect.RecvSimobjectDataBytypeEventHandler(method);
-
         }
 
+        // comentari
+        /*
         public void SubscribeToRecvSystemStateEventHandlerAndGetAircraftLoadedCfgFilePath(Action<SimConnect, SIMCONNECT_RECV_SYSTEM_STATE> method)
         {
             this.Connection.OnRecvSystemState += new SimConnect.RecvSystemStateEventHandler(method);
             this.Connection.RequestSystemState(DATA_REQUESTS.REQUEST_1, "AircraftLoaded");
         }
+        */
 
         private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)
         {
             this.AnnounceConnectionStatusChange(ConnectionStatus.Open, null);
-
-            /*
-            this.automator.connection = this.m_SimConnect;
-            status.IsConnectedToSim = true;
-            status.GeneralErrorHasOcurred = false;
-            */
         }
 
         private void Simconnect_OnRecvException(SimConnect sender, SIMCONNECT_RECV_EXCEPTION data)
         {
             var exceptionMessage = data.dwException.ToString();
-
+            this.Disconnect();
             this.AnnounceConnectionStatusChange(ConnectionStatus.Exception, exceptionMessage);
 
             /*
@@ -162,8 +157,8 @@ namespace FSAutomator.SimConnectInterface
 
         private void Simconnect_OnRecvQuit(SimConnect sender, SIMCONNECT_RECV data)
         {
+            this.Disconnect();
             this.AnnounceConnectionStatusChange(ConnectionStatus.Quit, null);
-            Disconnect();
 
             /*
             status.IsConnectedToSim = false;

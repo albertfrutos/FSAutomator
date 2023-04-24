@@ -20,7 +20,7 @@ namespace FSAutomator.Backend.Actions
 
         internal FSAutomatorAction CurrentAction = null;
 
-        bool isValueReached = false;
+        
 
         public WaitUntilVariableReachesNumericValue()
         {
@@ -57,16 +57,16 @@ namespace FSAutomator.Backend.Actions
                 return new ActionResult($"ThresholdValue not a number - {this.ThresholdValue}", null, true);
             }
 
+            var isValueReached = false;
+
             do
             {
                 var variableResult = getVariable.ExecuteAction(sender, connection).ComputedResult;
-                CheckVariableRecovered(variableResult);
+                isValueReached = CheckVariableRecovered(variableResult);
                 Thread.Sleep(CheckInterval);
-            } while (!this.isValueReached);
+            } while (!isValueReached);
 
             return new ActionResult($"Value reached: {this.variableValue}", this.variableValue);
-
-
         }
 
         private void GetCurrentAction(object sender)
@@ -79,7 +79,7 @@ namespace FSAutomator.Backend.Actions
             }
         }
 
-        private void CheckVariableRecovered(string variable)
+        private bool CheckVariableRecovered(string variable)
         {
             var currentValue = Convert.ToDouble(variable);
             var thresHoldValue = Convert.ToDouble(this.ThresholdValue);
@@ -105,13 +105,9 @@ namespace FSAutomator.Backend.Actions
                 default:
                     result = true;
                     break;
-
             }
 
-            this.isValueReached = result;
-
-
-
+            return result;
         }
 
 

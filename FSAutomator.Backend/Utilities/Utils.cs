@@ -378,7 +378,7 @@ namespace FSAutomator.Backend.Utilities
             return kmlCodifiedColor;
         }
 
-        internal static bool TryParse<T>(string text, out T value)
+        public static bool TryParse<T>(string text, out T value)
         {
             value = default(T);
             try

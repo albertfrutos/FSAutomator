@@ -11,9 +11,6 @@ namespace FSAutomator.Backend.Actions
         public string VariableName { get; set; }
         public string VariableExpectedValue { get; set; }
 
-
-
-
         internal ExpectVariableValue(string variableName, string variableExpectedValue, IGetVariable getVariable) : base(getVariable)
         {
             VariableName = variableName;
@@ -35,11 +32,12 @@ namespace FSAutomator.Backend.Actions
             return new ActionResult(isExpectedValue, isExpectedValue, result.Error);
         }
 
-        internal string CheckIfVariableHasExpectedValue(object sender, ISimConnectBridge connection, string variableRealValue)
+        private string CheckIfVariableHasExpectedValue(object sender, ISimConnectBridge connection, string variableRealValue)
         {
             this.VariableExpectedValue = Utils.GetValueToOperateOnFromTag(sender, connection, this.VariableExpectedValue);
 
             var isExpectedValue = (variableRealValue == VariableExpectedValue).ToString();
+
             return isExpectedValue;
         }
     }

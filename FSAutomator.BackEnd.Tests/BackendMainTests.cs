@@ -128,7 +128,7 @@ namespace FSAutomator.Backend.Utilities.Tests
         {
             //Arrange
             const string fileName = "testFileName.json";
-            const string expectedJSON = "{\r\n  \"Actions\": [\r\n    {\r\n      \"Name\": \"GetVariable\",\r\n      \"UniqueID\": \"id123\",\r\n      \"StopOnError\": false,\r\n      \"Parameters\": {\r\n        \"VariableName\": \"VARIABLE NAME\"\r\n      }\r\n    }\r\n  ]\r\n}";
+            const string expectedJSON = "{\r\n  \"Actions\": [\r\n    {\r\n      \"Name\": \"GetVariable\",\r\n      \"UniqueID\": \"id123\",\r\n      \"StopOnError\": false,\r\n      \"ParallelLaunch\": false,\r\n      \"Parameters\": {\r\n        \"VariableName\": \"VARIABLE NAME\"\r\n      }\r\n    }\r\n  ]\r\n}";
 
             string basePath = Path.Combine(currentDir, "Automations");
             string filePath = Path.Combine("Automations", fileName);

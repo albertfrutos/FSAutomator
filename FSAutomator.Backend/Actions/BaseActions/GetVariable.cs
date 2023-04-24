@@ -29,7 +29,7 @@ namespace FSAutomator.Backend.Actions
             VariableName = variableName;
             VariableValue = null;
         }
-        public virtual ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
+        public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
             bool error = false;
             this.VariableValue = null;
@@ -64,11 +64,11 @@ namespace FSAutomator.Backend.Actions
 
                 connection.SubscribeToOnRecvSimobjectDataBytypeEventHandler(Simconnect_OnRecvSimobjectDataBytype);
 
-
                 connection.RequestDataOnSimObjectType(DATA_REQUESTS.REQUEST_1, defineID, 0, SIMCONNECT_SIMOBJECT_TYPE.USER);
                 connection.ClearDataDefinition(defineID);
 
                 retainUntilValueReadyEvent.WaitOne();
+
                 semaphore.Release();
 
                 returnResult = $"Variable value is {this.VariableValue }";

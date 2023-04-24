@@ -31,6 +31,7 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
+            // comentari es podrien mirar els dos metodes de coordenades que es retornés objecte de coordenades desde GetCurrentCoordinates o null si hi ha hagut error.º
             if (!GetCurrentCoordinates(sender, connection))
             {
                 return new ActionResult("An error ocurred while getting current coordinates", null, true);
