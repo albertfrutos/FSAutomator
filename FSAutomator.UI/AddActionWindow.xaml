@@ -45,7 +45,13 @@
                 </Style>
             </DataGrid.CellStyle>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
+                <DataGridTextColumn Header="Name" Width="*" Binding="{Binding Name, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false" >
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="ToolTip" Value="{Binding Type}" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Value" Width="*" Binding="{Binding Value, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" IsReadOnly="false"/>
             </DataGrid.Columns>
         </DataGrid>

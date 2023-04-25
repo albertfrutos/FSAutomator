@@ -13,6 +13,8 @@ namespace FSAutomator.BackEnd.Configuration
     {
         public string Name { get; set; }
         public string Value { get; set; } = "";
+
+        public string Type { get; set; } = "";
     }
 
     public class AvailableActions
@@ -30,7 +32,7 @@ namespace FSAutomator.BackEnd.Configuration
                 FSAutomatorAvailableActions.Add(new AvailableAction()
                 {
                     Name = action,
-                    Parameters = Type.GetType("FSAutomator.Backend.Actions." + action).GetProperties().Select(x => new Parameter() { Name = x.Name }).ToList()
+                    Parameters = Type.GetType("FSAutomator.Backend.Actions." + action).GetProperties().Select(x => new Parameter() { Name = x.Name, Type = x.PropertyType.Name.ToString() }).ToList()
                 });
             }
 

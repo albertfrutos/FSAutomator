@@ -73,6 +73,10 @@ namespace FSAutomator.ViewModel
                 var stopOnError = l_FixedBoolItems.Where(x => x.Name == "StopOnError").Select(y => y.Value.ToString()).First();
                 writer.WriteValue(stopOnError);
 
+                writer.WritePropertyName("ParallelLaunch");
+                var parallelLaunch = l_FixedBoolItems.Where(x => x.Name == "ParallelLaunch").Select(y => y.Value.ToString()).First();
+                writer.WriteValue(parallelLaunch);
+
                 writer.WritePropertyName("Parameters");
                 writer.WriteStartObject();
                 if (ActionParameters != null)

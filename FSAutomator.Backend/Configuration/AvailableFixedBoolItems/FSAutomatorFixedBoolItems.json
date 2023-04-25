@@ -1,4 +1,5 @@
 ﻿[
   "IsAuxiliary",
-  "StopOnError"
+  "StopOnError",
+  "ParallelLaunch"
 ]
