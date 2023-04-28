@@ -1,10 +1,10 @@
 ﻿using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Configuration;
+using FSAutomator.Backend.Configuration;
 using System.Collections.ObjectModel;
 using System.IO.Compression;
 
-namespace FSAutomator.BackEnd.AutomationImportersAndExporters
+namespace FSAutomator.Backend.AutomationImportersAndExporters
 {
     internal class Exporters
     {

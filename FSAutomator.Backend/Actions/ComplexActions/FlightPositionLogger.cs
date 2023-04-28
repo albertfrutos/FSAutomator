@@ -1,8 +1,8 @@
 ﻿using FSAutomator.Backend.Actions.Base;
 using FSAutomator.Backend.Entities;
 using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Configuration;
-using FSAutomator.BackEnd.Entities;
+using FSAutomator.Backend.Configuration;
+using FSAutomator.Backend.Entities;
 using FSAutomator.SimConnectInterface;
 using System.Xml;
 using System.Xml.Linq;

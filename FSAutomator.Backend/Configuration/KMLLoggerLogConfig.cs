@@ -1,4 +1,4 @@
-﻿namespace FSAutomator.BackEnd.Configuration
+﻿namespace FSAutomator.Backend.Configuration
 {
     public class KMLLoggerLogConfig
     {

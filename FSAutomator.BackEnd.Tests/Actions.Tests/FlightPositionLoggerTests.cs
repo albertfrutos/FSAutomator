@@ -1,6 +1,6 @@
 using FluentAssertions;
 using FSAutomator.Backend.Entities;
-using FSAutomator.BackEnd.Configuration;
+using FSAutomator.Backend.Configuration;
 using FSAutomator.SimConnectInterface;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;

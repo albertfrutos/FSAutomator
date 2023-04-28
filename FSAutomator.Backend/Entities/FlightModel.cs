@@ -1,5 +1,5 @@
 ﻿using FSAutomator.Backend.Utilities;
-using FSAutomator.BackEnd.Configuration;
+using FSAutomator.Backend.Configuration;
 using FSAutomator.SimConnectInterface;
 
 namespace FSAutomator.Backend.Entities

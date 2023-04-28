@@ -1,5 +1,5 @@
 using FluentAssertions;
-using FSAutomator.BackEnd.Configuration;
+using FSAutomator.Backend.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace FSAutomator.Backend.Utilities.Tests

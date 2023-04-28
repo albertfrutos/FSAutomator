@@ -1,4 +1,4 @@
-﻿namespace FSAutomator.BackEnd.Entities
+﻿namespace FSAutomator.Backend.Entities
 {
     public class Point
     {

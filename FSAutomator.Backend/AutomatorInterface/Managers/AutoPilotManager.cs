@@ -2,7 +2,7 @@
 using FSAutomator.Backend.Automators;
 using FSAutomator.SimConnectInterface;
 
-namespace FSAutomator.BackEnd.AutomatorInterface.Managers
+namespace FSAutomator.Backend.AutomatorInterface.Managers
 {
     public class AutoPilotManager : FSAutomatorInterfaceBaseActions
     {

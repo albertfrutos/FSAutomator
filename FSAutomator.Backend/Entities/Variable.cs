@@ -1,4 +1,4 @@
-﻿using FSAutomator.BackEnd.Configuration;
+﻿using FSAutomator.Backend.Configuration;
 using Newtonsoft.Json;
 
 namespace FSAutomator.Backend.Entities

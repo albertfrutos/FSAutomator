@@ -18,7 +18,7 @@
   </ItemGroup>
   
   <ItemGroup> 
-	<InternalsVisibleTo Include="FSAutomator.BackEnd.Tests" /> 
+	<InternalsVisibleTo Include="FSAutomator.Backend.Tests" /> 
   </ItemGroup>
 
   <ItemGroup>

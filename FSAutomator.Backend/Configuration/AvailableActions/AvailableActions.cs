@@ -1,6 +1,6 @@
 ﻿using FSAutomator.Backend.Utilities;
 
-namespace FSAutomator.BackEnd.Configuration
+namespace FSAutomator.Backend.Configuration
 {
     public class AvailableAction
     {

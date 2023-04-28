@@ -4,7 +4,7 @@ using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
 using FSAutomator.SimConnectInterface;
 
-namespace FSAutomator.BackEnd.AutomatorInterface.Managers
+namespace FSAutomator.Backend.AutomatorInterface.Managers
 {
     public class AdvancedActionsManager : FSAutomatorInterfaceBaseActions
     {

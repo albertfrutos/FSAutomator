@@ -1,6 +1,6 @@
 ﻿using FSAutomator.Backend.Automators;
 using FSAutomator.Backend.Entities;
-using FSAutomator.BackEnd.AutomatorInterface.Managers;
+using FSAutomator.Backend.AutomatorInterface.Managers;
 using FSAutomator.SimConnectInterface;
 
 namespace FSAutomator.Backend.AutomatorInterface

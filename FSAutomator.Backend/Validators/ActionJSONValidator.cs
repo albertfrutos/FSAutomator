@@ -4,7 +4,7 @@ using FSAutomator.Backend.Utilities;
 using Newtonsoft.Json;
 using static FSAutomator.Backend.Entities.CommonEntities;
 
-namespace FSAutomator.BackEnd.Validators
+namespace FSAutomator.Backend.Validators
 {
     internal static class ActionJSONValidator
     {

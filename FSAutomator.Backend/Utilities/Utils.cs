@@ -1,6 +1,6 @@
 ﻿using FSAutomator.Backend.Actions;
 using FSAutomator.Backend.Entities;
-using FSAutomator.BackEnd.Configuration;
+using FSAutomator.Backend.Configuration;
 using FSAutomator.SimConnectInterface;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
