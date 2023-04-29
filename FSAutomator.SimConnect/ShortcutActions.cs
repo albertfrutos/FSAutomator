@@ -17,6 +17,8 @@ namespace FSAutomator.SimConnectInterface
 
         }
 
+        #region GetLoadedAircraftCfgFilePath
+
         public string GetLoadedAircraftCfgFilePath()
         {
             returnString = null;
@@ -37,5 +39,7 @@ namespace FSAutomator.SimConnectInterface
             Connection.OnRecvSystemState += new SimConnect.RecvSystemStateEventHandler(method);
             Connection.RequestSystemState(DATA_REQUESTS.REQUEST_1, "AircraftLoaded");
         }
+
+        #endregion
     }
 }

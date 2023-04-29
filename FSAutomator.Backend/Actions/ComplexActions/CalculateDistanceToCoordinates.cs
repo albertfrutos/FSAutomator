@@ -31,17 +31,14 @@ namespace FSAutomator.Backend.Actions
 
         public ActionResult ExecuteAction(object sender, ISimConnectBridge connection)
         {
-            // comentari es podrien mirar els dos metodes de coordenades que es retornés objecte de coordenades desde GetCurrentCoordinates o null si hi ha hagut error.º
-            if (!GetCurrentCoordinates(sender, connection))
+            // comentari provar
+
+            var origin = GetCurrentCoordinates(sender, connection);
+
+            if (origin is null)
             {
                 return new ActionResult("An error ocurred while getting current coordinates", null, true);
             }
-
-            Coordinate origin = new Coordinate()
-            {
-                Latitude = currentLatitude,
-                Longitude = currentLongitude
-            };
 
             Coordinate destination = new Coordinate()
             {
@@ -49,23 +46,38 @@ namespace FSAutomator.Backend.Actions
                 Longitude = FinalLongitude
             };
 
-            double distance = GeoCalculator.GetDistance(origin, destination, 2, DistanceUnit.Kilometers);
+            double distance = GeoCalculator.GetDistance((Coordinate)origin, destination, 2, DistanceUnit.Kilometers);
 
             return new ActionResult($"{distance} Km.", distance.ToString(), false);
         }
 
-        private bool GetCurrentCoordinates(object sender, ISimConnectBridge connection)
+        private Coordinate? GetCurrentCoordinates(object sender, ISimConnectBridge connection)
         {
+            try
+            {
+                var coordinates = new Coordinate();
 
-            getVariable.VariableName = "PLANE LATITUDE";
-            var currentLatitude = getVariable.ExecuteAction(sender, connection);
-            this.currentLatitude = Convert.ToDouble(currentLatitude.ComputedResult);
+                getVariable.VariableName = "PLANE LATITUDE";
+                var currentLatitude = getVariable.ExecuteAction(sender, connection);
+                coordinates.Latitude = Convert.ToDouble(currentLatitude.ComputedResult);
 
-            getVariable.VariableName = "PLANE LONGITUDE";
-            var currentLongitude = getVariable.ExecuteAction(sender, connection);
-            this.currentLongitude = Convert.ToDouble(currentLongitude.ComputedResult);
+                getVariable.VariableName = "PLANE LONGITUDE";
+                var currentLongitude = getVariable.ExecuteAction(sender, connection);
+                coordinates.Longitude = Convert.ToDouble(currentLongitude.ComputedResult);
 
-            return !(currentLatitude.Error || currentLongitude.Error);
+                if (currentLatitude.Error || currentLongitude.Error)
+                {
+                    return null;
+                }
+
+                return coordinates;
+            }
+            catch
+            {
+                return null;
+            }
+            
+
         }
     }
 }

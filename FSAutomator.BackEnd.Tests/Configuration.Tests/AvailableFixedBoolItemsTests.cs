@@ -19,7 +19,8 @@ namespace FSAutomator.Backend.Utilities.Tests
             var expectedAvailableFixedBookItems = new List<string>()
             {
                 "IsAuxiliary",
-                "StopOnError"
+                "StopOnError",
+                "ParallelLaunch"
             };
 
             var availableActions = new AvailableFixedBoolItems().GetAvailableItems().Select(i => i.Name).ToList();

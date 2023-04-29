@@ -171,6 +171,7 @@ namespace FSAutomator.ViewModel
                 b_ButtonLoadActions = value;
             }
         }
+
         public ICommand ButtonExecute
         {
             get
@@ -413,7 +414,6 @@ namespace FSAutomator.ViewModel
 
         }
 
-
         private async void ExecuteTask(object commandParameter)
         {
             if (backend is not null)
@@ -459,7 +459,6 @@ namespace FSAutomator.ViewModel
             ValidateActions();
         }
 
-
         private void ImportAutomation(object commandParameter)
         {
             OpenFileDialog ofd = new OpenFileDialog();
@@ -495,5 +494,4 @@ namespace FSAutomator.ViewModel
             }
         }
     }
-
 }

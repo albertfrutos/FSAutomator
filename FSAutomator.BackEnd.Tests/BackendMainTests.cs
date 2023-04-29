@@ -87,18 +87,19 @@ namespace FSAutomator.Backend.Utilities.Tests
             //Arrange
             const string fileName = "testFileName.json";
             const string dllName = "randomDLL.dll";
+            const string dllPath = @"TestAuxiliaries\TestFiles\randomDLL.dll";
 
 
             string basePath = Path.Combine(currentDir, "Automations");
             string dllFilePath = Path.Combine("Automations", dllName);
 
-            File.Copy(@"TestAuxiliaries\TestFiles\randomDLL.dll", dllFilePath);
+            File.Copy(dllPath, dllFilePath);
 
             backend.automator.ActionList.Add(
                 new FSAutomatorAction()
                 {
                     Name = "DLLAutomation",
-                    ActionObject = new ExternalAutomator("randomDLL.dll", dllFilePath),
+                    ActionObject = new ExternalAutomator(dllName, dllFilePath),
                     Parameters = "{\"VariableName\":\"ATC ID\"}"
                 }
             );

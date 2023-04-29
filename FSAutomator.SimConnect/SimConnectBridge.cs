@@ -7,7 +7,6 @@ namespace FSAutomator.SimConnectInterface
     public sealed class SimConnectBridge : ISimConnectBridge
     {
         public SimConnect Connection { get; private set; } = null;
-
         public ShortcutActions ShortcutActions { get; } = new ShortcutActions();
 
         public event EventHandler<ConnectionStatusChangeEventArgs> ConnectionStatusChangeEvent;
@@ -41,7 +40,6 @@ namespace FSAutomator.SimConnectInterface
         public void AddClientEventToNotificationGroup(Enum groupID, Enum eventID, bool maskable)
         {
             Connection.AddClientEventToNotificationGroup(groupID, eventID, maskable);
-
         }
 
         public void SetNotificationGroupPriority(Enum groupID, uint priority)
@@ -57,7 +55,6 @@ namespace FSAutomator.SimConnectInterface
         public void TransmitClientEvent(uint objectID, Enum eventID, uint dwData, Enum groupID, SIMCONNECT_EVENT_FLAG flags)
         {
             Connection.TransmitClientEvent(objectID, eventID, dwData, groupID, flags);
-
         }
 
         public void ClearNotificationGroup(Enum group)

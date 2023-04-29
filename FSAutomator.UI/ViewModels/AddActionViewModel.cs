@@ -26,8 +26,6 @@ namespace FSAutomator.ViewModel
 
         private ICommand? b_ButtonOK;
 
-
-
         public ICommand ButtonOK
         {
             get
@@ -139,7 +137,6 @@ namespace FSAutomator.ViewModel
 
         }
 
-
         public List<Parameter> ActionParameters
         {
             get
@@ -221,9 +218,6 @@ namespace FSAutomator.ViewModel
                 return s_UniqueID;
             }
         }
-
-
-
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
